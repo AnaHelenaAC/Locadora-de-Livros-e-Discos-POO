@@ -4,7 +4,7 @@ import src.br.edu.ufersa.Locadora.model.entities.ItemAcervo;
 
 public class Disco extends ItemAcervo {
   //Atributo:
-  private String duracao = null;
+  private String duracao = "Não registrada ou nenhuma.";
 
   //Métodos:
 
