@@ -24,6 +24,10 @@ public class UsuarioGerente extends Usuario {
         }
 
     }
-
     
+    public void cadastrarFuncionario(UsuarioFuncionario f) {
+
+        System.out.println("Gerente " + this.getNome() + " iniciando processo de cadastro...");
+        Registro.salvarFuncionarioNoSistema(f);  // Chama a função da classe Registro
+    }
 }
