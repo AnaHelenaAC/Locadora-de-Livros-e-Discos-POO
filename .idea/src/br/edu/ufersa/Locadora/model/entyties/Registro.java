@@ -11,7 +11,7 @@ public class Registro {
     private double faturamentoTotal;
     private List<Aluguel> listaAlugueis;
 
-    // Construtor Registro
+    // ------------------ Construtor Registro ------------------
     public Registro() {
         this.faturamentoTotal = 0.0;
         this.listaAlugueis = new ArrayList<>();
@@ -24,7 +24,6 @@ public class Registro {
     }
 
     public static void setListaFuncionarios(List<UsuarioFuncionario> listaFuncionarios) {
-
         // Verificando se a lista está vazia
         if (listaFuncionarios != null) {
             Registro.listaFuncionarios = new ArrayList<>(listaFuncionarios);
@@ -36,7 +35,7 @@ public class Registro {
     }
 
     public void setGerenteLogado(UsuarioGerente gerenteLogado) {
-        // Verificando se existe um gerente
+        // Verificando se existe um gerente válido sendo passado antes de logar
         if (gerenteLogado != null) {
             this.gerenteLogado = gerenteLogado;
         }
@@ -47,7 +46,6 @@ public class Registro {
     }
 
     public void setFaturamentoTotal(double faturamentoTotal) {
-
         // Verificando se o número do faturamento é positivo
         if (faturamentoTotal >= 0) {
             this.faturamentoTotal = faturamentoTotal;
@@ -66,39 +64,46 @@ public class Registro {
         }
     }
 
+    // Adiciona um novo funcionário
     public static void salvarFuncionarioNoSistema(UsuarioFuncionario f) {
+        // V
         if (f != null) {
             listaFuncionarios.add(f);
             System.out.println(">>> [BANCO] Funcionário " + f.getNome() + " salvo com segurança.");
         }
     }
 
+    // Realiza um aluguem para um cliente de um item do acervo
     public void registrarAluguel(Cliente c, ItemAcervo i) {
+
+        // Verifica se o cliente e o item existem nos dados
         if (c != null && i != null) {
-            System.out.println("SISTEMA: Iniciando aluguel do item para o cliente " + c.getNome() + "...");
+            System.out.println("Iniciando aluguel do item para o cliente " + c.getNome() + "...");
 
             String valorEmTexto = i.getValor().replace(",", ".");
-
             double valorConvertido = Double.parseDouble(valorEmTexto);
 
             this.faturamentoTotal += valorConvertido;
+            System.out.println("Aluguel registrado. Faturamento atualizado!");
 
-            System.out.println("SISTEMA: Aluguel registrado. Faturamento atualizado!");
         } else {
-            System.out.println("ERRO: Cliente ou Item inválidos para aluguel.");
+            System.out.println("Negado! Cliente ou Item inválidos para aluguel.");
         }
     }
 
+    // Registra a volta de um item que havia sido alugado
     public void registrarDevolucao(ItemAcervo i) {
         if (i != null) {
-            System.out.println("SISTEMA: Registrando devolução do item...");
+            System.out.println("Registrando devolução do item...");
         }
     }
 
+    // Gera e exibe um relatório com os itens alugados filtrados por categoria
     public void gerarRelatorioAlugados(String categoria) {
         System.out.println("SISTEMA: Gerando relatório da categoria -> " + categoria);
     }
 
+    // Calcula a soma financeira de todos os aluguéis feitos em um mês específico
     public double calcularFaturamentoMensal(int mes) {
         System.out.println("SISTEMA: Calculando faturamento do mês " + mes);
         return 0.0;
