@@ -1,4 +1,4 @@
-package br.edu.ufersa.Locadora.model.entyties;
+package br.edu.ufersa.locadora.model.entities;
 
 import java.util.ArrayList;
 import java.util.List;
