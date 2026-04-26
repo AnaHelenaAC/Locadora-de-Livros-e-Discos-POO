@@ -65,3 +65,28 @@ public class Registro {
             this.listaAlugueis = new ArrayList<>(listaAlugueis);
         }
     }
+
+    public static void salvarFuncionarioNoSistema(UsuarioFuncionario f) {
+        if (f != null) {
+            listaFuncionarios.add(f);
+            System.out.println(">>> [BANCO] Funcionário " + f.getNome() + " salvo com segurança.");
+        }
+    }
+
+    public void registrarAluguel(Cliente c, ItemAcervo i) {
+        if (c != null && i != null) {
+            System.out.println("SISTEMA: Iniciando aluguel do item para o cliente " + c.getNome() + "...");
+
+            String valorEmTexto = i.getValor().replace(",", ".");
+
+            double valorConvertido = Double.parseDouble(valorEmTexto);
+
+            this.faturamentoTotal += valorConvertido;
+
+            System.out.println("SISTEMA: Aluguel registrado. Faturamento atualizado!");
+        } else {
+            System.out.println("ERRO: Cliente ou Item inválidos para aluguel.");
+        }
+    }
+
+}
