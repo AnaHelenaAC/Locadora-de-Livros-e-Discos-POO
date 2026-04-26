@@ -1,4 +1,4 @@
-package br.edu.ufersa.Locadora.model.entyties;
+package br.edu.ufersa.locadora.model.entities;
 
 public class UsuarioGerente extends Usuario {
     private int idGerente;

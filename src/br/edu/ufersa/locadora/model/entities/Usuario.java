@@ -1,4 +1,4 @@
-package br.edu.ufersa.Locadora.model.entyties;
+package br.edu.ufersa.locadora.model.entities;
 
 // Classe "Mãe" Usuario
 public class Usuario {

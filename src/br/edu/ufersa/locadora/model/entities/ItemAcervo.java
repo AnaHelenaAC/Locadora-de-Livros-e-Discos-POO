@@ -1,4 +1,4 @@
-package src.br.edu.ufersa.Locadora.model.entities.ItemAcervo;
+package br.edu.ufersa.locadora.model.entities;
 
 import java.util.UUID;
 import java.util.List;
@@ -137,9 +137,6 @@ public class ItemAcervo {
     catch (NullPointerException e) {
       System.out.println("Valor de isDisco = null");
       throw e;
-    }
-  }
-}
     }
   }
 }

@@ -1,6 +1,6 @@
-package src.br.edu.ufersa.Locadora.model.entities.Disco;
+package br.edu.ufersa.locadora.model.entities;
 
-import src.br.edu.ufersa.Locadora.model.entities.ItemAcervo;
+import br.edu.ufersa.Locadora.model.entities.ItemAcervo;
 
 public class Disco extends ItemAcervo {
   //Atributo:
