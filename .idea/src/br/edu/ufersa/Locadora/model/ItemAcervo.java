@@ -121,7 +121,7 @@ public class ItemAcervo {
         throw e;
     }
     this.valor = Objects.requireNonNull(valorFormatado, "Valor não pode ser null.");
-    DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     try { //Checa se a data de entrada está no formato correto. Se estiver, atualiza o valor do atributo
       LocalDate dataDeLancamento = LocalDate.parse(dataDeLancamentoFormatada, formatador);   
       this.dataDeLancamento = Objects.requireNonNull(dataDeLancamento, "Valor não pode ser null.");
