@@ -89,4 +89,18 @@ public class Registro {
         }
     }
 
+    public void registrarDevolucao(ItemAcervo i) {
+        if (i != null) {
+            System.out.println("SISTEMA: Registrando devolução do item...");
+        }
+    }
+
+    public void gerarRelatorioAlugados(String categoria) {
+        System.out.println("SISTEMA: Gerando relatório da categoria -> " + categoria);
+    }
+
+    public double calcularFaturamentoMensal(int mes) {
+        System.out.println("SISTEMA: Calculando faturamento do mês " + mes);
+        return 0.0;
+    }
 }
