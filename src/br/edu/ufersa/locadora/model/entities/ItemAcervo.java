@@ -17,7 +17,7 @@ public class ItemAcervo {
   private String titulo = "";
   private String criadoPor = "";
   private String genero = "";
-  private String valor = null; //O valor será convertido de um double para uma String pelo setter
+  private double valor = 0.0;
   private LocalDate dataDeLancamento = null;
   private int qtdItens = 0;
   private Boolean isDisco = null; //Identifica se o item é um livro ou um disco, sendo livro "false" e disco "true"
@@ -37,10 +37,12 @@ public class ItemAcervo {
   public String getGenero() {
     return genero;
   }
-  public String getValor() {
-    String valorFormatado = String.format("%.2f", valor); //Formata o valor
-    return valorFormatado;
+  public double getValor() {
+    return valor;
   }
+  public String getValorFormatado() {
+    return String.format("%.2f", valor);
+}
   public String getDataDeLancamento() {
     DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String dataDeLancamentoFormatada = dataDeLancamento.format(formatador);
@@ -63,17 +65,12 @@ public class ItemAcervo {
   public void setGenero(String genero) {
     this.genero = Objects.requireNonNull(genero, "Valor não pode ser null.");
   }
-  public void setValor(double valor) {
-    String valorFormatado = null;
-    try {
-        valorFormatado = String.format(Locale.ITALY, "%.2f", valor); //Transforma o valor de entrada double em um valor String no formato: 0,00. O formato númerico italiano é equivalente ao brasileiro
+public void setValor(double valor) {
+    if (valor < 0) {
+        throw new IllegalArgumentException("Valor não pode ser negativo.");
     }
-    catch (IllegalFormatConversionException e) {
-        System.out.println("Tentou transformar um valor null em String.");
-        throw e;
-    }
-    this.valor = Objects.requireNonNull(valorFormatado, "Valor não pode ser null.");
-  }
+    this.valor = valor;
+}
   public void setDataDeLancamento(String dataDeLancamentoFormatada) {
     DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     try { //Checa se a data de entrada está no formato correto. Se estiver, atualiza o valor do atributo
@@ -112,15 +109,10 @@ public class ItemAcervo {
     this.titulo = Objects.requireNonNull(titulo, "Valor não pode ser null.");
     this.criadoPor = Objects.requireNonNull(criadoPor, "Valor não pode ser null.");
     this.genero = Objects.requireNonNull(genero, "Valor não pode ser null.");
-    String valorFormatado = null;
-    try {
-        valorFormatado = String.format(Locale.ITALY, "%.2f", valor); //Transforma o valor de entrada double em um valor String no formato: 0,00. O formato númerico italiano é equivalente ao brasileiro
-    }
-    catch (IllegalFormatConversionException e) {
-        System.out.println("Tentou transformar um valor null em String.");
-        throw e;
-    }
-    this.valor = Objects.requireNonNull(valorFormatado, "Valor não pode ser null.");
+if (valor < 0) {
+    throw new IllegalArgumentException("Valor não pode ser negativo.");
+}
+this.valor = valor;
     DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     try { //Checa se a data de entrada está no formato correto. Se estiver, atualiza o valor do atributo
       LocalDate dataDeLancamento = LocalDate.parse(dataDeLancamentoFormatada, formatador);   
