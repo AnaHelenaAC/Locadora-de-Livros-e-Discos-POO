@@ -27,9 +27,6 @@ public class Cliente {
     }
 
     //MÉTODOS
-    //acessar a lista de clientes
-    public static List<Cliente> getClientes() {return clientes;}
-    
     //cadastrar
     public void cadastrar() {
         clientes.add(this);
@@ -54,6 +51,7 @@ public class Cliente {
     public String getCpf() {return cpf;}
     public String getEmail() { return email; }
     public String getTelefone() { return telefone; }
+    public static List<Cliente> getClientes() {return clientes;}//acessa a lista de clientes
 
     //SETTERS
     public void setNome(String novoNome) {
