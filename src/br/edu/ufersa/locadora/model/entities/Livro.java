@@ -1,6 +1,6 @@
 package br.edu.ufersa.locadora.model.entities;
 
-import br.edu.ufersa.Locadora.model.entities.ItemAcervo;
+import br.edu.ufersa.locadora.model.entities.ItemAcervo;
 
 import java.util.List;
 import java.util.ArrayList;

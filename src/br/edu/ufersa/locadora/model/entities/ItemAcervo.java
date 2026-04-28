@@ -54,6 +54,9 @@ public class ItemAcervo {
   public boolean getIsDisco() {
     return isDisco; //false" = livro; "true" = disco.
   }
+  public static List<ItemAcervo> getItensDoAcervo() {
+    return ItensDoAcervo; //acessa a lista de itens do acervo
+  } 
   
   //setters:
   public void setTitulo(String titulo) {
