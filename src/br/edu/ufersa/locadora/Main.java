@@ -1,9 +1,6 @@
 package br.edu.ufersa.locadora;
 
-import br.edu.ufersa.locadora.model.entities.Cliente;
-import br.edu.ufersa.locadora.model.entities.Aluguel;
-import br.edu.ufersa.locadora.model.entities.ItemAcervo;
-import br.edu.ufersa.locadora.model.entities.Livro;
+import br.edu.ufersa.locadora.model.entities.*;
 
 import java.time.LocalDate;
 
