@@ -9,10 +9,12 @@ public class Disco extends ItemAcervo {
   //Atributos:
   private static List<Disco> discos = new ArrayList<>(); //Lista de discos
   private String duracao = "Não registrada ou nenhuma.";
+  
   //getter:
   public String getDuracao() {
     return duracao;
   }
+  
   //setter:
   public void setDuracao(int horas, int minutos, int segundos) {
     if (horas < 0 || minutos > 59 || minutos < 0 || segundos > 59 || segundos < 0) throw new IllegalArgumentException("Algum dos valores, dentre marcadores de horas, minutos e segundos está errado. Pode ser que algum deles seja menor que 0 ou que \"minutos\" ou \"segundos\" seja maior que 59.");
@@ -25,6 +27,12 @@ public class Disco extends ItemAcervo {
     else duracao = horasString + ":" + minutosString + ":" + segundosString;
     this.duracao = duracao;
   }
+
+  //Método de exclusão de objeto:
+  public void excluir() {
+    discos.remove(this);
+  }
+  
   //construtor:
   public Disco(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco, int horas, int minutos, int segundos) {
     super(titulo, criadoPor, genero, valor, dataDeLancamentoFormatada, qtdItens, isDisco);
