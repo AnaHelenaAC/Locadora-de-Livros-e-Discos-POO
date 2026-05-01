@@ -12,7 +12,7 @@ import java.util.IllegalFormatConversionException;
 
 public class ItemAcervo {
   //Atributos:
-  private static List<ItemAcervo> ItensDoAcervo = new ArrayList<>(); //Lista de itens do Acervo
+  private static List<ItemAcervo> itensDoAcervo = new ArrayList<>(); //Lista de itens do Acervo
   private String ID = null;
   private String titulo = "";
   private String criadoPor = "";
@@ -102,12 +102,12 @@ public void setValor(double valor) {
   
   //Método de exclusão de objeto:
   public void excluir() {
-    ItensDoAcervo.remove(this); //Remove o objeto da lista de itens do acervo
+    itensDoAcervo.remove(this); //Remove o objeto da lista de itens do acervo
   }
   
   //construtor:
   public ItemAcervo(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco) {
-    ItensDoAcervo.add(this); //Adiciona o objeto criado à lista de itens do acervo
+    itensDoAcervo.add(this); //Adiciona o objeto criado à lista de itens do acervo
     this.ID = UUID.randomUUID().toString(); //Gera uma identificação única convertida em String para o objeto. 
     this.titulo = Objects.requireNonNull(titulo, "Valor não pode ser null.");
     this.criadoPor = Objects.requireNonNull(criadoPor, "Valor não pode ser null.");
