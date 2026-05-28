@@ -1,8 +1,6 @@
 package br.edu.ufersa.locadora.model.entities;
 
 import java.util.UUID;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Objects;
 import java.time.LocalDate;
@@ -10,9 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.IllegalFormatConversionException;
 
-public class ItemAcervo {
+abstract public class ItemAcervo {
   //Atributos:
-  private static List<ItemAcervo> ItensDoAcervo = new ArrayList<>(); //Lista de itens do Acervo
   private String ID = null;
   private String titulo = "";
   private String criadoPor = "";
@@ -21,8 +18,6 @@ public class ItemAcervo {
   private LocalDate dataDeLancamento = null;
   private int qtdItens = 0;
   private Boolean isDisco = null; //Identifica se o item é um livro ou um disco, sendo livro "false" e disco "true"
-  
-  //Métodos:
 
   //getters:
   public String getID() {
@@ -98,13 +93,10 @@ public void setValor(double valor) {
   }
   
   //Método de exclusão de objeto:
-  public void excluir() {
-    ItensDoAcervo.remove(this); //Remove o objeto da lista de itens do acervo
-  }
+  abstract public void excluir();
   
   //construtor:
   public ItemAcervo(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco) {
-    ItensDoAcervo.add(this); //Adiciona o objeto criado à lista de itens do acervo
     this.ID = UUID.randomUUID().toString(); //Gera uma identificação única convertida em String para o objeto. 
     this.titulo = Objects.requireNonNull(titulo, "Valor não pode ser null.");
     this.criadoPor = Objects.requireNonNull(criadoPor, "Valor não pode ser null.");
