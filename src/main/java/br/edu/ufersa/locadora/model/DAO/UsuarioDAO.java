@@ -1,6 +1,9 @@
 package br.edu.ufersa.locadora.model.DAO;
+
 import br.edu.ufersa.locadora.model.entities.Usuario;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
     private final static String URL = "jdbc:mysql://localhost/poo";
@@ -25,47 +28,65 @@ public class UsuarioDAO {
         }
     }
 
-    public ResultSet Create(Usuario entity){
+    public Usuario Create(Usuario entity){
         con = getConnection();
         String sql = "INSERT INTO tb_usu (nome, login, senha, is_gerente) VALUES (?, ?, ?, ?)";
-        ResultSet rs = null;
 
         try {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, entity.getNome());
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
-            ps.setBoolean(4, entity.isGerente()); // Quarto parâmetro adicionado
-
+            ps.setBoolean(4, entity.isGerente());
             ps.execute();
-            rs = ps.getGeneratedKeys();
-        } catch (SQLException e) {
-            System.out.println("Erro ao inserir usuário no Banco (DAO): " + e.getMessage());
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs != null && rs.next()) {
+                entity.setId(rs.getLong(1));
+                rs.close();
+            }
+            ps.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return rs;
+        return entity;
     }
 
-    public ResultSet Read(String param){
+    public List<Usuario> Read(String param){
         con = getConnection();
-        String sql = "SELECT * FROM tb_usu AS e WHERE e.nome = ?";
-        ResultSet rs = null;
+        String sql = "SELECT * FROM tb_usu WHERE nome LIKE ?";
+        List<Usuario> lista = new ArrayList<>();
 
         try{
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, param);
-            rs = ps.executeQuery();
+            ps.setString(1, "%" + param + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Usuario u = new Usuario();
+                u.setId(rs.getLong("id"));
+                u.setGerente(rs.getBoolean("is_gerente"));
+                try {
+                    u.setNome(rs.getString("nome"));
+                } catch (Exception e) { e.printStackTrace(); }
+                u.setLogin(rs.getString("login"));
+                u.setSenha(rs.getString("senha"));
+
+                lista.add(u);
+            }
+            rs.close();
+            ps.close();
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return rs;
+        return lista;
     }
 
-    public ResultSet Update(Usuario entity){
+    public boolean Update(Usuario entity){
         con = getConnection();
         String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, is_gerente = ? WHERE id = ?";
-        ResultSet rs = null;
+        boolean sucesso = false;
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -73,31 +94,32 @@ public class UsuarioDAO {
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
             ps.setBoolean(4, entity.isGerente());
-            ps.setLong(5, entity.getId()); // Critério de busca no WHERE
+            ps.setLong(5, entity.getId());
 
-            ps.execute();
-            rs = ps.getResultSet();
+            int linhas = ps.executeUpdate();
+            if (linhas > 0) sucesso = true;
+            ps.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar usuário no Banco (DAO): " + e.getMessage());
             e.printStackTrace();
         }
-        return rs;
+        return sucesso;
     }
 
-    public ResultSet Delete(Usuario entity){
+    public boolean Delete(Usuario entity){
         con = getConnection();
         String sql = "DELETE FROM tb_usu WHERE id = ?";
-        ResultSet rs = null;
+        boolean sucesso = false;
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setLong(1, entity.getId());
-            ps.execute();
-            rs = ps.getResultSet();
+
+            int linhas = ps.executeUpdate();
+            if (linhas > 0) sucesso = true;
+            ps.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao deletar usuário no Banco (DAO): " + e.getMessage());
             e.printStackTrace();
         }
-        return rs;
+        return sucesso;
     }
 }

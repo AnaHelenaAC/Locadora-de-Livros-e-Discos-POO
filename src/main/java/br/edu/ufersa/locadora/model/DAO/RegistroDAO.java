@@ -2,6 +2,8 @@ package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.Registro;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegistroDAO {
     private final static String URL = "jdbc:mysql://localhost/poo";
@@ -26,10 +28,9 @@ public class RegistroDAO {
         }
     }
 
-    public ResultSet Create(Registro entity){
+    public Registro Create(Registro entity){
         con = getConnection();
         String sql = "INSERT INTO tb_registro (faturamento_total, id_gerente_logado) VALUES (?, ?)";
-        ResultSet rs = null;
 
         try {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -40,37 +41,49 @@ public class RegistroDAO {
             } else {
                 ps.setNull(2, Types.INTEGER);
             }
-
             ps.execute();
-            rs = ps.getGeneratedKeys();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs != null && rs.next()) {
+                entity.setIdRegistro(rs.getLong(1));
+                rs.close();
+            }
+            ps.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir registro no Banco (DAO): " + e.getMessage());
             e.printStackTrace();
         }
 
-        return rs;
+        return entity;
     }
 
-    public ResultSet Read(String param){
+    public List<Registro> Read(String param){
         con = getConnection();
         String sql = "SELECT * FROM tb_registro WHERE id_registro = ?";
-        ResultSet rs = null;
+        List<Registro> lista = new ArrayList<>();
 
         try{
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setLong(1, Long.parseLong(param));
-            rs = ps.executeQuery();
-        } catch (SQLException e){
-            System.out.println("Erro ao buscar registro no Banco (DAO): " + e.getMessage());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Registro reg = new Registro();
+                reg.setIdRegistro(rs.getLong("id_registro"));
+                reg.setFaturamentoTotal(rs.getDouble("faturamento_total"));
+                lista.add(reg);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e){
             e.printStackTrace();
         }
-        return rs;
+        return lista;
     }
 
-    public ResultSet Update(Registro entity){
+    public boolean Update(Registro entity){
         con = getConnection();
         String sql = "UPDATE tb_registro SET faturamento_total = ?, id_gerente_logado = ? WHERE id_registro = ?";
-        ResultSet rs = null;
+        boolean sucesso = false;
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -81,33 +94,32 @@ public class RegistroDAO {
             } else {
                 ps.setNull(2, Types.INTEGER);
             }
-
             ps.setLong(3, entity.getIdRegistro());
 
-            ps.execute();
-            rs = ps.getResultSet();
+            int linhas = ps.executeUpdate();
+            if (linhas > 0) sucesso = true;
+            ps.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar registro no Banco (DAO): " + e.getMessage());
             e.printStackTrace();
         }
-        return rs;
+        return sucesso;
     }
 
-    public ResultSet Delete(Registro entity){
+    public boolean Delete(Registro entity){
         con = getConnection();
         String sql = "DELETE FROM tb_registro WHERE id_registro = ?";
-        ResultSet rs = null;
+        boolean sucesso = false;
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setLong(1, entity.getIdRegistro());
 
-            ps.execute();
-            rs = ps.getResultSet();
+            int linhas = ps.executeUpdate();
+            if (linhas > 0) sucesso = true;
+            ps.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao deletar registro no Banco (DAO): " + e.getMessage());
             e.printStackTrace();
         }
-        return rs;
+        return sucesso;
     }
 }
