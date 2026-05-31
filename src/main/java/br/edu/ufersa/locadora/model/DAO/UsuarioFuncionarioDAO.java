@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
+import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class UsuarioFuncionarioDAO {
         return con;
     }
 
-    public UsuarioFuncionario Create(UsuarioFuncionario entity){
+    public UsuarioFuncionario Create(UsuarioFuncionario entity) throws UsuarioFuncionarioException {
         con = getConnection();
         String sql = "INSERT INTO tb_usu (nome, login, senha, is_gerente) VALUES (?, ?, ?, ?)";
 
@@ -39,13 +40,13 @@ public class UsuarioFuncionarioDAO {
             }
             ps.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UsuarioFuncionarioException("Erro ao inserir o funcionário: " + e.getMessage());
         }
 
         return entity;
     }
 
-    public List<UsuarioFuncionario> Read(String param){
+    public List<UsuarioFuncionario> Read(String param) throws UsuarioFuncionarioException {
         con = getConnection();
         String sql = "SELECT * FROM tb_usu WHERE nome LIKE ? AND is_gerente = false";
         List<UsuarioFuncionario> lista = new ArrayList<>();
@@ -72,12 +73,12 @@ public class UsuarioFuncionarioDAO {
             rs.close();
             ps.close();
         } catch (SQLException e){
-            e.printStackTrace();
+            throw new UsuarioFuncionarioException("Erro ao buscar funcionários: " + e.getMessage());
         }
         return lista;
     }
 
-    public boolean Update(UsuarioFuncionario entity){
+    public boolean Update(UsuarioFuncionario entity) throws UsuarioFuncionarioException {
         con = getConnection();
         String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, is_gerente = ? WHERE id = ?";
         boolean sucesso = false;
@@ -96,12 +97,12 @@ public class UsuarioFuncionarioDAO {
             }
             ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UsuarioFuncionarioException("Erro ao atualizar o funcionário: " + e.getMessage());
         }
         return sucesso;
     }
 
-    public boolean Delete(UsuarioFuncionario entity){
+    public boolean Delete(UsuarioFuncionario entity) throws UsuarioFuncionarioException {
         con = getConnection();
         String sql = "DELETE FROM tb_usu WHERE id = ?";
         boolean sucesso = false;
@@ -116,7 +117,7 @@ public class UsuarioFuncionarioDAO {
             }
             ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UsuarioFuncionarioException("Erro ao deletar o funcionário: " + e.getMessage());
         }
         return sucesso;
     }

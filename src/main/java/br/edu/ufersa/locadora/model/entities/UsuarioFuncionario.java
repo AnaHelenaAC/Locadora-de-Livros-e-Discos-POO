@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.entities;
 
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
+import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 
 public class UsuarioFuncionario extends Usuario {
     private Long idFuncionario;
@@ -19,11 +20,11 @@ public class UsuarioFuncionario extends Usuario {
         return idFuncionario;
     }
 
-    public void setIdFuncionario(Long idFuncionario) {
-        if (this.getIdFuncionario() == null) {
+    public void setIdFuncionario(Long idFuncionario) throws UsuarioFuncionarioException {
+        if (this.idFuncionario == null) {
             this.idFuncionario = idFuncionario;
         } else {
-            System.out.println("Aviso de Segurança: O ID deste funcionário já foi definido!");
+            throw new UsuarioFuncionarioException("Aviso de Segurança: O ID deste funcionário já foi definido!");
         }
     }
 }
