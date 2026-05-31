@@ -1,12 +1,18 @@
 package br.edu.ufersa.locadora.model.entities;
 
+import br.edu.ufersa.locadora.exceptions.SemNomeException;
+
 public class UsuarioGerente extends Usuario {
     private int idGerente;
 
-    public UsuarioGerente(String nome, String login, String senha) {
+    public UsuarioGerente() {
+        super();
+        this.setGerente(true);
+    }
 
-        super(nome, login, senha);  // Herda os dados presentes na classe Usuario
-        setIdGerente(idGerente);    // Salva e valida o ID da classe
+    public UsuarioGerente(String nome, String login, String senha) throws SemNomeException {
+        super(nome, login, senha);
+        this.setGerente(true);
     }
 
     public int getIdGerente() {
@@ -14,20 +20,16 @@ public class UsuarioGerente extends Usuario {
     }
 
     public void setIdGerente(int idGerente) {
-
-        // Verifica se o ID é maior que 0
         if (idGerente <= 0){
             System.out.println("Acesso Negado. O ID deve ser maior que 0!");
         }
         else {
             this.idGerente = idGerente;
         }
-
     }
-    
-    public void cadastrarFuncionario(UsuarioFuncionario f) {
 
+    public void cadastrarFuncionario(UsuarioFuncionario f) {
         System.out.println("Gerente " + this.getNome() + " iniciando processo de cadastro...");
-        Registro.salvarFuncionarioNoSistema(f);  // Chama a função da classe Registro
+        Registro.salvarFuncionarioNoSistema(f);
     }
 }

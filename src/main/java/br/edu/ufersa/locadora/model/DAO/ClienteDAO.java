@@ -1,4 +1,6 @@
 package br.edu.ufersa.locadora.model.DAO;
+import java.sql.*;
+import java.net.URL;
 
 import br.edu.ufersa.locadora.model.entities.Cliente;
 
@@ -9,19 +11,16 @@ import java.util.stream.Collectors;
 import java.io.*;
 
 public class ClienteDAO {
-
     private final static String URL = "jdbc:mysql://localhost/poo";
-    private final static String USER = "root";
-    private final static String PASS = "password";
+    private final static String USER = "poo";
+    private final static String PASS = "AH443162ah";
     private static Connection con = null;
 
-    public static Connection getConnection() {
-        if (con == null) {
-            try {
-                con = DriverManager.getConnection(URL, USER, PASS);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    public static Connection getConnection(){
+        if(con == null){
+            try{
+                con = DriverManager.getConnection(URL,USER,PASS);
+            }catch (SQLException e){e.printStackTrace();}
         }
         return con;
     }
