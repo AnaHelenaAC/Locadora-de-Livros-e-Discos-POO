@@ -26,26 +26,41 @@ public class UsuarioDAO {
         }
     }
 
-    public Usuario create(Usuario entity){
+    public ResultSet Create(Usuario entity){
         con = getConnection();
-        String sql = "INSERT INT tb_usuario (nome, login, senha)" + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO tb_usuario (nome, login, senha) VALUES (?, ?, ?)";
+        ResultSet rs = null;
 
-        try{
+        try {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, entity.getNome());
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
             ps.execute();
+
+            rs = ps.getGeneratedKeys();
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir usuário no Banco (DAO): " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return rs;
+    }
+
+    public ResultSet Read(String param){
+        con = getConnection();
+        String sql = "SELECT * FROM tb_usu AS e WHERE e.nome =?";
+        ResultSet rs = null;
+
+        try{
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, param);
+            ps.execute();
+            rs = ps.executeQuery();
             ps.close();
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()){
-                int idGen = rs.getInt(1);
-                entity.setId(Long.valueOf(idGen));
-            }
 
         }catch (SQLException e){e.printStackTrace();}
-        return entity;
-
+        return rs;
     }
 
 }
