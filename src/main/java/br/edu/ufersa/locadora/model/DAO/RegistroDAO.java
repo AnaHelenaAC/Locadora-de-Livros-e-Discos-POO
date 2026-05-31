@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.Registro;
+import br.edu.ufersa.locadora.exceptions.RegistroException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class RegistroDAO {
         if(con == null){
             try{
                 con = DriverManager.getConnection(URL,USER,PASS);
-            }catch (SQLException e){e.printStackTrace();}
+            }catch (SQLException exe){exe.printStackTrace();}
         }
         return con;
     }
@@ -24,101 +25,101 @@ public class RegistroDAO {
         if(con != null){
             try{
                 con.close();
-            }catch (SQLException e){e.printStackTrace();}
+            }catch (SQLException exe){exe.printStackTrace();}
         }
     }
 
-    public Registro Create(Registro entity){
+    public Registro Create(Registro entity) throws RegistroException {
         con = getConnection();
         String sql = "INSERT INTO tb_registro (faturamento_total, id_gerente_logado) VALUES (?, ?)";
 
         try {
-            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setDouble(1, entity.getFaturamentoTotal());
+            PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setDouble(1, entity.getFaturamentoTotal());
 
             if (entity.getGerenteLogado() != null) {
-                ps.setInt(2, entity.getGerenteLogado().getIdGerente());
+                stmt.setInt(2, entity.getGerenteLogado().getIdGerente());
             } else {
-                ps.setNull(2, Types.INTEGER);
+                stmt.setNull(2, Types.INTEGER);
             }
-            ps.execute();
+            stmt.execute();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs != null && rs.next()) {
-                entity.setIdRegistro(rs.getLong(1));
-                rs.close();
+            ResultSet rset = stmt.getGeneratedKeys();
+            if (rset != null && rset.next()) {
+                entity.setIdRegistro(rset.getLong(1));
+                rset.close();
             }
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            stmt.close();
+        } catch (SQLException exe) {
+            throw new RegistroException("Erro ao inserir o registro no banco de dados: " + exe.getMessage());
         }
 
         return entity;
     }
 
-    public List<Registro> Read(String param){
+    public List<Registro> Read(String param) throws RegistroException {
         con = getConnection();
         String sql = "SELECT * FROM tb_registro WHERE id_registro = ?";
         List<Registro> lista = new ArrayList<>();
 
         try{
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setLong(1, Long.parseLong(param));
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, Long.parseLong(param));
+            ResultSet rset = stmt.executeQuery();
 
-            while (rs.next()) {
+            while (rset.next()) {
                 Registro reg = new Registro();
-                reg.setIdRegistro(rs.getLong("id_registro"));
-                reg.setFaturamentoTotal(rs.getDouble("faturamento_total"));
+                reg.setIdRegistro(rset.getLong("id_registro"));
+                reg.setFaturamentoTotal(rset.getDouble("faturamento_total"));
                 lista.add(reg);
             }
-            rs.close();
-            ps.close();
-        } catch (Exception e){
-            e.printStackTrace();
+            rset.close();
+            stmt.close();
+        } catch (Exception exe){
+            throw new RegistroException("Erro ao buscar o registro no banco de dados: " + exe.getMessage());
         }
         return lista;
     }
 
-    public boolean Update(Registro entity){
+    public boolean Update(Registro entity) throws RegistroException {
         con = getConnection();
         String sql = "UPDATE tb_registro SET faturamento_total = ?, id_gerente_logado = ? WHERE id_registro = ?";
         boolean sucesso = false;
 
         try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setDouble(1, entity.getFaturamentoTotal());
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setDouble(1, entity.getFaturamentoTotal());
 
             if (entity.getGerenteLogado() != null) {
-                ps.setInt(2, entity.getGerenteLogado().getIdGerente());
+                stmt.setInt(2, entity.getGerenteLogado().getIdGerente());
             } else {
-                ps.setNull(2, Types.INTEGER);
+                stmt.setNull(2, Types.INTEGER);
             }
-            ps.setLong(3, entity.getIdRegistro());
+            stmt.setLong(3, entity.getIdRegistro());
 
-            int linhas = ps.executeUpdate();
+            int linhas = stmt.executeUpdate();
             if (linhas > 0) sucesso = true;
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            stmt.close();
+        } catch (SQLException exe) {
+            throw new RegistroException("Erro ao atualizar o registro no banco de dados: " + exe.getMessage());
         }
         return sucesso;
     }
 
-    public boolean Delete(Registro entity){
+    public boolean Delete(Registro entity) throws RegistroException {
         con = getConnection();
         String sql = "DELETE FROM tb_registro WHERE id_registro = ?";
         boolean sucesso = false;
 
         try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setLong(1, entity.getIdRegistro());
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setLong(1, entity.getIdRegistro());
 
-            int linhas = ps.executeUpdate();
+            int linhas = stmt.executeUpdate();
             if (linhas > 0) sucesso = true;
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            stmt.close();
+        } catch (SQLException exe) {
+            throw new RegistroException("Erro ao deletar o registro no banco de dados: " + exe.getMessage());
         }
         return sucesso;
     }

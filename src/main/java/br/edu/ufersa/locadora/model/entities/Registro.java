@@ -1,5 +1,6 @@
 package br.edu.ufersa.locadora.model.entities;
 
+import br.edu.ufersa.locadora.exceptions.RegistroException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +52,11 @@ public class Registro {
         return faturamentoTotal;
     }
 
-    public void setFaturamentoTotal(double faturamentoTotal) {
+    public void setFaturamentoTotal(double faturamentoTotal) throws RegistroException {
         if (faturamentoTotal >= 0) {
             this.faturamentoTotal = faturamentoTotal;
         } else {
-            System.out.println("Negado! Insira um valor positivo.");
+            throw new RegistroException("Negado! Insira um valor positivo de faturamento.");
         }
     }
 
@@ -69,35 +70,36 @@ public class Registro {
         }
     }
 
-    public static void salvarFuncionarioNoSistema(UsuarioFuncionario f) {
-        if (f != null) {
-            listaFuncionarios.add(f);
-            System.out.println(">>> [BANCO] Funcionário " + f.getNome() + " salvo com segurança.");
+    public static void salvarFuncionarioNoSistema(UsuarioFuncionario fun) throws RegistroException {
+        if (fun == null) {
+            throw new RegistroException("Não é possível salvar um funcionário nulo no sistema.");
+        }
+        listaFuncionarios.add(fun);
+    }
+
+    public void registrarAluguel(Cliente cli, ItemAcervo ite) throws RegistroException {
+        if (cli == null || ite == null) {
+            throw new RegistroException("Negado! Cliente ou Item inválidos para aluguel.");
+        }
+        this.faturamentoTotal += ite.getValor();
+    }
+
+    public void registrarDevolucao(ItemAcervo ite) throws RegistroException {
+        if (ite == null) {
+            throw new RegistroException("Item inválido para devolução.");
         }
     }
 
-    public void registrarAluguel(Cliente c, ItemAcervo i) {
-        if (c != null && i != null) {
-            System.out.println("Iniciando aluguel do item para o cliente " + c.getNome() + "...");
-            this.faturamentoTotal += i.getValor();
-            System.out.println("Aluguel registrado. Faturamento atualizado!");
-        } else {
-            System.out.println("Negado! Cliente ou Item inválidos para aluguel.");
+    public void generarRelatorioAlugados(String categoria) throws RegistroException {
+        if (categoria == null || categoria.trim().isEmpty()) {
+            throw new RegistroException("A categoria do relatório não pode ser vazia.");
         }
     }
 
-    public void registrarDevolucao(ItemAcervo i) {
-        if (i != null) {
-            System.out.println("Registrando devolução do item...");
+    public double calcularFaturamentoMensal(int mes) throws RegistroException {
+        if (mes < 1 || mes > 12) {
+            throw new RegistroException("Mês inválido informado para o cálculo.");
         }
-    }
-
-    public void generarRelatorioAlugados(String categoria) {
-        System.out.println("SISTEMA: Gerando relatório da categoria -> " + categoria);
-    }
-
-    public double calcularFaturamentoMensal(int mes) {
-        System.out.println("SISTEMA: Calculando faturamento do mês " + mes);
         return 0.0;
     }
 }

@@ -1,4 +1,4 @@
-package br.edu.ufersa.locadora.model.service;
+package br.edu.ufersa.locadora.model.Service;
 
 import br.edu.ufersa.locadora.model.DAO.RegistroDAO;
 import br.edu.ufersa.locadora.model.DAO.UsuarioFuncionarioDAO;
@@ -6,6 +6,7 @@ import br.edu.ufersa.locadora.model.entities.Registro;
 import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
 import br.edu.ufersa.locadora.model.entities.Cliente;
 import br.edu.ufersa.locadora.model.entities.ItemAcervo;
+import br.edu.ufersa.locadora.exceptions.RegistroException;
 import java.util.List;
 
 public class RegistroService {
@@ -13,54 +14,72 @@ public class RegistroService {
     private RegistroDAO dao = new RegistroDAO();
     private UsuarioFuncionarioDAO funcionarioDAO = new UsuarioFuncionarioDAO();
 
-    // Funções referentes ao CRUD usado no DAO
-    public Registro salvar(Registro reg) {
+    public Registro salvar(Registro reg) throws RegistroException {
+        if (reg == null) {
+            throw new RegistroException("Não é possível salvar um registro nulo!");
+        }
         return dao.Create(reg);
     }
 
-    public Registro buscarPorId(Long id) {
+    public Registro buscarPorId(Long id) throws RegistroException {
+        if (id == null) {
+            throw new RegistroException("O ID informado para busca não pode ser nulo!");
+        }
         List<Registro> resultados = dao.Read(String.valueOf(id));
         if (!resultados.isEmpty()) {
             return resultados.get(0);
         }
-        return null;
+        throw new RegistroException("Nenhum registro encontrado com o ID: " + id);
     }
 
-    public boolean atualizar(Registro reg) {
+    public boolean atualizar(Registro reg) throws RegistroException {
+        if (reg == null || reg.getIdRegistro() == null) {
+            throw new RegistroException("Registro inválido para atualização!");
+        }
         return dao.Update(reg);
     }
 
-    public boolean deletar(Registro reg) {
+    public boolean deletar(Registro reg) throws RegistroException {
+        if (reg == null || reg.getIdRegistro() == null) {
+            throw new RegistroException("Registro inválido para exclusão!");
+        }
         return dao.Delete(reg);
     }
 
-    // Demais métodos
-    public void salvarFuncionarioNoSistema(UsuarioFuncionario f) {
-        if (f != null) {
-            funcionarioDAO.Create(f);
-            Registro.salvarFuncionarioNoSistema(f);
+    public void salvarFuncionarioNoSistema(UsuarioFuncionario fun) throws RegistroException {
+        if (fun == null) {
+            throw new RegistroException("Funcionário inválido!");
+        }
+        funcionarioDAO.Create(fun);
+        Registro.salvarFuncionarioNoSistema(fun);
+    }
+
+    public void registrarAluguel(Registro reg, Cliente cli, ItemAcervo ite) throws RegistroException {
+        if (reg == null || cli == null || ite == null) {
+            throw new RegistroException("Dados insuficientes para realizar o aluguel!");
+        }
+        reg.registrarAluguel(cli, ite);
+        dao.Update(reg);
+    }
+
+    public void registrarDevolucao(Registro reg, ItemAcervo ite) throws RegistroException {
+        if (reg == null || ite == null) {
+            throw new RegistroException("Dados insuficientes para realizar a devolução!");
+        }
+        reg.registrarDevolucao(ite);
+        dao.Update(reg);
+    }
+
+    public void gerarRelatorioAlugados(String categoria) throws RegistroException {
+        if (categoria == null || categoria.trim().isEmpty()) {
+            throw new RegistroException("A categoria não pode ser vazia!");
         }
     }
 
-    public void registrarAluguel(Registro reg, Cliente c, ItemAcervo i) {
-        if (reg != null && c != null && i != null) {
-            reg.registrarAluguel(c, i);
-            dao.Update(reg);
+    public double calcularFaturamentoMensal(int mes) throws RegistroException {
+        if (mes < 1 || mes > 12) {
+            throw new RegistroException("Mês informado deve estar entre 1 e 12!");
         }
-    }
-
-    public void registrarDevolucao(ItemAcervo i) {
-        if (i != null) {
-            System.out.println("Registrando devolução do item no sistema...");
-        }
-    }
-
-    public void gerarRelatorioAlugados(String categoria) {
-        System.out.println("SISTEMA SERVICE: Buscando dados para categoria -> " + categoria);
-    }
-
-    public double calcularFaturamentoMensal(int mes) {
-        System.out.println("SISTEMA SERVICE: Calculando faturamento do mês " + mes);
         return 0.0;
     }
 }
