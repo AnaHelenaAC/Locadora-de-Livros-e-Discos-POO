@@ -39,7 +39,7 @@ public class DiscoDAO {
                         rs.getInt("qtdItens"),
                         rs.getInt("duracao")
                         );
-                    discos.add(add);
+                    discos.add(disco);
             }
         }
         catch (SQLException e) {e.printStackTrace();}
