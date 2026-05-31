@@ -73,9 +73,8 @@ public class UsuarioDAO {
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
             ps.setLong(4, entity.getId());
-
             ps.execute();
-
+            
             rs = ps.getResultSet();
         } catch (SQLException e) {
             System.out.println("Erro ao atualizar usuário no Banco (DAO): " + e.getMessage());
@@ -84,6 +83,22 @@ public class UsuarioDAO {
         return rs;
     }
 
-    
+    public ResultSet Delete(Usuario entity){
+        con = getConnection();
+        String sql = "DELETE FROM tb_usuario WHERE id = ?";
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setLong(1, entity.getId());
+            ps.execute();
+            rs = ps.getResultSet();
+        } catch (SQLException e) {
+            System.out.println("Erro ao deletar usuário no Banco (DAO): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return rs;
+    }
+
 
 }
