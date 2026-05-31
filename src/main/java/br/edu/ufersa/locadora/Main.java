@@ -1,4 +1,6 @@
 package br.edu.ufersa.locadora;
+import br.edu.ufersa.locadora.model.DAO.UsuarioDAO;
+import br.edu.ufersa.locadora.exceptions.SemNomeException;
 
 import br.edu.ufersa.locadora.model.entities.*;
 
@@ -6,8 +8,20 @@ import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
+        UsuarioDAO dao = new UsuarioDAO();
+        Usuario usu = new Usuario();
 
-        //TESTE CLIENTE
+        try{
+            usu.setNome("Priscila");
+        }catch (SemNomeException e){
+            throw new RuntimeException(e);
+        }
+        usu.setLogin("Prisc12");
+        usu.setSenha("1234");
+        System.out.println("Objeto inserido com sucesso rescebeu o id: " + dao.create(usu).getId());
+
+
+        /*TESTE CLIENTE
         Cliente c1 = new Cliente("Paulo", "Rua São Paulo", "paulo@email.com", "999999999", "12345678901");
         Cliente c2 = new Cliente("Gadelha", "Rua Arredonda Para Baixo", "gadelha@email.com", "010203040", "45678901234");
 
@@ -73,6 +87,8 @@ public class Main {
             if (a.getStatus().equals("ATIVO")) {
                 System.out.println(a);
             }
-        }
+        }*/
+
+
     }
 }

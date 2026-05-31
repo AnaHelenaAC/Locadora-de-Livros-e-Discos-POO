@@ -1,4 +1,5 @@
 package br.edu.ufersa.locadora.model.DAO;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import java.sql.*;
 import java.net.URL;
 
@@ -24,4 +25,27 @@ public class UsuarioDAO {
             }catch (SQLException e){e.printStackTrace();}
         }
     }
+
+    public Usuario create(Usuario entity){
+        con = getConnection();
+        String sql = "INSERT INT tb_usuario (nome, login, senha)" + "VALUES (?, ?, ?)";
+
+        try{
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, entity.getNome());
+            ps.setString(2, entity.getLogin());
+            ps.setString(3, entity.getSenha());
+            ps.execute();
+            ps.close();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                int idGen = rs.getInt(1);
+                entity.setId(Long.valueOf(idGen));
+            }
+
+        }catch (SQLException e){e.printStackTrace();}
+        return entity;
+
+    }
+
 }
