@@ -8,94 +8,146 @@ import java.util.List;
 public class Aluguel {
 
     // ATRIBUTOS
-    private static List<Aluguel> alugueis = new ArrayList<>();
-
-    public static List<Aluguel> getAlugueis() {
-        return alugueis;
-    }
-
-    private Cliente cliente;
-    private ItemAcervo item;
-    private LocalDate dataInicio;
-    private LocalDate dataPrevisao;
+    private int id;
+    private final Cliente cliente;
+    private final List<ItemAluguel> itensAlugados;
+    private final LocalDate dataInicio;
+    private final LocalDate dataFimPrevista;
     private LocalDate dataFim;
+    private final double valorBase;
+    private double valorMulta;
 
     // CONSTRUTOR
-    public Aluguel(Cliente cliente, ItemAcervo item, LocalDate dataInicio, int diasPrazo) {
-        setCliente(cliente);
-        setItem(item);
-        setDataInicio(dataInicio);
-        this.dataPrevisao = dataInicio.plusDays(diasPrazo);
-    }
-
-    // MÉTODOS
-    // registrar
-    public void registrar() {
-        alugueis.add(this); //adiciona o aluguel à lista de alugueis
-    }
-
-    // finalizar
-    public void finalizarAluguel() {
-        if (dataFim != null) {
-            throw new IllegalStateException("Aluguel já foi finalizado.");
+    public Aluguel(Carrinho carrinho, int diasAlugados) {
+        // Validações
+        if (carrinho == null || carrinho.getItensNoCarrinho().isEmpty()) {
+            throw new IllegalArgumentException("Carrinho vazio.");
         }
-        this.dataFim = LocalDate.now();//registra a data de fim como a data atual
+
+        // Inicialização
+        this.cliente = carrinho.getCliente();
+        this.dataInicio = LocalDate.now();
+        this.dataFimPrevista = dataInicio.plusDays(diasAlugados);
+
+        // Converte itens do carrinho para itens de aluguel
+        this.itensAlugados = new ArrayList<>();
+        for (ItemCarrinho itemCarrinho : carrinho.getItensNoCarrinho()) {
+            ItemAluguel itemAluguel = new ItemAluguel(itemCarrinho.getItemAcervo(), itemCarrinho.getDiasAlugados());
+            this.itensAlugados.add(itemAluguel);
+        }
+        // Calcula valor base do aluguel
+        this.valorBase = carrinho.calcularValorTotal();
+        this.valorMulta = 0.0;
     }
 
-    // calcular valor final
-    public double calcularValorFinal() {
-        if (dataFim == null) {
-            throw new IllegalStateException("Finalize o aluguel antes de calcular.");
-        }
-        long diasAlugados = Math.max(1, ChronoUnit.DAYS.between(dataInicio, dataFim));
-        double valorBase = diasAlugados * item.getValor();
+        // construtor completo
+        public Aluguel(int id, Cliente cliente, List<ItemAluguel> itensAlugados, LocalDate dataInicio, LocalDate dataFimPrevista, LocalDate dataFim, double valorBase, double valorMulta) {
+            if (cliente == null) {
+                throw new IllegalArgumentException("Cliente inválido.");
+            }
 
-        long atraso = ChronoUnit.DAYS.between(dataPrevisao, dataFim);
-        if (atraso > 0) {
-            double multa = atraso * (item.getValor() * 0.20);
-            return valorBase + multa;//valor base + multa de 20% por dia de atraso
+            if (itensAlugados == null || itensAlugados.isEmpty()) {
+                throw new IllegalArgumentException("Lista de itens vazia.");
+            }
+            this.id = id;
+            this.cliente = cliente;
+            this.itensAlugados = new ArrayList<>(itensAlugados);
+            this.dataInicio = dataInicio;
+            this.dataFimPrevista = dataFimPrevista;
+            this.dataFim = dataFim;
+            this.valorBase = valorBase;
+            this.valorMulta = valorMulta;
         }
-        return valorBase;//sem multa
+
+    // MÉTODOS ID
+    //calcula multa e retorna valor final
+    private double calcularMulta(LocalDate dataInformada) {
+
+        // Validações
+        if (dataInformada.isBefore(dataInicio)) {
+            throw new IllegalStateException("Data informada é anterior à data de início do aluguel.");
+        }
+        if (!dataInformada.isAfter(dataFimPrevista)) {
+            return 0.0;
+        }
+
+        // Calcula dias de atraso
+        long atraso = ChronoUnit.DAYS.between(dataFimPrevista, dataInformada);
+
+        // Multa fixa + juros diários de 10% sobre o valor das diárias
+        double multaFixa = 5.0;
+        double totalDiarias = 0.0;
+
+        for (ItemAluguel item : itensAlugados) {
+            totalDiarias += item.getPrecoDiaria();
+        }
+        double jurosDiarios = totalDiarias * 0.10 * atraso;
+
+        return multaFixa + jurosDiarios;
     }
 
-    // GETTERS
-    public Cliente getCliente() { return cliente; }
-    public ItemAcervo getItem() { return item; }
-    public LocalDate getDataInicio() { return dataInicio; }
-    public LocalDate getDataPrevisao() { return dataPrevisao; }
-    public LocalDate getDataFim() { return dataFim; }
+    // Consulta sem alterar o estado do aluguel
+    public double calcularValorFinal(LocalDate dataInformada) {
+        return valorBase + calcularMulta(dataInformada);
+    }
+
+    // Finaliza o aluguel
+    public void finalizarAluguel(LocalDate dataFim) {
+        if (getStatus().equals("FINALIZADO")) {
+            throw new IllegalStateException("Aluguel já finalizado.");
+        }
+        this.dataFim = dataFim;
+        this.valorMulta = calcularMulta(dataFim);
+    }
+
+    // GETTERS E SETTERS
+    public int getId() {
+        return id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public List<ItemAluguel> getItensAlugados() {
+        return new ArrayList<>(itensAlugados);
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public LocalDate getDataFimPrevista() {
+        return dataFimPrevista;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
+    }
+
+    public double getValorBase() {
+        return valorBase;
+    }
+
+    public double getValorMulta() {
+        return valorMulta;
+    }
 
     public String getStatus() {
-        if (dataFim != null) return "FINALIZADO";
-        if (LocalDate.now().isAfter(dataPrevisao)) return "ATRASADO";
+        if (dataFim != null) {
+            return "FINALIZADO";
+        }
+        if (LocalDate.now().isAfter(dataFimPrevista)) {
+            return "ATRASADO";
+        }
         return "ATIVO";
     }
 
-    // SETTERS
-    public void setCliente(Cliente cliente) {
-        if (cliente == null) {
-            throw new IllegalArgumentException("Cliente nulo.");
-        }
-        this.cliente = cliente;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setItem(ItemAcervo item) {
-        if (item == null) {
-            throw new IllegalArgumentException("Item nulo.");
-        }
-        this.item = item;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        if (dataInicio == null) {
-            throw new IllegalArgumentException("Data de início nula.");
-        }
-        this.dataInicio = dataInicio;
-    }
-
-    // TO STRING
-    @Override
-    public String toString() {
-        return cliente.getNome() + " - " + item.getTitulo() + " - " + dataInicio + " - " + dataPrevisao + " - " + (dataFim != null ? dataFim : "EM ABERTO") + " - " + getStatus();
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
     }
 }
