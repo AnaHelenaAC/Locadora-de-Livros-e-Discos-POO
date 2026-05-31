@@ -1,5 +1,8 @@
+CREATE TABLE IF NOT EXISTS locadora_de_discos_e_livros;
+USE locadora_de_discos_e_livros;
+
 CREATE TABLE Discos (
-ID BINARY(16) PRIMARY KEY,
+ID CHAR(32) PRIMARY KEY,
 titulo VARCHAR(100),
 criadoPor VARCHAR(100),
 genero VARCHAR(100),
@@ -11,7 +14,7 @@ duracao INT
 );
 
 CREATE TABLE Livros (
-ID BINARY(16) PRIMARY KEY,
+ID CHAR(32) PRIMARY KEY,
 titulo VARCHAR(100),
 criadoPor VARCHAR(100),
 genero VARCHAR(100),
