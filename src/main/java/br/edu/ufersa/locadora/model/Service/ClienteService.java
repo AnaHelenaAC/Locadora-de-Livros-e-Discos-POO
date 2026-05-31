@@ -1,4 +1,4 @@
-package br.edu.ufersa.locadora.model.services;
+package br.edu.ufersa.locadora.model.Service;
 
 import br.edu.ufersa.locadora.model.DAO.ClienteDAO;
 import br.edu.ufersa.locadora.model.entities.Cliente;
