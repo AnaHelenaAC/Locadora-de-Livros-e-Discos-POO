@@ -5,12 +5,14 @@ public class Usuario {
     private String nome;
     private String login;
     private String senha;
+    private boolean isGerente;
 
     // Construtor Usuário
     public Usuario(String nome, String login, String senha) {
         setNome(nome);
         setLogin(login);
         setSenha(senha);
+        setGerente();
     }
 
     public String getNome() {
@@ -52,14 +54,17 @@ public class Usuario {
 
     public void setSenha(String senha) {
 
-        // Verifica se a senha digitada apresenta 6 caracteres
-        if (senha != null && senha.length() >= 6) {
+        // Verifica se a senha digitada apresenta 6-100 caracteres
+        if (senha.length() >= 6 && senha.length() <= 100) {
             this.senha = senha;
         } else {
-            System.out.println("A senha deve ter pelo menos 6 caracteres.");
+            System.out.println("A senha deve ter pelo menos 6 caracteres e, no máximo, 100 caracteres.");
         }
     }
 
+    private final setIsGerente() {
+        //IMPLEMENTAR LÓGICA COM DB
+    }
     // Método responsável por fazer o login (retorna verdadeiro ou falso)
     public boolean fazerLogin(String loginRecebido, String senhaRecebida){
         boolean loginCorreto;
