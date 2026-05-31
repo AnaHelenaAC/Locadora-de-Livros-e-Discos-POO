@@ -1,28 +1,29 @@
 package br.edu.ufersa.locadora.model.entities;
 
-// Classe "Filha" UsuarioFuncionario, herda da classe Usuario
+import br.edu.ufersa.locadora.exceptions.SemNomeException;
+
 public class UsuarioFuncionario extends Usuario {
-    private int idFuncionario;
+    private Long idFuncionario;
 
-    // Construtor UsuarioFuncionario
-    public UsuarioFuncionario(String nome, String login, String senha) {
-
-        super(nome, login, senha);  // Herda os dados presentes na classe Usuario
-        setIdFuncionario(idFuncionario);    // Valida o ID da classe
+    public UsuarioFuncionario() {
+        super();
+        this.setGerente(false);
     }
 
-    public int getIdFuncionario() {
+    public UsuarioFuncionario(String nome, String login, String senha) throws SemNomeException {
+        super(nome, login, senha);
+        this.setGerente(false);
+    }
+
+    public Long getIdFuncionario() {
         return idFuncionario;
     }
 
-    public void setIdFuncionario(int idFuncionario) {
-
-        // Verifica se o ID é maior que zero
-        if (idFuncionario <= 0){
-            System.out.println("Acesso Negado. O ID do funcionário deve ser maior que zero.");
-        }
-        else {
-            this.idFuncionario = idFuncionario; // Salva o ID se ele for válido
+    public void setIdFuncionario(Long idFuncionario) {
+        if (this.getIdFuncionario() == null) {
+            this.idFuncionario = idFuncionario;
+        } else {
+            System.out.println("Aviso de Segurança: O ID deste funcionário já foi definido!");
         }
     }
 }
