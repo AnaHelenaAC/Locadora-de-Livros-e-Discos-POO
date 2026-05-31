@@ -1,7 +1,8 @@
 package br.edu.ufersa.locadora.model.entities;
-import br.edu.ufersa.locadora.exceptions.SemNomeException;
 
-// Classe "Mãe" Usuario
+import br.edu.ufersa.locadora.exceptions.SemNomeException;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
+
 public class Usuario {
     private String nome;
     private String login;
@@ -13,7 +14,7 @@ public class Usuario {
         this.isGerente = false;
     }
 
-    public Usuario(String nome, String login, String senha) throws SemNomeException {
+    public Usuario(String nome, String login, String senha) throws SemNomeException, UsuarioException {
         setNome(nome);
         setLogin(login);
         setSenha(senha);
@@ -36,11 +37,11 @@ public class Usuario {
         return login;
     }
 
-    public void setLogin(String login) {
+    public void setLogin(String login) throws UsuarioException {
         if (login == null || login.trim().isEmpty()) {
-            System.out.println("O login não pode ser vazio.");
+            throw new UsuarioException("O login não pode ser vazio.");
         } else if (login.contains(" ")) {
-            System.out.println("O login não pode conter espaços.");
+            throw new UsuarioException("O login não pode conter espaços.");
         } else {
             this.login = login;
         }
@@ -50,11 +51,11 @@ public class Usuario {
         return senha;
     }
 
-    public void setSenha(String senha) {
-        if (senha.length() >= 6 && senha.length() <= 100) {
+    public void setSenha(String senha) throws UsuarioException {
+        if (senha != null && senha.length() >= 6 && senha.length() <= 100) {
             this.senha = senha;
         } else {
-            System.out.println("A senha deve ter pelo menos 6 caracteres e, no máximo, 100 caracteres.");
+            throw new UsuarioException("A senha deve ter pelo menos 6 caracteres e, no máximo, 100 caracteres.");
         }
     }
 
@@ -62,11 +63,11 @@ public class Usuario {
         return id;
     }
 
-    public void setId(Long id) {
-        if (this.getId() == null) {
+    public void setId(Long id) throws UsuarioException {
+        if (this.id == null) {
             this.id = id;
         } else {
-            System.out.println("Aviso de Segurança: O ID deste usuário já foi definido e não pode ser alterado!");
+            throw new UsuarioException("Aviso de Segurança: O ID deste usuário já foi definido e não pode ser alterado!");
         }
     }
 
@@ -78,24 +79,13 @@ public class Usuario {
         this.isGerente = isGerente;
     }
 
-    public boolean fazerLogin(String loginRecebido, String senhaRecebida){
-        boolean loginCorreto;
-        boolean senhaCorreta;
-
-        loginCorreto = this.getLogin().equals(loginRecebido);
-        senhaCorreta = this.getSenha().equals(senhaRecebida);
-
-        if (loginCorreto == false){
-            System.out.println("Acesso Negado. Login incorreto!");
-            return false;
+    public boolean fazerLogin(String loginRecebido, String senhaRecebida) throws UsuarioException {
+        if (this.login == null || !this.login.equals(loginRecebido)){
+            throw new UsuarioException("Acesso Negado. Login incorreto!");
         }
-        else if (senhaCorreta == false){
-            System.out.println("Acesso Negado. Senha incorreta!");
-            return false;
+        if (this.senha == null || !this.senha.equals(senhaRecebida)){
+            throw new UsuarioException("Acesso Negado. Senha incorreta!");
         }
-        else {
-            System.out.println("Acesso liberado.");
-            return true;
-        }
+        return true;
     }
 }

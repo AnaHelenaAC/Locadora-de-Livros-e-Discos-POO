@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.Usuario;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class UsuarioDAO {
         }
     }
 
-    public Usuario Create(Usuario entity){
+    public Usuario Create(Usuario entity) throws UsuarioException {
         con = getConnection();
         String sql = "INSERT INTO tb_usu (nome, login, senha, is_gerente) VALUES (?, ?, ?, ?)";
 
@@ -47,13 +48,13 @@ public class UsuarioDAO {
             }
             ps.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UsuarioException("Erro ao criar usuário no banco: " + e.getMessage());
         }
 
         return entity;
     }
 
-    public List<Usuario> Read(String param){
+    public List<Usuario> Read(String param) throws UsuarioException {
         con = getConnection();
         String sql = "SELECT * FROM tb_usu WHERE nome LIKE ?";
         List<Usuario> lista = new ArrayList<>();
@@ -65,25 +66,29 @@ public class UsuarioDAO {
 
             while (rs.next()) {
                 Usuario u = new Usuario();
-                u.setId(rs.getLong("id"));
+                try {
+                    u.setId(rs.getLong("id"));
+                } catch (Exception e) { e.printStackTrace(); }
                 u.setGerente(rs.getBoolean("is_gerente"));
                 try {
                     u.setNome(rs.getString("nome"));
                 } catch (Exception e) { e.printStackTrace(); }
-                u.setLogin(rs.getString("login"));
-                u.setSenha(rs.getString("senha"));
+                try {
+                    u.setLogin(rs.getString("login"));
+                    u.setSenha(rs.getString("senha"));
+                } catch (Exception e) { e.printStackTrace(); }
 
                 lista.add(u);
             }
             rs.close();
             ps.close();
         } catch (SQLException e){
-            e.printStackTrace();
+            throw new UsuarioException("Erro ao ler dados de usuário: " + e.getMessage());
         }
         return lista;
     }
 
-    public boolean Update(Usuario entity){
+    public boolean Update(Usuario entity) throws UsuarioException {
         con = getConnection();
         String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, is_gerente = ? WHERE id = ?";
         boolean sucesso = false;
@@ -100,12 +105,12 @@ public class UsuarioDAO {
             if (linhas > 0) sucesso = true;
             ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UsuarioException("Erro ao atualizar dados de usuário: " + e.getMessage());
         }
         return sucesso;
     }
 
-    public boolean Delete(Usuario entity){
+    public boolean Delete(Usuario entity) throws UsuarioException {
         con = getConnection();
         String sql = "DELETE FROM tb_usu WHERE id = ?";
         boolean sucesso = false;
@@ -118,7 +123,7 @@ public class UsuarioDAO {
             if (linhas > 0) sucesso = true;
             ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UsuarioException("Erro ao remover usuário do banco: " + e.getMessage());
         }
         return sucesso;
     }
