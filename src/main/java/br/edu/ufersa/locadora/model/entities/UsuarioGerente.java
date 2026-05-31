@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.entities;
 
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
+import br.edu.ufersa.locadora.exceptions.UsuarioGerenteException;
 
 public class UsuarioGerente extends Usuario {
     private int idGerente;
@@ -19,17 +20,16 @@ public class UsuarioGerente extends Usuario {
         return idGerente;
     }
 
-    public void setIdGerente(int idGerente) {
+    public void setIdGerente(int idGerente) throws UsuarioGerenteException {
         if (idGerente <= 0){
-            System.out.println("Acesso Negado. O ID deve ser maior que 0!");
+            throw new UsuarioGerenteException("Acesso Negado. O ID deve ser maior que 0!");
         }
         else {
             this.idGerente = idGerente;
         }
     }
 
-    public void cadastrarFuncionario(UsuarioFuncionario f) {
-        System.out.println("Gerente " + this.getNome() + " iniciando processo de cadastro...");
+    public void cadastrarFuncionario(UsuarioFuncionario f) throws Exception {
         Registro.salvarFuncionarioNoSistema(f);
     }
 }

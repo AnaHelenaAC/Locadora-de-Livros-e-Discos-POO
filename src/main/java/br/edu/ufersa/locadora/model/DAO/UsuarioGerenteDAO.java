@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.UsuarioGerente;
+import br.edu.ufersa.locadora.exceptions.UsuarioGerenteException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class UsuarioGerenteDAO {
         }
     }
 
-    public UsuarioGerente Create(UsuarioGerente entity){
+    public UsuarioGerente Create(UsuarioGerente entity) throws UsuarioGerenteException {
         con = getConnection();
         String sql = "INSERT INTO tb_usu (nome, login, senha, is_gerente) VALUES (?, ?, ?, ?)";
 
@@ -47,13 +48,13 @@ public class UsuarioGerenteDAO {
             }
             ps.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UsuarioGerenteException("Erro ao criar gerente no banco: " + e.getMessage());
         }
 
         return entity;
     }
 
-    public List<UsuarioGerente> Read(String param){
+    public List<UsuarioGerente> Read(String param) throws UsuarioGerenteException {
         con = getConnection();
         String sql = "SELECT * FROM tb_usu WHERE nome LIKE ? AND is_gerente = true";
         List<UsuarioGerente> lista = new ArrayList<>();
@@ -77,12 +78,12 @@ public class UsuarioGerenteDAO {
             rs.close();
             ps.close();
         } catch (SQLException e){
-            e.printStackTrace();
+            throw new UsuarioGerenteException("Erro ao buscar gerente no banco: " + e.getMessage());
         }
         return lista;
     }
 
-    public boolean Update(UsuarioGerente entity){
+    public boolean Update(UsuarioGerente entity) throws UsuarioGerenteException {
         con = getConnection();
         String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, is_gerente = ? WHERE id = ?";
         boolean sucesso = false;
@@ -99,12 +100,12 @@ public class UsuarioGerenteDAO {
             if (linhas > 0) sucesso = true;
             ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UsuarioGerenteException("Erro ao atualizar gerente no banco: " + e.getMessage());
         }
         return sucesso;
     }
 
-    public boolean Delete(UsuarioGerente entity){
+    public boolean Delete(UsuarioGerente entity) throws UsuarioGerenteException {
         con = getConnection();
         String sql = "DELETE FROM tb_usu WHERE id = ?";
         boolean sucesso = false;
@@ -117,7 +118,7 @@ public class UsuarioGerenteDAO {
             if (líneas > 0) sucesso = true;
             ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UsuarioGerenteException("Erro ao deletar gerente no banco: " + e.getMessage());
         }
         return sucesso;
     }
