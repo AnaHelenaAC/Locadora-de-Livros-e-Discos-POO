@@ -17,8 +17,7 @@ public class Usuario {
         setNome(nome);
         setLogin(login);
         setSenha(senha);
-        setId(id);
-        setIsGerente();
+        this.isGerente = false;
     }
 
     public String getNome() {
@@ -26,7 +25,6 @@ public class Usuario {
     }
 
     public void setNome(String nome) throws SemNomeException {
-
         if (nome == null || nome.trim().isEmpty()) {
             throw new SemNomeException("Não existe Usuário sem nome!");
         } else {
@@ -40,6 +38,7 @@ public class Usuario {
 
     public void setLogin(String login) {
         if (login == null || login.trim().isEmpty()) {
+            System.out.println("O login não pode ser vazio.");
         } else if (login.contains(" ")) {
             System.out.println("O login não pode conter espaços.");
         } else {
@@ -71,8 +70,12 @@ public class Usuario {
         }
     }
 
-    private final void setIsGerente() {
-        //IMPLEMENTAR LÓGICA COM DB
+    public boolean isGerente() {
+        return isGerente;
+    }
+
+    public void setGerente(boolean isGerente) {
+        this.isGerente = isGerente;
     }
 
     public boolean fazerLogin(String loginRecebido, String senhaRecebida){
@@ -86,16 +89,13 @@ public class Usuario {
             System.out.println("Acesso Negado. Login incorreto!");
             return false;
         }
-
         else if (senhaCorreta == false){
             System.out.println("Acesso Negado. Senha incorreta!");
             return false;
         }
-
         else {
             System.out.println("Acesso liberado.");
             return true;
         }
-
     }
 }
