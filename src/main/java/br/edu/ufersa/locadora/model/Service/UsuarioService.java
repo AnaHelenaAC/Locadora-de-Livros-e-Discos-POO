@@ -8,6 +8,7 @@ public class UsuarioService {
 
     private UsuarioDAO dao = new UsuarioDAO();
 
+    // Funções referentes ao CRUD usado no DAO
     public Usuario salvar(Usuario u) {
         return dao.Create(u);
     }
