@@ -1,4 +1,4 @@
-package br.edu.ufersa.locadora.model.services;
+package br.edu.ufersa.locadora.model.service;
 
 import br.edu.ufersa.locadora.model.DAO.AluguelDAO;
 import br.edu.ufersa.locadora.model.DAO.ItemAluguelDAO;
@@ -47,7 +47,7 @@ public class AluguelService {
         List<ItemAluguel> itens = aluguel.getItensAlugados();
 
         for (ItemAluguel item : itens) {
-            itemAluguelDAO.Create(item, aluguel.getID());
+            itemAluguelDAO.Create(item, aluguel.getId());
         }
 
         return aluguel;

@@ -1,4 +1,5 @@
 package br.edu.ufersa.locadora.model.DAO;
+
 import java.sql.*;
 import java.net.URL;
 
@@ -12,11 +13,13 @@ public class AluguelDAO {
     private final static String PASS = "AH443162ah";
     private static Connection con = null;
 
-    public static Connection getConnection(){
-        if(con == null){
-            try{
-                con = DriverManager.getConnection(URL,USER,PASS);
-            }catch (SQLException e){e.printStackTrace();}
+    public static Connection getConnection() {
+        if (con == null) {
+            try {
+                con = DriverManager.getConnection(URL, USER, PASS);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return con;
     }
@@ -46,7 +49,7 @@ public class AluguelDAO {
             ResultSet rs = ps.getGeneratedKeys();
 
             if (rs.next()) {
-                entity.setID(rs.getInt(1));
+                entity.setId(rs.getInt(1));
             }
 
             rs.close();
@@ -77,7 +80,7 @@ public class AluguelDAO {
             }
 
             ps.setDouble(2, entity.getValorMulta());
-            ps.setInt(3, entity.getID());
+            ps.setInt(3, entity.getId());
 
             int linhasAfetadas = ps.executeUpdate();
 
