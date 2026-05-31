@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
-        UsuarioDAO dao = new UsuarioDAO();
+        /*UsuarioDAO dao = new UsuarioDAO();
         Usuario usu = new Usuario();
 
         try{
@@ -20,8 +20,7 @@ public class Main {
         usu.setSenha("1234");
         System.out.println("Objeto inserido com sucesso rescebeu o id: " + dao.create(usu).getId());
 
-
-        /*TESTE CLIENTE
+        //TESTE CLIENTE
         Cliente c1 = new Cliente("Paulo", "Rua São Paulo", "paulo@email.com", "999999999", "12345678901");
         Cliente c2 = new Cliente("Gadelha", "Rua Arredonda Para Baixo", "gadelha@email.com", "010203040", "45678901234");
 

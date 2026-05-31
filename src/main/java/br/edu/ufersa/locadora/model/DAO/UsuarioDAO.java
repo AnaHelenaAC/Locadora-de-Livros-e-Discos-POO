@@ -57,10 +57,33 @@ public class UsuarioDAO {
             ps.setString(1, param);
             ps.execute();
             rs = ps.executeQuery();
-            ps.close();
 
         }catch (SQLException e){e.printStackTrace();}
         return rs;
     }
+
+    public ResultSet Update(Usuario entity){
+        con = getConnection();
+        String sql = "UPDATE tb_usuario SET nome = ?, login = ?, senha = ? WHERE id = ?";
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, entity.getNome());
+            ps.setString(2, entity.getLogin());
+            ps.setString(3, entity.getSenha());
+            ps.setLong(4, entity.getId());
+
+            ps.execute();
+
+            rs = ps.getResultSet();
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar usuário no Banco (DAO): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return rs;
+    }
+
+    
 
 }
