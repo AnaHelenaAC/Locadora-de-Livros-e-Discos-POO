@@ -85,7 +85,6 @@ public class LivroDAO {
             ps.executeUpdate();
         }
         catch (SQLException e) {e.printStackTrace();}
-        return livros;
     }
     public void delete(String ID) {
         String query = "DELETE FROM Livros WHERE ID = ?";
