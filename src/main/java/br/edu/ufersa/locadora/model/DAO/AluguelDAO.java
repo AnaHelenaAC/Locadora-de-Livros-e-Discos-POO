@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.Cliente;
+import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 
 public class AluguelDAO {
     private final static String URL = "jdbc:mysql://localhost/poo";
@@ -112,12 +113,18 @@ public class AluguelDAO {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    ItemAluguelDAO itemAluguelDAO = new ItemAluguelDAO();
+                    List<ItemAluguel> listaItens = itemAluguelDAO.findByAluguelId(id);
                     ClienteDAO clienteDAO = new ClienteDAO();
-                    Cliente cliente = clienteDAO.ReadByCpf(rs.getString("cliente_cpf"));
+                    String cpf = rs.getString("cliente_cpf");
+                    Cliente cliente = clienteDAO.ReadByCpf(cpf);
 
                     // Cria o aluguel usando o construtor
                     return new Aluguel(
-                            rs.getInt("id"), cliente, rs.getDate("data_inicio").toLocalDate(),
+                            rs.getInt("id"),
+                            cliente,
+                            listaItens,
+                            rs.getDate("data_inicio").toLocalDate(),
                             rs.getDate("data_fim_prevista").toLocalDate(),
                             rs.getDate("data_fim") != null ? rs.getDate("data_fim").toLocalDate() : null,
                             rs.getDouble("valor_base"), rs.getDouble("valor_multa"));
@@ -141,11 +148,15 @@ public class AluguelDAO {
             ClienteDAO clienteDAO = new ClienteDAO();
 
             while (rs.next()) {
-                Cliente cliente = clienteDAO.ReadByCpf(rs.getString("cliente_cpf"));
+                String cpf = rs.getString("cliente_cpf");
+                Cliente cliente = clienteDAO.ReadByCpf(cpf);
+                ItemAluguelDAO itemAluguelDAO = new ItemAluguelDAO();
+                List<ItemAluguel> listaItens = itemAluguelDAO.findByAluguelId(rs.getInt("id"));
 
                 Aluguel aluguel = new Aluguel(
                         rs.getInt("id"),
                         cliente,
+                        listaItens,
                         rs.getDate("data_inicio").toLocalDate(), rs.getDate("data_fim_prevista").toLocalDate(),
                         rs.getDate("data_fim") != null ? rs.getDate("data_fim").toLocalDate() : null,
                         rs.getDouble("valor_base"), rs.getDouble("valor_multa"));

@@ -37,8 +37,7 @@ public class Aluguel {
         for (ItemCarrinho itemCarrinho : carrinho.getItensNoCarrinho()) {
             ItemAluguel itemAluguel = new ItemAluguel(
                     itemCarrinho.getItemAcervo(),
-                    itemCarrinho.getDiasAlugados()
-            );
+                    itemCarrinho.getDiasAlugados());
             this.itensAlugados.add(itemAluguel);
         }
         // Calcula valor base do aluguel
@@ -50,6 +49,7 @@ public class Aluguel {
     public Aluguel(
             int id,
             Cliente cliente,
+            List<ItemAluguel> itensAlugados,
             LocalDate dataInicio,
             LocalDate dataFimPrevista,
             LocalDate dataFim,
@@ -68,7 +68,7 @@ public class Aluguel {
     }
 
     // MÉTODOS
-    //calcula multa e retorna valor final
+    // calcula multa e retorna valor final
     private double calcularMulta(LocalDate dataInformada) {
 
         // Validações
@@ -77,8 +77,7 @@ public class Aluguel {
         }
         if (dataInformada.isBefore(dataInicio)) {
             throw new IllegalStateException(
-                    "Data informada é anterior à data de início do aluguel."
-            );
+                    "Data informada é anterior à data de início do aluguel.");
         }
         if (!dataInformada.isAfter(dataFimPrevista)) {
             return 0.0;
@@ -116,12 +115,13 @@ public class Aluguel {
         this.valorMulta = calcularMulta(dataFim);
     }
 
-    //adiciona itens de modo independente
+    // adiciona itens de modo independente
     public void adicionarItens(List<ItemAluguel> itens) {
         if (itens != null) {
             this.itensAlugados.addAll(itens);
         }
     }
+
     // Valor efetivamente pago após a finalização
     public double getValorTotalPago() {
         return valorBase + valorMulta;
