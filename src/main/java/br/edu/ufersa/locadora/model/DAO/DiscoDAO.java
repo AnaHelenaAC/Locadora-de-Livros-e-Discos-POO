@@ -85,7 +85,6 @@ public class DiscoDAO {
             ps.executeUpdate();
         }
         catch (SQLException e) {e.printStackTrace();}
-        return discos;
     }
     public void delete(String ID) {
         String query = "DELETE FROM Discos WHERE ID = ?";
