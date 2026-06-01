@@ -8,23 +8,35 @@ import java.util.ArrayList;
 public class Disco extends ItemAcervo {
   //Atributos:
   private static List<Disco> discos = new ArrayList<>(); //Lista de discos
-  private String duracao = "Não registrada ou nenhuma.";
+  private int duracao = 0;
   
-  //getter:
-  public String getDuracao() {
+  //getters:
+  public int getDuracao() { //Recebe duração em segundos
     return duracao;
+  }
+  public String getDuracaoString() { //Recebe duração em String no formato HH:mm:ss
+    String duracaoString = "";
+    int horas = duracao / 3600;
+    duracao %= 3600;
+    int minutos = duracao / 60;
+    duracao %= 60;
+    int segundos = duracao;
+    String horasString = String.format("%02d", horas);
+    String minutosString = String.format("%02d", minutos);
+    String segundosString = String.format("%02d", segundos);
+    if (horas == 0 && minutos == 0 && segundos == 0) duracaoString = "Não registrada ou nenhuma.";
+    else if (horas == 0) duracaoString = minutosString + ":" + segundosString;
+    else duracaoString = horasString + ":" + minutosString + ":" + segundosString;
+    return duracaoString;
   }
   
   //setter:
   public void setDuracao(int horas, int minutos, int segundos) {
     if (horas < 0 || minutos > 59 || minutos < 0 || segundos > 59 || segundos < 0) throw new IllegalArgumentException("Algum dos valores, dentre marcadores de horas, minutos e segundos está errado. Pode ser que algum deles seja menor que 0 ou que \"minutos\" ou \"segundos\" seja maior que 59.");
-    String duracao = null;
-    String horasString = String.format("%02d", horas);
-    String minutosString = String.format("%02d", minutos);
-    String segundosString = String.format("%02d", segundos);
-    if (horas == 0 && minutos == 0 && segundos == 0) duracao = "Não registrada ou nenhuma.";
-    else if (horas == 0) duracao = minutosString + ":" + segundosString;
-    else duracao = horasString + ":" + minutosString + ":" + segundosString;
+    int duracao = 0;
+    duracao += horas * 3600;
+    duracao += minutos * 60;
+    duracao += segundos;
     this.duracao = duracao;
   }
 
@@ -37,14 +49,11 @@ public class Disco extends ItemAcervo {
   public Disco(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco, int horas, int minutos, int segundos) {
     super(titulo, criadoPor, genero, valor, dataDeLancamentoFormatada, qtdItens, isDisco);
     if (horas < 0 || minutos > 59 || minutos < 0 || segundos > 59 || segundos < 0) throw new IllegalArgumentException("Algum dos valores, dentre marcadores de horas, minutos e segundos está errado. Pode ser que algum deles seja menor que 0 ou que \"minutos\" ou \"segundos\" seja maior que 59.");
-    discos.add(this); //Adiciona o objeto criado à lista de discos
-    String duracao = null;
-    String horasString = String.format("%02d", horas);
-    String minutosString = String.format("%02d", minutos);
-    String segundosString = String.format("%02d", segundos);
-    if (horas == 0 && minutos == 0 && segundos == 0) duracao = "Não registrada ou nenhuma.";
-    else if (horas == 0) duracao = minutosString + ":" + segundosString;
-    else duracao = horasString + ":" + minutosString + ":" + segundosString;
+    int duracao = 0;
+    duracao += horas * 3600;
+    duracao += minutos * 60;
+    duracao += segundos;
     this.duracao = duracao;
+    discos.add(this); //Adiciona o objeto criado à lista de discos
   }
 }
