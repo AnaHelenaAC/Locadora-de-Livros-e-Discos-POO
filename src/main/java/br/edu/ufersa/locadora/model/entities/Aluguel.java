@@ -10,7 +10,7 @@ public class Aluguel {
     // ATRIBUTOS
     private int id;
     private final Cliente cliente;
-    private final List<ItemAluguel> itensAlugados;
+    private List<ItemAluguel> itensAlugados;
     private final LocalDate dataInicio;
     private final LocalDate dataFimPrevista;
     private LocalDate dataFim;
@@ -23,6 +23,9 @@ public class Aluguel {
         if (carrinho == null || carrinho.getItensNoCarrinho().isEmpty()) {
             throw new IllegalArgumentException("Carrinho vazio.");
         }
+        if (diasAlugados <= 0) {
+            throw new IllegalArgumentException("Quantidade de dias inválida.");
+        }
 
         // Inicialização
         this.cliente = carrinho.getCliente();
@@ -32,7 +35,10 @@ public class Aluguel {
         // Converte itens do carrinho para itens de aluguel
         this.itensAlugados = new ArrayList<>();
         for (ItemCarrinho itemCarrinho : carrinho.getItensNoCarrinho()) {
-            ItemAluguel itemAluguel = new ItemAluguel(itemCarrinho.getItemAcervo(), itemCarrinho.getDiasAlugados());
+            ItemAluguel itemAluguel = new ItemAluguel(
+                    itemCarrinho.getItemAcervo(),
+                    itemCarrinho.getDiasAlugados()
+            );
             this.itensAlugados.add(itemAluguel);
         }
         // Calcula valor base do aluguel
@@ -40,32 +46,39 @@ public class Aluguel {
         this.valorMulta = 0.0;
     }
 
-        // construtor completo
-        public Aluguel(int id, Cliente cliente, List<ItemAluguel> itensAlugados, LocalDate dataInicio, LocalDate dataFimPrevista, LocalDate dataFim, double valorBase, double valorMulta) {
-            if (cliente == null) {
-                throw new IllegalArgumentException("Cliente inválido.");
-            }
-
-            if (itensAlugados == null || itensAlugados.isEmpty()) {
-                throw new IllegalArgumentException("Lista de itens vazia.");
-            }
-            this.id = id;
-            this.cliente = cliente;
-            this.itensAlugados = new ArrayList<>(itensAlugados);
-            this.dataInicio = dataInicio;
-            this.dataFimPrevista = dataFimPrevista;
-            this.dataFim = dataFim;
-            this.valorBase = valorBase;
-            this.valorMulta = valorMulta;
+    // construtor para leitura do banco de dados
+    public Aluguel(
+            int id,
+            Cliente cliente,
+            LocalDate dataInicio,
+            LocalDate dataFimPrevista,
+            LocalDate dataFim,
+            double valorBase,
+            double valorMulta) {
+        if (cliente == null) {
+            throw new IllegalArgumentException("Cliente inválido.");
         }
+        this.id = id;
+        this.cliente = cliente;
+        this.dataInicio = dataInicio;
+        this.dataFimPrevista = dataFimPrevista;
+        this.dataFim = dataFim;
+        this.valorBase = valorBase;
+        this.valorMulta = valorMulta;
+    }
 
-    // MÉTODOS ID
+    // MÉTODOS
     //calcula multa e retorna valor final
     private double calcularMulta(LocalDate dataInformada) {
 
         // Validações
+        if (dataInformada == null) {
+            throw new IllegalArgumentException("Data inválida.");
+        }
         if (dataInformada.isBefore(dataInicio)) {
-            throw new IllegalStateException("Data informada é anterior à data de início do aluguel.");
+            throw new IllegalStateException(
+                    "Data informada é anterior à data de início do aluguel."
+            );
         }
         if (!dataInformada.isAfter(dataFimPrevista)) {
             return 0.0;
@@ -93,11 +106,25 @@ public class Aluguel {
 
     // Finaliza o aluguel
     public void finalizarAluguel(LocalDate dataFim) {
+        if (dataFim == null) {
+            throw new IllegalArgumentException("Data inválida.");
+        }
         if (getStatus().equals("FINALIZADO")) {
             throw new IllegalStateException("Aluguel já finalizado.");
         }
         this.dataFim = dataFim;
         this.valorMulta = calcularMulta(dataFim);
+    }
+
+    //adiciona itens de modo independente
+    public void adicionarItens(List<ItemAluguel> itens) {
+        if (itens != null) {
+            this.itensAlugados.addAll(itens);
+        }
+    }
+    // Valor efetivamente pago após a finalização
+    public double getValorTotalPago() {
+        return valorBase + valorMulta;
     }
 
     // GETTERS E SETTERS
@@ -145,9 +172,5 @@ public class Aluguel {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
     }
 }

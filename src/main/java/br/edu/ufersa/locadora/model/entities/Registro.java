@@ -77,11 +77,14 @@ public class Registro {
         listaFuncionarios.add(fun);
     }
 
-    public void registrarAluguel(Cliente cli, ItemAcervo ite) throws RegistroException {
-        if (cli == null || ite == null) {
-            throw new RegistroException("Negado! Cliente ou Item inválidos para aluguel.");
+    public void registrarAluguel(Aluguel aluguel) throws RegistroException {
+        if (aluguel == null) {
+            throw new RegistroException("Negado! Aluguel inválido.");
         }
-        this.faturamentoTotal += ite.getValor();
+        listaAlugueis.add(aluguel);
+
+        faturamentoTotal += aluguel.getValorBase();
+        faturamentoTotal += aluguel.getValorMulta();
     }
 
     public void registrarDevolucao(ItemAcervo ite) throws RegistroException {

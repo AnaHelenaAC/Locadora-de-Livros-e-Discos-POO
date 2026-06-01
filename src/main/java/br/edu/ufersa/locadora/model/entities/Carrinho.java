@@ -18,8 +18,14 @@ public class Carrinho {
     // MÉTODOS
     // metodo para adicionar um item ao carrinho
     public void adicionarItem(ItemAcervo item, int diasAlugados) {
-        if (item == null || diasAlugados <= 0) {
-            throw new IllegalArgumentException("Item nulo ou dias de aluguel inválidos.");
+        if (item == null) {
+            throw new IllegalArgumentException("Item nulo.");
+        }
+        if (diasAlugados <= 0) {
+            throw new IllegalArgumentException("Dias de aluguel devem ser maiores que zero.");
+        }
+        if (item.getQtdItens() <= 0) {
+            throw new IllegalArgumentException("Item indisponível para aluguel.");
         }
         ItemCarrinho itemCarrinho = new ItemCarrinho(item, diasAlugados);
         this.itensNoCarrinho.add(itemCarrinho);

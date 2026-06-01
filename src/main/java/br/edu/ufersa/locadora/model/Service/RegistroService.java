@@ -1,13 +1,14 @@
-package br.edu.ufersa.locadora.model.Service;
+package br.edu.ufersa.locadora.model.service;
 
 import br.edu.ufersa.locadora.model.DAO.RegistroDAO;
 import br.edu.ufersa.locadora.model.DAO.UsuarioFuncionarioDAO;
 import br.edu.ufersa.locadora.model.entities.Registro;
 import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
-import br.edu.ufersa.locadora.model.entities.Cliente;
+import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.ItemAcervo;
 import br.edu.ufersa.locadora.exceptions.RegistroException;
 import java.util.List;
+import java.time.LocalDate;
 
 public class RegistroService {
 
@@ -54,11 +55,16 @@ public class RegistroService {
         Registro.salvarFuncionarioNoSistema(fun);
     }
 
-    public void registrarAluguel(Registro reg, Cliente cli, ItemAcervo ite) throws RegistroException {
-        if (reg == null || cli == null || ite == null) {
-            throw new RegistroException("Dados insuficientes para realizar o aluguel!");
+    public void registrarAluguel(Registro reg, Aluguel aluguel, LocalDate dataFim) throws RegistroException {
+
+        if (reg == null || aluguel == null) {
+            throw new RegistroException("Dados inválidos!");
         }
-        reg.registrarAluguel(cli, ite);
+        if (dataFim == null) {
+            throw new RegistroException("Data inválida!");
+        }
+        aluguel.finalizarAluguel(dataFim);
+        reg.registrarAluguel(aluguel);
         dao.Update(reg);
     }
 

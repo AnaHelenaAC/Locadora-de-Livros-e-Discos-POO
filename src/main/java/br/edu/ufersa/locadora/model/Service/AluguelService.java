@@ -1,4 +1,4 @@
-package br.edu.ufersa.locadora.model.Service;
+package br.edu.ufersa.locadora.model.service;
 
 import br.edu.ufersa.locadora.model.DAO.AluguelDAO;
 import br.edu.ufersa.locadora.model.DAO.ItemAluguelDAO;
@@ -6,7 +6,6 @@ import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.Carrinho;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class AluguelService {
@@ -25,47 +24,73 @@ public class AluguelService {
         if (carrinho == null || carrinho.getItensNoCarrinho().isEmpty()) {
             throw new IllegalArgumentException("Carrinho inválido ou vazio.");
         }
-
         return new Aluguel(carrinho, diasAlugados);
     }
 
-    // método para salvar o aluguel e seus itens no banco de dados
+    // salva aluguel e itens no banco
     public Aluguel inserir(Aluguel aluguel) {
 
         if (aluguel == null) {
             throw new IllegalArgumentException("Aluguel inválido.");
         }
-
-        // salva aluguel
         aluguel = aluguelDAO.Create(aluguel);
 
         if (aluguel == null) {
-            return null;
+            throw new IllegalStateException("Erro ao salvar aluguel.");
         }
 
-        // salva itens
         List<ItemAluguel> itens = aluguel.getItensAlugados();
 
         for (ItemAluguel item : itens) {
-            itemAluguelDAO.Create(item, aluguel.getId());
-        }
+            ItemAluguel salvo = itemAluguelDAO.Create(item, aluguel.getId());
 
+            if (salvo == null) {
+                throw new IllegalStateException("Erro ao salvar item do aluguel.");
+            }
+        }
         return aluguel;
     }
 
-    // método para finalizar o aluguel, calculando multa e atualizando no banco
-    public Aluguel finalizarAluguel(Aluguel aluguel, LocalDate dataFim) {
+    // busca aluguel por id
+    public Aluguel buscarPorId(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID inválido.");
+        }
+        Aluguel aluguel = aluguelDAO.Read(id);
+
+        if (aluguel != null) {
+            List<ItemAluguel> itens = itemAluguelDAO.Read(id); // Busca na tabela item_aluguel
+            aluguel.adicionarItens(itens); // Junta os itens no objeto
+        }
+        return aluguel;
+    }
+
+    // lista todos os aluguéis ativos
+    public List<Aluguel> listarTodos() {
+        List<Aluguel> alugueis = aluguelDAO.ReadAll();
+
+        for (Aluguel aluguel : alugueis) {
+            List<ItemAluguel> itens = itemAluguelDAO.Read(aluguel.getId());
+            aluguel.adicionarItens(itens);
+        }
+        return alugueis;
+    }
+
+    // atualiza aluguel
+    public Aluguel atualizar(Aluguel aluguel) {
+
+        if (aluguel == null || aluguel.getId() <= 0) {
+            throw new IllegalArgumentException("Aluguel inválido.");
+        }
+        return aluguelDAO.Update(aluguel);
+    }
+
+    // remove aluguel ativo
+    public boolean cancelar(Aluguel aluguel) {
 
         if (aluguel == null) {
             throw new IllegalArgumentException("Aluguel inválido.");
         }
-
-        if (aluguel.getDataFim() != null) {
-            throw new IllegalStateException("Aluguel já finalizado.");
-        }
-
-        aluguel.finalizarAluguel(dataFim);
-
-        return aluguelDAO.Update(aluguel);
+        return aluguelDAO.Delete(aluguel);
     }
 }

@@ -7,6 +7,12 @@ public class ItemAluguel {
     private final double precoDiaria;
     private final int diasAlugados;
 
+    public ItemAluguel() {
+        this.item = null;
+        this.precoDiaria = 0;
+        this.diasAlugados = 0;
+    }
+
     // CONSTRUTOR PARA NOVOS ALUGUÉIS
     public ItemAluguel(ItemAcervo item, int diasAlugados) {
 

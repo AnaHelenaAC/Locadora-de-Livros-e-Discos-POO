@@ -4,6 +4,9 @@ import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 
 import java.sql.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemAluguelDAO {
 
     private final static String URL = "jdbc:mysql://localhost/poo";
@@ -56,5 +59,40 @@ public class ItemAluguelDAO {
         }
 
         return null;
+    }
+
+    public List<ItemAluguel> Read(int aluguelID) {
+        String sql = "SELECT * FROM tb_itens_aluguel WHERE aluguel_id = ?";
+        List<ItemAluguel> itens = new ArrayList<>();
+
+        try (Connection con = getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, aluguelID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                DiscoDAO discoDAO = new DiscoDAO();
+                LivroDAO livroDAO = new LivroDAO();
+
+                while (rs.next()) {
+                    ItemAluguel item = new ItemAluguel();
+                    String discoId = rs.getString("disco_id");
+                    String livroId = rs.getString("livro_id");
+
+                    if (discoId != null) {
+                        item.setItem(discoDAO.readByID(discoId));
+                    } else {
+                        item.setItem(livroDAO.read(livroId));
+                    }
+
+                    item.setPrecoDiaria(rs.getDouble("preco_diaria"));
+                    item.setDiasAlugados(rs.getInt("dias_alugados"));
+                    itens.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar itens do aluguel: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return itens;
     }
 }
