@@ -30,9 +30,9 @@ public class Livro extends ItemAcervo {
   //construtor:
   public Livro(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco, int qtdPaginas) {
     super(titulo, criadoPor, genero, valor, dataDeLancamentoFormatada, qtdItens, isDisco);
-    livros.add(this); //Adiciona o objeto criado à lista de livros
     if (qtdPaginas < 0) throw new IllegalArgumentException("A quantidade de páginas não pode ser negativa.");
     if (qtdPaginas == 0) System.out.println("A quantidade de páginas está registrada como 0. É possível que a quantidade de páginas não tenha sido registrada");
     this.qtdPaginas = qtdPaginas;
+    livros.add(this); //Adiciona o objeto criado à lista de livros
   }
 }
