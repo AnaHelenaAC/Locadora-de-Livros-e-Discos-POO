@@ -26,14 +26,14 @@ public class DiscoService {
         if (discoDAO.read().isEmpty()) throw new DiscoException("Nenhum disco foi encontrado no banco de dados.");
         else {
             System.out.println("Disco(s) encontrado(s).");
-            return disco.DAO.read();
+            return discoDAO.read();
         }
     }
     public Disco lerDiscoPorID(String ID) {
         if (discoDAO.readByID(ID) == null) throw new DiscoException("Nenhum disco foi com o ID utilizado (" + ID + ") foi encontrado no banco de dados.");
         else {
             System.out.println("Disco encontrado.");
-            return disco.DAO.readByID(ID);
+            return discoDAO.readByID(ID);
         }
     }
     public void atualizarDisco(Disco disco) {
@@ -49,7 +49,7 @@ public class DiscoService {
         if (discoDAO.delete(ID) == null) throw new DiscoException("Nenhum disco foi com o ID utilizado (" + ID + ") foi encontrado no banco de dados.");
         else {
             System.out.println("Disco apagado.");
-            disco.DAO.delete(ID);
+            discoDAO.delete(ID);
         }
     }
 }
