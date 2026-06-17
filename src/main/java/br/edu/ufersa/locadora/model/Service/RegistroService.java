@@ -7,6 +7,7 @@ import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.ItemAcervo;
 import br.edu.ufersa.locadora.exceptions.RegistroException;
+import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -52,7 +53,11 @@ public class RegistroService {
             throw new RegistroException("Funcionário inválido!");
         }
         funcionarioDAO.Create(fun);
-        Registro.salvarFuncionarioNoSistema(fun);
+        try {
+            Registro.salvarFuncionarioNoSistema(fun);
+        } catch (UsuarioFuncionarioException e) {
+            throw new RegistroException("Erro ao salvar funcionário: " + e.getMessage());
+        }
     }
 
     public void registrarAluguel(Registro reg, Aluguel aluguel, LocalDate dataFim) throws RegistroException {
