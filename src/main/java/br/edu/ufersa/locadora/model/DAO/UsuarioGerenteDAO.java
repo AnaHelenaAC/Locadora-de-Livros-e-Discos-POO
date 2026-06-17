@@ -69,9 +69,10 @@ public class UsuarioGerenteDAO {
                 g.setIdGerente(rs.getInt("id"));
                 try {
                     g.setNome(rs.getString("nome"));
+                    g.setLogin(rs.getString("login"));
+                    g.setSenha(rs.getString("senha"));
                 } catch (Exception e) { e.printStackTrace(); }
-                g.setLogin(rs.getString("login"));
-                g.setSenha(rs.getString("senha"));
+
 
                 lista.add(g);
             }
