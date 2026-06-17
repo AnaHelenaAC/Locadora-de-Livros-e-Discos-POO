@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.entities;
 
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 
 public class UsuarioFuncionario extends Usuario {
@@ -11,7 +12,7 @@ public class UsuarioFuncionario extends Usuario {
         this.setGerente(false);
     }
 
-    public UsuarioFuncionario(String nome, String login, String senha) throws SemNomeException {
+    public UsuarioFuncionario(String nome, String login, String senha) throws SemNomeException, UsuarioException  {
         super(nome, login, senha);
         this.setGerente(false);
     }
