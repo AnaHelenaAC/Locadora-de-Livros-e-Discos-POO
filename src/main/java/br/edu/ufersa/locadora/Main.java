@@ -1,14 +1,50 @@
 package br.edu.ufersa.locadora;
+
 import br.edu.ufersa.locadora.model.DAO.UsuarioDAO;
+import br.edu.ufersa.locadora.model.entities.Usuario;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
-
-import br.edu.ufersa.locadora.model.entities.*;
-
-import java.time.LocalDate;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        /*UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDAO dao = new UsuarioDAO();
+
+        try {
+            // --- TESTE 1: INSERIR ---
+            System.out.println("1. Testando Inserção...");
+            Usuario novo = new Usuario();
+            try {
+                novo.setNome("Teste de Conexao");
+            } catch (SemNomeException e) {
+                System.err.println("❌ Nome inválido: " + e.getMessage());
+                return;
+            }
+            novo.setLogin("teste123");
+            novo.setSenha("123456");
+            novo.setGerente(false);
+
+            dao.Create(novo);
+            System.out.println("✅ Inserido com ID: " + novo.getId());
+
+            // --- TESTE 2: LER ---
+            System.out.println("\n2. Testando Leitura...");
+            List<Usuario> lista = dao.Read("Teste");
+            for (Usuario u : lista) {
+                System.out.println("-> Usuário encontrado: " + u.getNome() + " (ID: " + u.getId() + ")");
+            }
+
+        } catch (UsuarioException e) {
+            System.err.println("❌ Erro no teste: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+
+/*
+public class Main {
+    public static void main(String[] args) {
+        UsuarioDAO dao = new UsuarioDAO();
         Usuario usu = new Usuario();
 
         try{
@@ -43,6 +79,7 @@ public class Main {
 
         //LIVRO
         Livro livro = new Livro("livreto", "alguem", "branco", 10.0, "01/01/2008", 5, false, 464);
+
 
         //TESTE DE ALUGUEL
         //atrasado
@@ -86,8 +123,8 @@ public class Main {
             if (a.getStatus().equals("ATIVO")) {
                 System.out.println(a);
             }
-        }*/
+        }
 
 
     }
-}
+}*/
