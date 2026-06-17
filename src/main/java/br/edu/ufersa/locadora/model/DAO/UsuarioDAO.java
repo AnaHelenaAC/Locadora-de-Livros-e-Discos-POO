@@ -31,7 +31,7 @@ public class UsuarioDAO {
 
     public Usuario Create(Usuario entity) throws UsuarioException {
         con = getConnection();
-        String sql = "INSERT INTO tb_usu (nome, login, senha, is_gerente) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO tb_usu (nome, login, senha, isGerente) VALUES (?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -69,11 +69,11 @@ public class UsuarioDAO {
                 try {
                     u.setId(rs.getLong("id"));
                 } catch (Exception e) { e.printStackTrace(); }
-                u.setGerente(rs.getBoolean("is_gerente"));
+                u.setGerente(rs.getBoolean("isGerente"));
                 try {
                     u.setNome(rs.getString("nome"));
                 } catch (Exception e) { e.printStackTrace(); }
-                try {
+                    try {
                     u.setLogin(rs.getString("login"));
                     u.setSenha(rs.getString("senha"));
                 } catch (Exception e) { e.printStackTrace(); }
@@ -90,7 +90,7 @@ public class UsuarioDAO {
 
     public boolean Update(Usuario entity) throws UsuarioException {
         con = getConnection();
-        String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, is_gerente = ? WHERE id = ?";
+        String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, isGerente = ? WHERE id = ?";
         boolean sucesso = false;
 
         try {
