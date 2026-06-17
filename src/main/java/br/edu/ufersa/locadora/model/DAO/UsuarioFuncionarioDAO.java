@@ -63,9 +63,10 @@ public class UsuarioFuncionarioDAO {
 
                 try {
                     f.setNome(rs.getString("nome"));
+                    f.setLogin(rs.getString("login"));
+                    f.setSenha(rs.getString("senha"));
                 } catch (Exception e) { e.printStackTrace(); }
-                f.setLogin(rs.getString("login"));
-                f.setSenha(rs.getString("senha"));
+
 
                 lista.add(f);
             }
