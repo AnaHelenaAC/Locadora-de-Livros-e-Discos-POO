@@ -12,11 +12,11 @@ public class ConnectionFactory {
     private final static String PASS = "AH443162ah";
 
     public static Connection getConnection() {
-        try {
-            return DriverManager.getConnection(URL, USER, PASS);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    try {
+        return DriverManager.getConnection(URL, USER, PASS);
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return null;
+}
 }
