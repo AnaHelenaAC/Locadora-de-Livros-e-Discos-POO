@@ -1,0 +1,238 @@
+/* ============================================================
+   styles.css — Cultura Viva Login Screen
+   JavaFX 17+
+   ============================================================ */
+
+/* ── Color tokens ────────────────────────────────────────── */
+/*  --purple-dark : #2E1A47  (bars)                          */
+/*  --cream       : #F8EED1  (center background)             */
+/*  --gold        : #F2D888  (brand + gramophone)            */
+/*  --crimson     : #D1203A  (button + cadastre link)        */
+/*  --grey-light  : #E0E0E0  (input backgrounds)             */
+
+/* ── Root pane ───────────────────────────────────────────── */
+.root-pane {
+    -fx-background-color: #F8EED1;
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.top-bar {
+    -fx-background-color: #2E1A47;
+    -fx-min-height: 72px;
+    -fx-pref-height: 72px;
+}
+
+/* ── Bottom bar ──────────────────────────────────────────── */
+.bottom-bar {
+    -fx-background-color: #2E1A47;
+    -fx-min-height: 18px;
+    -fx-pref-height: 18px;
+}
+
+/* ── Gramophone SVG icon ─────────────────────────────────── */
+.gramophone-icon {
+    -fx-fill: #F2D888;
+    -fx-scale-x: 2.2;
+    -fx-scale-y: 2.2;
+    -fx-translate-x: 6px;
+}
+
+/* ── Brand title ─────────────────────────────────────────── */
+.brand-title {
+    -fx-text-fill: #F2D888;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 0 16px;
+}
+
+/* ── Center pane ─────────────────────────────────────────── */
+.center-pane {
+    -fx-background-color: #F8EED1;
+    -fx-pref-height: 430px;
+}
+
+/* ── Left panel ──────────────────────────────────────────── */
+.left-panel {
+    -fx-background-color: #F8EED1;
+    -fx-pref-width: 530px;
+}
+
+/* ── Media Card ──────────────────────────────────────────── */
+.media-card {
+    -fx-background-color: transparent;
+}
+
+.card-bg {
+    -fx-background-color: linear-gradient(
+            to bottom right,
+            #C9956B 0%,
+            #D4A070 20%,
+            #A0826D 40%,
+            #C08060 60%,
+            #B07850 80%,
+            #8B5E3C 100%
+    );
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 14, 0, 2, 4);
+}
+
+/* ── Card tagline ────────────────────────────────────────── */
+.card-tagline {
+    -fx-text-fill: #1A1A1A;
+    -fx-font-family: "Arial Black", "Arial";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+/* ── Album covers ────────────────────────────────────────── */
+.album-cover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0, 1, 2);
+}
+
+/* ── Vinyl shapes ────────────────────────────────────────── */
+.vinyl-outer {
+    -fx-fill: #1A1A1A;
+}
+.vinyl-groove {
+    -fx-fill: #2A2A2A;
+    -fx-stroke: #111111;
+    -fx-stroke-width: 1;
+}
+.vinyl-label {
+    -fx-fill: #333333;
+}
+.vinyl-center {
+    -fx-fill: #E8905A;
+}
+.vinyl-hole {
+    -fx-fill: #1A1A1A;
+}
+
+/* ── Floating badge ──────────────────────────────────────── */
+.badge-container {
+    -fx-background-color: rgba(255,255,255,0.85);
+    -fx-background-radius: 20px;
+    -fx-padding: 4 10 4 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);
+}
+.badge-blue {
+    -fx-fill: #4A90D9;
+}
+.badge-purple {
+    -fx-fill: #7B4FBF;
+}
+
+/* ── Right panel ─────────────────────────────────────────── */
+.right-panel {
+    -fx-background-color: #F8EED1;
+    -fx-min-width: 280px;
+    -fx-pref-width: 290px;
+}
+
+/* ── Login title ─────────────────────────────────────────── */
+.login-title {
+    -fx-text-fill: #1A1A1A;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 6 0;
+}
+
+/* ── Grouped input box ───────────────────────────────────── */
+.input-group {
+    -fx-background-color: #E0E0E0;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: transparent;
+}
+
+.grouped-field {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #888888;
+    -fx-text-fill: #222222;
+    -fx-padding: 12 14 12 14;
+}
+.grouped-field:focused {
+    -fx-background-color: #EBEBEB;
+}
+.grouped-field-top {
+    -fx-background-radius: 10 10 0 0;
+}
+.grouped-field-bottom {
+    -fx-background-radius: 0 0 10 10;
+}
+
+/* thin separator between the two grouped fields */
+.field-divider {
+    -fx-background-color: #BEBEBE;
+    -fx-pref-height: 1px;
+    -fx-min-height: 1px;
+    -fx-max-height: 1px;
+    -fx-padding: 0;
+}
+
+/* ── Standalone Cargo field ──────────────────────────────── */
+.standalone-field {
+    -fx-background-color: #E0E0E0;
+    -fx-background-radius: 10px;
+    -fx-border-color: transparent;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #888888;
+    -fx-text-fill: #222222;
+    -fx-padding: 12 14 12 14;
+}
+.standalone-field:focused {
+    -fx-background-color: #EBEBEB;
+    -fx-background-radius: 10px;
+}
+
+/* ── Login button ────────────────────────────────────────── */
+.login-btn {
+    -fx-background-color: #D1203A;
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1.5px;
+    -fx-background-radius: 30px;
+    -fx-padding: 13 30 13 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(209,32,58,0.4), 10, 0, 0, 3);
+}
+.login-btn:hover {
+    -fx-background-color: #B81830;
+    -fx-effect: dropshadow(gaussian, rgba(209,32,58,0.6), 16, 0, 0, 4);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+.login-btn:pressed {
+    -fx-background-color: #9A1226;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* ── Signup row ──────────────────────────────────────────── */
+.signup-label {
+    -fx-text-fill: #1A1A1A;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 13px;
+}
+
+.signup-link {
+    -fx-text-fill: #D1203A;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-underline: false;
+}
+.signup-link:hover {
+    -fx-underline: true;
+}
