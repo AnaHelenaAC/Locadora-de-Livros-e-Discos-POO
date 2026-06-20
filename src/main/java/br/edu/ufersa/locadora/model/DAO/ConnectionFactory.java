@@ -4,19 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import java.net.URL;
-
 public class ConnectionFactory {
     private final static String URL = "jdbc:mysql://localhost/poo";
     private final static String USER = "poo";
     private final static String PASS = "AH443162ah";
 
     public static Connection getConnection() {
-    try {
-        return DriverManager.getConnection(URL, USER, PASS);
-    } catch (SQLException e) {
-        e.printStackTrace();
+        try {
+            return DriverManager.getConnection(URL, USER, PASS);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao obter conexão com o banco de dados.", e);
+        }
     }
-    return null;
-}
 }
