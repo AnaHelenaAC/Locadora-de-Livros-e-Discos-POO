@@ -1,13 +1,7 @@
 package br.edu.ufersa.locadora.model.entities;
 
-import br.edu.ufersa.locadora.model.entities.ItemAcervo;
-
-import java.util.List;
-import java.util.ArrayList;
-
 public class Disco extends ItemAcervo {
   //Atributos:
-  private static List<Disco> discos = new ArrayList<>(); //Lista de discos
   private int duracao = 0;
   
   //getters:
@@ -42,7 +36,6 @@ public class Disco extends ItemAcervo {
 
   //Método de exclusão de objeto:
   public void excluir() {
-    discos.remove(this);
   }
   
   //construtor:
@@ -54,6 +47,5 @@ public class Disco extends ItemAcervo {
     duracao += minutos * 60;
     duracao += segundos;
     this.duracao = duracao;
-    discos.add(this); //Adiciona o objeto criado à lista de discos
   }
 }
