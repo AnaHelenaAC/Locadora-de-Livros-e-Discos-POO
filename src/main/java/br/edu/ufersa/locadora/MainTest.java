@@ -2,6 +2,7 @@ package br.edu.ufersa.locadora;
 
 import br.edu.ufersa.locadora.model.DAO.UsuarioDAO;
 import br.edu.ufersa.locadora.model.entities.Usuario;
+import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
 import java.util.List;
@@ -13,7 +14,7 @@ public class MainTest {
         try {
             // --- TESTE 1: INSERIR ---
             System.out.println("1. Testando Inserção...");
-            Usuario novo = new Usuario();
+            Usuario novo = new UsuarioFuncionario();
             try {
                 novo.setNome("Teste de Conexao");
             } catch (SemNomeException e) {
