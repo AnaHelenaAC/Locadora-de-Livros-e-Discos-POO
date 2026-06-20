@@ -5,7 +5,6 @@ import br.edu.ufersa.locadora.model.entities.Livro;
 import br.edu.ufersa.locadora.exceptions.LivroException;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class LivroService {
     private final LivroDAO livroDAO;
