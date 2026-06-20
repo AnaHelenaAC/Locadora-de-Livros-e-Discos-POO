@@ -1,126 +1,101 @@
 package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.UsuarioGerente;
+import br.edu.ufersa.locadora.exceptions.SemNomeException;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import br.edu.ufersa.locadora.exceptions.UsuarioGerenteException;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioGerenteDAO {
-    private final static String URL = "jdbc:mysql://localhost/poo";
-    private final static String USER = "poo";
-    private final static String PASS = "AH443162ah";
-    private static Connection con = null;
-
-    public static Connection getConnection(){
-        if(con == null){
-            try{
-                con = DriverManager.getConnection(URL,USER,PASS);
-            }catch (SQLException e){e.printStackTrace();}
-        }
-        return con;
-    }
-
-    public static void closeConnection(){
-        if(con != null){
-            try{
-                con.close();
-            }catch (SQLException e){e.printStackTrace();}
-        }
-    }
-
     public UsuarioGerente Create(UsuarioGerente entity) throws UsuarioGerenteException {
-        con = getConnection();
-        String sql = "INSERT INTO tb_usu (nome, login, senha, is_gerente) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Usuarios (nome, login, senha, isGerente) VALUES (?, ?, ?, ?)";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, entity.getNome());
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
             ps.setBoolean(4, entity.isGerente());
-            ps.execute();
+            ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs != null && rs.next()) {
-                entity.setIdGerente(rs.getInt(1));
-                rs.close();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    entity.setIdGerente(rs.getInt(1));
+                }
             }
-            ps.close();
         } catch (Exception e) {
-            throw new UsuarioGerenteException("Erro ao criar gerente no banco: " + e.getMessage());
+            throw new RuntimeException("Erro ao criar gerente no banco: " + e.getMessage(), e);
         }
 
         return entity;
     }
 
     public List<UsuarioGerente> Read(String param) throws UsuarioGerenteException {
-        con = getConnection();
-        String sql = "SELECT * FROM tb_usu WHERE nome LIKE ? AND is_gerente = true";
+        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios WHERE nome LIKE ? AND isGerente = true";
         List<UsuarioGerente> lista = new ArrayList<>();
 
-        try{
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "%" + param + "%");
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                UsuarioGerente g = new UsuarioGerente();
-                g.setIdGerente(rs.getInt("id"));
-                try {
-                    g.setNome(rs.getString("nome"));
-                    g.setLogin(rs.getString("login"));
-                    g.setSenha(rs.getString("senha"));
-                } catch (Exception e) { e.printStackTrace(); }
-
-
-                lista.add(g);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapearGerente(rs));
+                }
             }
-            rs.close();
-            ps.close();
         } catch (SQLException e){
-            throw new UsuarioGerenteException("Erro ao buscar gerente no banco: " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar gerente no banco: " + e.getMessage(), e);
         }
         return lista;
     }
 
     public boolean Update(UsuarioGerente entity) throws UsuarioGerenteException {
-        con = getConnection();
-        String sql = "UPDATE tb_usu SET nome = ?, login = ?, senha = ?, is_gerente = ? WHERE id = ?";
-        boolean sucesso = false;
+        String sql = "UPDATE Usuarios SET nome = ?, login = ?, senha = ?, isGerente = ? WHERE ID = ?";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, entity.getNome());
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
             ps.setBoolean(4, entity.isGerente());
             ps.setInt(5, entity.getIdGerente());
 
-            int linhas = ps.executeUpdate();
-            if (linhas > 0) sucesso = true;
-            ps.close();
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new UsuarioGerenteException("Erro ao atualizar gerente no banco: " + e.getMessage());
+            throw new RuntimeException("Erro ao atualizar gerente no banco: " + e.getMessage(), e);
         }
-        return sucesso;
     }
 
     public boolean Delete(UsuarioGerente entity) throws UsuarioGerenteException {
-        con = getConnection();
-        String sql = "DELETE FROM tb_usu WHERE id = ?";
-        boolean sucesso = false;
+        String sql = "DELETE FROM Usuarios WHERE ID = ?";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, entity.getIdGerente());
 
-            int líneas = ps.executeUpdate();
-            if (líneas > 0) sucesso = true;
-            ps.close();
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new UsuarioGerenteException("Erro ao deletar gerente no banco: " + e.getMessage());
+            throw new RuntimeException("Erro ao deletar gerente no banco: " + e.getMessage(), e);
         }
-        return sucesso;
+    }
+
+    private UsuarioGerente mapearGerente(ResultSet rs) throws SQLException {
+        try {
+            UsuarioGerente gerente = new UsuarioGerente();
+            gerente.setIdGerente(rs.getInt("ID"));
+            gerente.setNome(rs.getString("nome"));
+            gerente.setLogin(rs.getString("login"));
+            gerente.setSenha(rs.getString("senha"));
+            gerente.setGerente(rs.getBoolean("isGerente"));
+            return gerente;
+        } catch (SemNomeException | UsuarioException | UsuarioGerenteException e) {
+            throw new RuntimeException("Erro ao mapear gerente do banco: " + e.getMessage(), e);
+        }
     }
 }
