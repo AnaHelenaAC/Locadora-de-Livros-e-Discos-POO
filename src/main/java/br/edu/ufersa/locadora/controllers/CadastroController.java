@@ -12,10 +12,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CadastrosController implements Initializable {
+public class CadastroController implements Initializable {
 
     // ── Abas ──────────────────────────────────────────────────
     @FXML private Button btnAbaFuncionario;
@@ -34,8 +34,9 @@ public class CadastrosController implements Initializable {
     @FXML private TextField tfEndereco;
     @FXML private TextField tfCpf;
 
-    // ── Lista de registros (VBox dinâmica) ────────────────────
-    @FXML private VBox listaRegistros;
+    // ── Lista dinâmica (ScrollPane + VBox) ───────────────────
+    @FXML private ScrollPane scrollLista;
+    @FXML private VBox       listaRegistros;
 
     // ── Feedback ──────────────────────────────────────────────
     @FXML private Label lblMsg;
@@ -43,39 +44,45 @@ public class CadastrosController implements Initializable {
     // ── Estado ────────────────────────────────────────────────
     private boolean exibindoClientes = true;
 
-    // ── Estilos reutilizados nas linhas ───────────────────────
-    private static final String LINHA_STYLE =
-            "-fx-background-color:#FFFFFF; -fx-padding:10 16 10 16;" +
-                    "-fx-border-color:transparent transparent #EAE0D0 transparent; -fx-border-width:0 0 1 0;";
-
-    private static final String AVATAR_STYLE =
-            "-fx-background-color:#C0B8C8; -fx-background-radius:50;" +
-                    "-fx-min-width:36px; -fx-min-height:36px;" +
-                    "-fx-pref-width:36px; -fx-pref-height:36px;";
-
-    private static final String ICON_BTN_STYLE =
-            "-fx-background-color:transparent; -fx-cursor:hand;" +
-                    "-fx-font-size:14px; -fx-padding:2 4 2 4;";
-
     // ─────────────────────────────────────────────────────────
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         boolean gerente = SessaoUsuario.getInstance().usuarioEhGerente();
 
-        // Aba Funcionário só visível para gerente
+        // Aba Funcionário só para gerente
         btnAbaFuncionario.setVisible(gerente);
         btnAbaFuncionario.setManaged(gerente);
 
-        // Se for gerente, ajusta borda da aba Cliente para parecer unida
-        if (gerente) {
-            btnAbaCliente.setStyle(
-                    btnAbaCliente.getStyle()
-                            .replace("-fx-background-radius:20;", "-fx-background-radius:0 20 20 0;")
-                            .replace("-fx-border-radius:20;",     "-fx-border-radius:0 20 20 0;")
-            );
-        }
+        // Em runtime: esconde as linhas de preview estáticas e exibe o scroll dinâmico
+        scrollLista.setVisible(true);
+        scrollLista.setManaged(true);
+        scrollLista.setPrefHeight(300);
+
+        // Remove as linhas estáticas de preview (são filhos do VBox pai da tabela)
+        // — o FXML as tem para o Scene Builder exibir corretamente
+        removerLinhasPreview();
 
         carregarClientes();
+    }
+
+    /**
+     * Remove as HBox de preview estáticas que existem só para o Scene Builder.
+     * Elas ficam entre o cabeçalho (índice 0), a linha de adição (índice 1)
+     * e o ScrollPane dinâmico. Em runtime substituímos pelo scroll real.
+     */
+    private void removerLinhasPreview() {
+        try {
+            // O VBox da tabela é pai do scrollLista
+            VBox tabelaVBox = (VBox) scrollLista.getParent();
+            // Remove todos os filhos entre a linha de adição (índice 1) e o ScrollPane
+            int scrollIdx = tabelaVBox.getChildren().indexOf(scrollLista);
+            // Remove linhas de índice 2 até scrollIdx-1 (as linhas de preview)
+            if (scrollIdx > 2) {
+                tabelaVBox.getChildren().remove(2, scrollIdx);
+            }
+        } catch (Exception e) {
+            // Se falhar, não quebra o app — as linhas de preview ficam visíveis
+        }
     }
 
     // ── Alternância de abas ───────────────────────────────────
@@ -83,7 +90,7 @@ public class CadastrosController implements Initializable {
     @FXML
     public void mostrarClientes(ActionEvent e) {
         exibindoClientes = true;
-        marcarAbaAtiva(btnAbaCliente, btnAbaFuncionario);
+        ativarAba(btnAbaCliente, btnAbaFuncionario);
         tfEndereco.setPromptText("Endereço");
         tfCpf.setPromptText("CPF");
         carregarClientes();
@@ -92,22 +99,30 @@ public class CadastrosController implements Initializable {
     @FXML
     public void mostrarFuncionarios(ActionEvent e) {
         exibindoClientes = false;
-        marcarAbaAtiva(btnAbaFuncionario, btnAbaCliente);
+        ativarAba(btnAbaFuncionario, btnAbaCliente);
         tfEndereco.setPromptText("Login");
         tfCpf.setPromptText("Senha");
         carregarFuncionarios();
     }
 
-    private void marcarAbaAtiva(Button ativo, Button inativo) {
-        ativo.setStyle(ativo.getStyle()
-                .replace("-fx-background-color:#F8EED1;", "-fx-background-color:#2E1A47;")
-                .replace("-fx-text-fill:#2E1A47;",        "-fx-text-fill:#F8EED1;"));
-        inativo.setStyle(inativo.getStyle()
-                .replace("-fx-background-color:#2E1A47;", "-fx-background-color:#F8EED1;")
-                .replace("-fx-text-fill:#F8EED1;",        "-fx-text-fill:#2E1A47;"));
+    private void ativarAba(Button ativo, Button inativo) {
+        ativo.setStyle(
+                "-fx-background-color:#2E1A47; -fx-text-fill:#F8EED1;" +
+                        "-fx-font-size:13px; -fx-font-weight:bold;" +
+                        "-fx-background-radius:20; -fx-border-color:#2E1A47;" +
+                        "-fx-border-width:1.5; -fx-border-radius:20;" +
+                        "-fx-padding:8 24 8 24; -fx-cursor:hand;"
+        );
+        inativo.setStyle(
+                "-fx-background-color:#F8EED1; -fx-text-fill:#2E1A47;" +
+                        "-fx-font-size:13px; -fx-font-weight:bold;" +
+                        "-fx-background-radius:20 0 0 20; -fx-border-color:#2E1A47;" +
+                        "-fx-border-width:1.5; -fx-border-radius:20 0 0 20;" +
+                        "-fx-padding:8 20 8 20; -fx-cursor:hand;"
+        );
     }
 
-    // ── Carregar registros ────────────────────────────────────
+    // ── Carregamento de dados ─────────────────────────────────
 
     private void carregarClientes() {
         listaRegistros.getChildren().clear();
@@ -143,130 +158,119 @@ public class CadastrosController implements Initializable {
         }
     }
 
-    // ── Construção das linhas visuais ─────────────────────────
+    // ── Construção visual das linhas ──────────────────────────
 
-    /**
-     * Linha de cliente:
-     * [avatar] Nome ......... Endereço ......... CPF     [✏] [🗑]
-     */
     private HBox criarLinhaCliente(Cliente c) {
-        Label avatar = criarAvatar();
-
-        Label lblNome = new Label(c.getNome());
-        lblNome.setStyle("-fx-font-size:13px; -fx-text-fill:#2E1A47;");
-        HBox.setHgrow(lblNome, Priority.ALWAYS);
-        lblNome.setMaxWidth(Double.MAX_VALUE);
-
-        Label lblEndereco = new Label(c.getEndereco());
-        lblEndereco.setStyle("-fx-font-size:13px; -fx-text-fill:#555555;");
-        HBox.setHgrow(lblEndereco, Priority.ALWAYS);
-        lblEndereco.setMaxWidth(Double.MAX_VALUE);
-
-        Label lblCpf = new Label(c.getCpf());
-        lblCpf.setStyle("-fx-font-size:13px; -fx-text-fill:#555555;");
-        lblCpf.setPrefWidth(160);
-
-        VBox acoes = criarBotoesAcao(
+        return criarLinha(
+                c.getNome(),
+                c.getEndereco(),
+                c.getCpf(),
                 e -> editarCliente(c),
                 e -> excluirCliente(c)
         );
-
-        HBox linha = new HBox(12, avatar, lblNome, lblEndereco, lblCpf, acoes);
-        linha.setStyle(LINHA_STYLE);
-        linha.setAlignment(Pos.CENTER_LEFT);
-        return linha;
     }
 
-    /**
-     * Linha de funcionário:
-     * [avatar] Nome ......... Login ...........  —       [✏] [🗑]
-     */
     private HBox criarLinhaFuncionario(UsuarioFuncionario f) {
-        Label avatar = criarAvatar();
-
-        Label lblNome = new Label(f.getNome());
-        lblNome.setStyle("-fx-font-size:13px; -fx-text-fill:#2E1A47;");
-        HBox.setHgrow(lblNome, Priority.ALWAYS);
-        lblNome.setMaxWidth(Double.MAX_VALUE);
-
-        Label lblLogin = new Label(f.getLogin());
-        lblLogin.setStyle("-fx-font-size:13px; -fx-text-fill:#555555;");
-        HBox.setHgrow(lblLogin, Priority.ALWAYS);
-        lblLogin.setMaxWidth(Double.MAX_VALUE);
-
-        Label lblId = new Label("#" + (f.getIdFuncionario() != null ? f.getIdFuncionario() : "—"));
-        lblId.setStyle("-fx-font-size:13px; -fx-text-fill:#888888;");
-        lblId.setPrefWidth(160);
-
-        VBox acoes = criarBotoesAcao(
+        String idStr = f.getIdFuncionario() != null ? "#" + f.getIdFuncionario() : "—";
+        return criarLinha(
+                f.getNome(),
+                f.getLogin(),
+                idStr,
                 e -> editarFuncionario(f),
                 e -> excluirFuncionario(f)
         );
-
-        HBox linha = new HBox(12, avatar, lblNome, lblLogin, lblId, acoes);
-        linha.setStyle(LINHA_STYLE);
-        linha.setAlignment(Pos.CENTER_LEFT);
-        return linha;
     }
 
-    /** Avatar circular cinza com ícone de pessoa */
-    private Label criarAvatar() {
+    private HBox criarLinha(String col1, String col2, String col3,
+                            javafx.event.EventHandler<ActionEvent> onEdit,
+                            javafx.event.EventHandler<ActionEvent> onDelete) {
+
+        // Avatar circular
         Label avatar = new Label("👤");
-        avatar.setStyle(AVATAR_STYLE +
-                "-fx-font-size:18px; -fx-alignment:center; -fx-text-fill:#FFFFFF;");
+        avatar.setStyle(
+                "-fx-background-color:#C0B8C8; -fx-background-radius:50;" +
+                        "-fx-min-width:36px; -fx-min-height:36px;" +
+                        "-fx-pref-width:36px; -fx-pref-height:36px;" +
+                        "-fx-font-size:18px; -fx-alignment:center; -fx-text-fill:white;"
+        );
         avatar.setAlignment(Pos.CENTER);
-        return avatar;
-    }
 
-    /** Botões ✏ e 🗑 empilhados verticalmente como no design */
-    private VBox criarBotoesAcao(
-            javafx.event.EventHandler<ActionEvent> onEdit,
-            javafx.event.EventHandler<ActionEvent> onDelete) {
+        Label lblCol1 = new Label(col1);
+        lblCol1.setStyle("-fx-font-size:13px; -fx-text-fill:#2E1A47;");
+        HBox.setHgrow(lblCol1, Priority.ALWAYS);
+        lblCol1.setMaxWidth(Double.MAX_VALUE);
 
+        Label lblCol2 = new Label(col2);
+        lblCol2.setStyle("-fx-font-size:13px; -fx-text-fill:#555555;");
+        HBox.setHgrow(lblCol2, Priority.ALWAYS);
+        lblCol2.setMaxWidth(Double.MAX_VALUE);
+
+        Label lblCol3 = new Label(col3);
+        lblCol3.setStyle("-fx-font-size:13px; -fx-text-fill:#555555;");
+        lblCol3.setPrefWidth(160);
+
+        // Botões ação empilhados verticalmente
         Button btnEdit = new Button("✏");
-        btnEdit.setStyle(ICON_BTN_STYLE + "-fx-text-fill:#888888;");
+        btnEdit.setStyle(
+                "-fx-background-color:transparent; -fx-text-fill:#888888;" +
+                        "-fx-font-size:13px; -fx-cursor:hand; -fx-padding:1 4 1 4;"
+        );
         btnEdit.setOnAction(onEdit);
 
         Button btnDel = new Button("🗑");
-        btnDel.setStyle(ICON_BTN_STYLE + "-fx-text-fill:#AAAAAA;");
+        btnDel.setStyle(
+                "-fx-background-color:transparent; -fx-text-fill:#AAAAAA;" +
+                        "-fx-font-size:13px; -fx-cursor:hand; -fx-padding:1 4 1 4;"
+        );
         btnDel.setOnAction(onDelete);
 
-        VBox box = new VBox(2, btnEdit, btnDel);
-        box.setAlignment(Pos.CENTER);
-        return box;
+        VBox acoes = new VBox(2, btnEdit, btnDel);
+        acoes.setAlignment(Pos.CENTER);
+        acoes.setPrefWidth(40);
+
+        HBox linha = new HBox(10, avatar, lblCol1, lblCol2, lblCol3, acoes);
+        linha.setAlignment(Pos.CENTER_LEFT);
+        linha.setStyle(
+                "-fx-padding:10 16 10 10;" +
+                        "-fx-background-color:#FFFFFF;" +
+                        "-fx-border-color:transparent transparent #EAE0D0 transparent;" +
+                        "-fx-border-width:0 0 1 0;"
+        );
+        return linha;
     }
 
     private HBox linhaVazia(String msg) {
         Label l = new Label(msg);
         l.setStyle("-fx-text-fill:#9A8A7A; -fx-font-style:italic; -fx-font-size:13px;");
         HBox h = new HBox(l);
-        h.setStyle("-fx-padding:16 20 16 20;");
+        h.setStyle("-fx-padding:20 20 20 20; -fx-background-color:#FFFFFF;");
         h.setAlignment(Pos.CENTER);
         return h;
     }
 
-    // ── Ações: adicionar ──────────────────────────────────────
+    // ── Adição rápida ─────────────────────────────────────────
 
     @FXML
     public void abrirFormNovo(ActionEvent e) {
-        String nome     = tfNome.getText().trim();
-        String campo2   = tfEndereco.getText().trim(); // endereço ou login
-        String campo3   = tfCpf.getText().trim();      // cpf ou senha
+        String nome   = tfNome.getText().trim();
+        String campo2 = tfEndereco.getText().trim();
+        String campo3 = tfCpf.getText().trim();
 
         if (nome.isEmpty() || campo2.isEmpty() || campo3.isEmpty()) {
             lblMsg.setText("Preencha todos os campos antes de adicionar.");
             return;
         }
-
         lblMsg.setText("");
         try {
             if (exibindoClientes) {
-                Cliente novo = new Cliente(campo3, nome, campo2); // cpf, nome, endereco
-                SessaoUsuario.getInstance().getClienteService().cadastrar(novo);
+                // campo2 = endereço, campo3 = cpf
+                SessaoUsuario.getInstance().getClienteService()
+                        .cadastrar(new Cliente(campo3, nome, campo2));
                 carregarClientes();
             } else {
-                UsuarioFuncionario novo = new UsuarioFuncionario(nome, campo2, campo3);
-                SessaoUsuario.getInstance().getUsuarioFuncionarioService().cadastrar(novo);
+                // campo2 = login, campo3 = senha
+                SessaoUsuario.getInstance().getUsuarioFuncionarioService()
+                        .cadastrar(new UsuarioFuncionario(nome, campo2, campo3));
                 carregarFuncionarios();
             }
             tfNome.clear(); tfEndereco.clear(); tfCpf.clear();
@@ -277,72 +281,62 @@ public class CadastrosController implements Initializable {
         }
     }
 
-    // ── Ações: editar / excluir clientes ─────────────────────
+    // ── Editar / Excluir clientes ─────────────────────────────
 
     private void editarCliente(Cliente c) {
         TextInputDialog dlg = new TextInputDialog(c.getNome());
-        dlg.setTitle("Editar Cliente");
-        dlg.setHeaderText("Nome:");
-        dlg.showAndWait().ifPresent(novoNome -> {
-            if (!novoNome.isBlank()) {
-                c.setNome(novoNome);
+        dlg.setTitle("Editar Cliente"); dlg.setHeaderText("Novo nome:");
+        dlg.showAndWait().ifPresent(n -> {
+            if (!n.isBlank()) {
+                c.setNome(n);
                 try {
                     SessaoUsuario.getInstance().getClienteService().atualizar(c);
                     carregarClientes();
-                } catch (Exception ex) {
-                    lblMsg.setText("Erro ao editar: " + ex.getMessage());
-                }
+                } catch (Exception ex) { lblMsg.setText("Erro: " + ex.getMessage()); }
             }
         });
     }
 
     private void excluirCliente(Cliente c) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Excluir o cliente \"" + c.getNome() + "\"?", ButtonType.YES, ButtonType.NO);
-        confirm.setHeaderText(null);
-        confirm.showAndWait().ifPresent(btn -> {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "Excluir \"" + c.getNome() + "\"?", ButtonType.YES, ButtonType.NO);
+        a.setHeaderText(null);
+        a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 try {
                     SessaoUsuario.getInstance().getClienteService().excluir(c.getCpf());
                     carregarClientes();
-                } catch (Exception ex) {
-                    lblMsg.setText("Erro ao excluir: " + ex.getMessage());
-                }
+                } catch (Exception ex) { lblMsg.setText("Erro: " + ex.getMessage()); }
             }
         });
     }
 
-    // ── Ações: editar / excluir funcionários ─────────────────
+    // ── Editar / Excluir funcionários ─────────────────────────
 
     private void editarFuncionario(UsuarioFuncionario f) {
         TextInputDialog dlg = new TextInputDialog(f.getNome());
-        dlg.setTitle("Editar Funcionário");
-        dlg.setHeaderText("Nome:");
-        dlg.showAndWait().ifPresent(novoNome -> {
-            if (!novoNome.isBlank()) {
+        dlg.setTitle("Editar Funcionário"); dlg.setHeaderText("Novo nome:");
+        dlg.showAndWait().ifPresent(n -> {
+            if (!n.isBlank()) {
                 try {
-                    f.setNome(novoNome);
+                    f.setNome(n);
                     SessaoUsuario.getInstance().getUsuarioFuncionarioService().atualizar(f);
                     carregarFuncionarios();
-                } catch (Exception ex) {
-                    lblMsg.setText("Erro ao editar: " + ex.getMessage());
-                }
+                } catch (Exception ex) { lblMsg.setText("Erro: " + ex.getMessage()); }
             }
         });
     }
 
     private void excluirFuncionario(UsuarioFuncionario f) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Excluir o funcionário \"" + f.getNome() + "\"?", ButtonType.YES, ButtonType.NO);
-        confirm.setHeaderText(null);
-        confirm.showAndWait().ifPresent(btn -> {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "Excluir \"" + f.getNome() + "\"?", ButtonType.YES, ButtonType.NO);
+        a.setHeaderText(null);
+        a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 try {
                     SessaoUsuario.getInstance().getUsuarioFuncionarioService().excluir(f);
                     carregarFuncionarios();
-                } catch (Exception ex) {
-                    lblMsg.setText("Erro ao excluir: " + ex.getMessage());
-                }
+                } catch (Exception ex) { lblMsg.setText("Erro: " + ex.getMessage()); }
             }
         });
     }
