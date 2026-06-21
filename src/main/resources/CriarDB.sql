@@ -43,7 +43,6 @@ CREATE TABLE tb_alugueis (
     cliente_cpf CHAR(14) NOT NULL,
     data_inicio DATE NOT NULL,
     data_fim_prevista DATE NOT NULL,
-    data_fim DATE NULL,
     valor_base DOUBLE NOT NULL,
     valor_multa DOUBLE NOT NULL DEFAULT 0,
 
@@ -53,10 +52,11 @@ CREATE TABLE tb_alugueis (
 CREATE TABLE tb_itens_aluguel (
     id INT AUTO_INCREMENT PRIMARY KEY,
     aluguel_id INT NOT NULL,
-    disco_id BINARY(16) NULL,
-    livro_id BINARY(16) NULL,
+    disco_id CHAR(32) NULL,
+    livro_id CHAR(32) NULL,
     preco_diaria DOUBLE NOT NULL,
     dias_alugados INT NOT NULL,
+    data_fim DATE NULL,
 
     FOREIGN KEY (aluguel_id) REFERENCES tb_alugueis(id) ON DELETE CASCADE,
     FOREIGN KEY (disco_id) REFERENCES Discos(ID) ON DELETE RESTRICT,
