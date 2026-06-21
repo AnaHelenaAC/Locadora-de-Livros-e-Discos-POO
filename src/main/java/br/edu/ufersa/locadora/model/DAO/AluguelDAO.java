@@ -23,15 +23,8 @@ public class AluguelDAO {
             ps.setString(1, entity.getCliente().getCpf());
             ps.setDate(2, Date.valueOf(entity.getDataInicio()));
             ps.setDate(3, Date.valueOf(entity.getDataFimPrevista()));
-
-            if (entity.getDataFim() != null) {
-                ps.setDate(4, Date.valueOf(entity.getDataFim()));
-            } else {
-                ps.setNull(4, Types.DATE);
-            }
-
-            ps.setDouble(5, entity.getValorBase());
-            ps.setDouble(6, entity.getValorMulta());
+            ps.setDouble(4, entity.getValorBase());
+            ps.setDouble(5, entity.getValorMulta());
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -47,18 +40,12 @@ public class AluguelDAO {
     }
 
     public Aluguel Update(Aluguel entity) {
-        String sql = "UPDATE tb_alugueis SET data_fim = ?, valor_multa = ? WHERE id = ?";
+        String sql = "UPDATE tb_alugueis SET valor_multa = ? WHERE id = ?";
 
         try (Connection con = ConnectionFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
-            if (entity.getDataFim() != null) {
-                ps.setDate(1, Date.valueOf(entity.getDataFim()));
-            } else {
-                ps.setNull(1, Types.DATE);
-            }
-
-            ps.setDouble(2, entity.getValorMulta());
-            ps.setInt(3, entity.getId());
+            ps.setDouble(1, entity.getValorMulta());
+            ps.setInt(2, entity.getId());
 
             if (ps.executeUpdate() > 0) {
                 return entity;
@@ -107,8 +94,8 @@ public class AluguelDAO {
                             listaItens,
                             rs.getDate("data_inicio").toLocalDate(),
                             rs.getDate("data_fim_prevista").toLocalDate(),
-                            rs.getDate("data_fim") != null ? rs.getDate("data_fim").toLocalDate() : null,
-                            rs.getDouble("valor_base"), rs.getDouble("valor_multa"));
+                            rs.getDouble("valor_base"),
+                            rs.getDouble("valor_multa"));
                 }
             }
         } catch (SQLException e) {
@@ -137,13 +124,48 @@ public class AluguelDAO {
                         rs.getInt("id"),
                         cliente,
                         listaItens,
-                        rs.getDate("data_inicio").toLocalDate(), rs.getDate("data_fim_prevista").toLocalDate(),
-                        rs.getDate("data_fim") != null ? rs.getDate("data_fim").toLocalDate() : null,
-                        rs.getDouble("valor_base"), rs.getDouble("valor_multa"));
+                        rs.getDate("data_inicio").toLocalDate(),
+                        rs.getDate("data_fim_prevista").toLocalDate(),
+                        rs.getDouble("valor_base"),
+                        rs.getDouble("valor_multa"));
                 lista.add(aluguel);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao listar aluguéis: " + e.getMessage(), e);
+        }
+        return lista;
+    }
+
+    public List<Aluguel> ReadAtivos() {
+        List<Aluguel> lista = new ArrayList<>();
+        String sql = "SELECT DISTINCT a.* FROM tb_alugueis a JOIN tb_itens_aluguel i ON a.id = i.aluguel_id WHERE i.data_fim IS NULL";
+
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            ClienteDAO clienteDAO = new ClienteDAO();
+
+            while (rs.next()) {
+                String cpf = rs.getString("cliente_cpf");
+                Cliente cliente = clienteDAO.ReadByCpf(cpf);
+                ItemAluguelDAO itemAluguelDAO = new ItemAluguelDAO();
+                int aluguelId = rs.getInt("id");
+                List<ItemAluguel> listaItens = itemAluguelDAO.findByAluguelId(aluguelId);
+
+                Aluguel aluguel = new Aluguel(
+                        aluguelId,
+                        cliente,
+                        listaItens,
+                        rs.getDate("data_inicio").toLocalDate(),
+                        rs.getDate("data_fim_prevista").toLocalDate(),
+                        rs.getDouble("valor_base"),
+                        rs.getDouble("valor_multa"));
+                lista.add(aluguel);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar aluguéis ativos: " + e.getMessage());
+            e.printStackTrace();
         }
         return lista;
     }

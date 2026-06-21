@@ -1,7 +1,6 @@
 package br.edu.ufersa.locadora.model.entities;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ public class Aluguel {
     private List<ItemAluguel> itensAlugados;
     private final LocalDate dataInicio;
     private final LocalDate dataFimPrevista;
-    private LocalDate dataFim;
     private final double valorBase;
     private double valorMulta;
 
@@ -52,7 +50,6 @@ public class Aluguel {
             List<ItemAluguel> itensAlugados,
             LocalDate dataInicio,
             LocalDate dataFimPrevista,
-            LocalDate dataFim,
             double valorBase,
             double valorMulta) {
         if (cliente == null) {
@@ -60,62 +57,52 @@ public class Aluguel {
         }
         this.id = id;
         this.cliente = cliente;
+        this.itensAlugados = (itensAlugados != null) ? itensAlugados : new ArrayList<>();
         this.dataInicio = dataInicio;
         this.dataFimPrevista = dataFimPrevista;
-        this.dataFim = dataFim;
         this.valorBase = valorBase;
         this.valorMulta = valorMulta;
     }
 
     // MÉTODOS
-    // calcula multa e retorna valor final
-    private double calcularMulta(LocalDate dataInformada) {
 
-        // Validações
-        if (dataInformada == null) {
-            throw new IllegalArgumentException("Data inválida.");
+    // Calcula a multa acumulada de todos os itens
+    private double calcularMultaAcumulada() {
+        double totalMulta = 0.0;
+        for (ItemAluguel item : itensAlugados) {
+            totalMulta += item.calcularMultaItem(dataFimPrevista, dataInicio);
         }
-        if (dataInformada.isBefore(dataInicio)) {
-            throw new IllegalStateException(
-                    "Data informada é anterior à data de início do aluguel.");
-        }
-        if (!dataInformada.isAfter(dataFimPrevista)) {
-            return 0.0;
-        }
+        return totalMulta;
+    }
 
-        // Calcula dias de atraso
-        long atraso = ChronoUnit.DAYS.between(dataFimPrevista, dataInformada);
+    // Consulta o valor final atualizado
+    public double calcularValorFinalAtual() {return valorBase + calcularMultaAcumulada();
+    }
 
-        // Multa fixa + juros diários de 10% sobre o valor das diárias
-        double multaFixa = 5.0;
-        double totalDiarias = 0.0;
+    // Finaliza TODOS os itens de uma vez só (caso todos sejam devolvidos juntos)
+    public void finalizarAluguelCompleto(LocalDate dataDevolucao) {
+        if (getStatus().equals("FINALIZADO")) {
+            throw new IllegalStateException("Aluguel já está completamente finalizado.");
+        }
 
         for (ItemAluguel item : itensAlugados) {
-            totalDiarias += item.getPrecoDiaria();
+            if (item.getDataFim() == null) { // finaliza apenas os que ainda faltam
+                item.finalizarItem(dataDevolucao, dataInicio);
+            }
         }
-        double jurosDiarios = totalDiarias * 0.10 * atraso;
-
-        return multaFixa + jurosDiarios;
+        // Atualiza a multa gravada no objeto
+        this.valorMulta = calcularMultaAcumulada();
     }
 
-    // Consulta sem alterar o estado do aluguel
-    public double calcularValorFinal(LocalDate dataInformada) {
-        return valorBase + calcularMulta(dataInformada);
+    // Permite finalizar apenas um item específico (Devolução parcial)
+    public void finalizarItemEspecifico(ItemAluguel item, LocalDate dataDevolucao) {
+        if (!itensAlugados.contains(item)) {
+            throw new IllegalArgumentException("Este item não pertence a este aluguel.");
+        }
+        item.finalizarItem(dataDevolucao, dataInicio);
+        this.valorMulta = calcularMultaAcumulada();
     }
 
-    // Finaliza o aluguel
-    public void finalizarAluguel(LocalDate dataFim) {
-        if (dataFim == null) {
-            throw new IllegalArgumentException("Data inválida.");
-        }
-        if (getStatus().equals("FINALIZADO")) {
-            throw new IllegalStateException("Aluguel já finalizado.");
-        }
-        this.dataFim = dataFim;
-        this.valorMulta = calcularMulta(dataFim);
-    }
-
-    // adiciona itens de modo independente
     public void adicionarItens(List<ItemAluguel> itens) {
         if (itens != null) {
             this.itensAlugados.addAll(itens);
@@ -148,10 +135,6 @@ public class Aluguel {
         return dataFimPrevista;
     }
 
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
     public double getValorBase() {
         return valorBase;
     }
@@ -161,7 +144,15 @@ public class Aluguel {
     }
 
     public String getStatus() {
-        if (dataFim != null) {
+        boolean todosDevolvidos = true;
+        for (ItemAluguel item : itensAlugados) {
+            if (item.getDataFim() == null) {
+                todosDevolvidos = false;
+                break;
+            }
+        }
+
+        if (todosDevolvidos) {
             return "FINALIZADO";
         }
         if (LocalDate.now().isAfter(dataFimPrevista)) {

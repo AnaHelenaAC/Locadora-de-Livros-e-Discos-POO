@@ -2,20 +2,27 @@ package br.edu.ufersa.locadora.model.Service;
 
 import br.edu.ufersa.locadora.model.DAO.AluguelDAO;
 import br.edu.ufersa.locadora.model.DAO.ItemAluguelDAO;
+import br.edu.ufersa.locadora.model.DAO.DiscoDAO;
+import br.edu.ufersa.locadora.model.DAO.LivroDAO;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.Carrinho;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class AluguelService {
 
     private final AluguelDAO aluguelDAO;
     private final ItemAluguelDAO itemAluguelDAO;
+    private final DiscoDAO discoDAO;
+    private final LivroDAO livroDAO;
 
     public AluguelService() {
         aluguelDAO = new AluguelDAO();
         itemAluguelDAO = new ItemAluguelDAO();
+        discoDAO = new DiscoDAO();
+        livroDAO = new LivroDAO();
     }
 
     // método para criar um novo aluguel
@@ -33,47 +40,53 @@ public class AluguelService {
         if (aluguel == null) {
             throw new IllegalArgumentException("Aluguel inválido.");
         }
+
+        for (ItemAluguel item : aluguel.getItensAlugados()) {
+            if (item.getItem().getQtdItens() <= 0) {
+                throw new IllegalStateException("O item '" + item.getItem().getTitulo() + "' está esgotado!");
+            }
+        }
+
         aluguel = aluguelDAO.Create(aluguel);
 
-        if (aluguel == null) {
+        if (aluguel != null) {
+            for (ItemAluguel item : aluguel.getItensAlugados()) {
+                int novaQuantidade = item.getItem().getQtdItens() - 1;
+                item.getItem().setQtdItens(novaQuantidade);
+
+                if (item.getItem().getIsDisco()) {
+                    discoDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+                } else {
+                    livroDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+                }
+            }
+        } else {
             throw new IllegalStateException("Erro ao salvar aluguel.");
         }
 
-        List<ItemAluguel> itens = aluguel.getItensAlugados();
-
-        for (ItemAluguel item : itens) {
-            ItemAluguel salvo = itemAluguelDAO.Create(item, aluguel.getId());
-
-            if (salvo == null) {
-                throw new IllegalStateException("Erro ao salvar item do aluguel.");
-            }
-        }
         return aluguel;
     }
 
-    // busca aluguel por id
     public Aluguel buscarPorId(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID inválido.");
         }
-        Aluguel aluguel = aluguelDAO.Read(id);
-
-        if (aluguel != null) {
-            List<ItemAluguel> itens = itemAluguelDAO.Read(id); // Busca na tabela item_aluguel
-            aluguel.adicionarItens(itens); // Junta os itens no objeto
-        }
-        return aluguel;
+        return aluguelDAO.Read(id);
     }
 
-    // lista todos os aluguéis ativos
-    public List<Aluguel> listarTodos() {
-        List<Aluguel> alugueis = aluguelDAO.ReadAll();
+    public List<Aluguel> listarAtivos() {
 
-        for (Aluguel aluguel : alugueis) {
-            List<ItemAluguel> itens = itemAluguelDAO.Read(aluguel.getId());
-            aluguel.adicionarItens(itens);
+        try {
+            return aluguelDAO.ReadAtivos();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        return alugueis;
+
+    }
+
+    public List<Aluguel> listarTodos() {
+        return aluguelDAO.ReadAll();
     }
 
     // atualiza aluguel
@@ -92,5 +105,53 @@ public class AluguelService {
             throw new IllegalArgumentException("Aluguel inválido.");
         }
         return aluguelDAO.Delete(aluguel);
+    }
+
+    public Aluguel finalizarAluguelCompleto(Aluguel aluguel, LocalDate dataDevolucao) {
+        if (aluguel == null) {
+            throw new IllegalArgumentException("Aluguel inválido.");
+        }
+
+        for (ItemAluguel item : aluguel.getItensAlugados()) {
+            if (item.getDataFim() == null) {
+                devolverItemAoEstoque(item);
+            }
+        }
+
+        aluguel.finalizarAluguelCompleto(dataDevolucao);
+        return aluguelDAO.Update(aluguel);
+    }
+
+    public Aluguel finalizarItemEspecifico(Aluguel aluguel, ItemAluguel item, LocalDate dataDevolucao) {
+        if (aluguel == null || item == null) {
+            throw new IllegalArgumentException("Parâmetros inválidos para finalização.");
+        }
+
+        if (item.getDataFim() != null) {
+            throw new IllegalStateException("Este item já foi devolvido anteriormente.");
+        }
+        devolverItemAoEstoque(item);
+        aluguel.finalizarItemEspecifico(item, dataDevolucao);
+        System.out.println("=== ITENS ANTES DE SALVAR ===");
+
+        for (ItemAluguel i : aluguel.getItensAlugados()) {
+            System.out.println(
+                    i.getItem().getTitulo()
+                            + " -> "
+                            + i.getDataFim()
+            );
+        }
+        return aluguelDAO.Update(aluguel);
+    }
+
+    private void devolverItemAoEstoque(ItemAluguel item) {
+        int novaQuantidade = item.getItem().getQtdItens() + 1;
+        item.getItem().setQtdItens(novaQuantidade);
+
+        if (item.getItem().getIsDisco()) {
+            discoDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+        } else {
+            livroDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+        }
     }
 }
