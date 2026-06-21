@@ -1,34 +1,24 @@
 package br.edu.ufersa.locadora.model.DAO;
 
-import java.sql.*;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.Cliente;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
 public class AluguelDAO {
-    private final static String URL = "jdbc:mysql://localhost/poo";
-    private final static String USER = "poo";
-    private final static String PASS = "AH443162ah";
-    private static Connection con = null;
-
-    public static Connection getConnection() {
-        if (con == null) {
-            try {
-                con = DriverManager.getConnection(URL, USER, PASS);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return con;
-    }
-
     public Aluguel Create(Aluguel entity) {
         String sql = "INSERT INTO tb_alugueis (cliente_cpf, data_inicio, data_fim_prevista, data_fim, valor_base, valor_multa) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = getConnection();
+        try (Connection con = ConnectionFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, entity.getCliente().getCpf());
             ps.setDate(2, Date.valueOf(entity.getDataInicio()));
@@ -44,27 +34,22 @@ public class AluguelDAO {
             ps.setDouble(6, entity.getValorMulta());
 
             ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-
-            if (rs.next()) {
-                entity.setId(rs.getInt(1));
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    entity.setId(rs.getInt(1));
+                }
             }
-            rs.close();
-            ps.close();
 
             return entity;
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir aluguel no banco (DAO): " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao inserir aluguel no banco: " + e.getMessage(), e);
         }
-        return null;
     }
 
     public Aluguel Update(Aluguel entity) {
-
         String sql = "UPDATE tb_alugueis SET data_fim = ?, valor_multa = ? WHERE id = ?";
 
-        try (Connection con = getConnection();
+        try (Connection con = ConnectionFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             if (entity.getDataFim() != null) {
                 ps.setDate(1, Date.valueOf(entity.getDataFim()));
@@ -75,15 +60,12 @@ public class AluguelDAO {
             ps.setDouble(2, entity.getValorMulta());
             ps.setInt(3, entity.getId());
 
-            int linhasAfetadas = ps.executeUpdate();
-
-            if (linhasAfetadas > 0) {
+            if (ps.executeUpdate() > 0) {
                 return entity;
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao atualizar aluguel no banco (DAO): " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar aluguel no banco: " + e.getMessage(), e);
         }
 
         return null;
@@ -92,22 +74,21 @@ public class AluguelDAO {
     public boolean Delete(Aluguel entity) {
         String sql = "DELETE FROM tb_alugueis WHERE id = ?";
 
-        try (Connection con = getConnection();
+        try (Connection con = ConnectionFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, entity.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Erro ao deletar aluguel: " + e.getMessage());
-            return false;
+            throw new RuntimeException("Erro ao deletar aluguel: " + e.getMessage(), e);
         }
     }
 
     public Aluguel Read(int id) {
         String sql = "SELECT * FROM tb_alugueis WHERE id = ?";
 
-        try (Connection con = getConnection();
+        try (Connection con = ConnectionFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -131,8 +112,7 @@ public class AluguelDAO {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar aluguel por ID: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar aluguel por ID: " + e.getMessage(), e);
         }
         return null;
     }
@@ -141,7 +121,7 @@ public class AluguelDAO {
         List<Aluguel> lista = new ArrayList<>();
         String sql = "SELECT * FROM tb_alugueis";
 
-        try (Connection con = getConnection();
+        try (Connection con = ConnectionFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
 
@@ -163,8 +143,7 @@ public class AluguelDAO {
                 lista.add(aluguel);
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao listar aluguéis: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao listar aluguéis: " + e.getMessage(), e);
         }
         return lista;
     }

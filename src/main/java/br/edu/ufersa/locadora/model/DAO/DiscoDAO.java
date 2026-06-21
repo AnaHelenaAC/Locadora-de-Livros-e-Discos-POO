@@ -1,79 +1,55 @@
 package br.edu.ufersa.locadora.model.DAO;
 
 import br.edu.ufersa.locadora.model.entities.Disco;
-import java.sql.*;
+import br.edu.ufersa.locadora.model.entities.ItemAcervo;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ArrayList;
 
 public class DiscoDAO {
-    private final static String URL = "jdbc:mysql://localhost/poo";
-    private final static String USER = "poo";
-    private final static String PASS = "AH443162ah";
-    private static Connection con = null;
-
-    public static Connection getConnection(){
-        if(con == null){
-            try{
-                con = DriverManager.getConnection(URL,USER,PASS);
-            }catch (SQLException e){e.printStackTrace();}
-        }
-        return con;
-    }
+    private static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public void create(Disco disco) {
-        con = getConnection();
-        String sql = "INSERT INTO Discos (titulo, criadoPor, genero, valor, dataDeLancamento, qtdItens, duracao) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Discos (ID, titulo, criadoPor, genero, valor, dataDeLancamento, qtdItens, isDisco, duracao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, disco.getID());
             ps.setString(1, disco.getTitulo());
             ps.setString(2, disco.getCriadoPor());
             ps.setString(3, disco.getGenero());
             ps.setDouble(4, disco.getValor());
-            ps.setObject(5, disco.getDataDeLancamento());
+            ps.setDate(5, Date.valueOf(LocalDate.parse(disco.getDataDeLancamento(), FORMATADOR)));
             ps.setInt(6, disco.getQtdItens());
-            ps.setInt(7, disco.getDuracao());
+            ps.setBoolean(7, disco.getIsDisco());
+            ps.setInt(8, disco.getDuracao());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao inserir disco no banco: " + e.getMessage(), e);
         }
     }
 
     public List<Disco> read() {
-        con = getConnection();
         String sql = "SELECT * FROM Discos"; // Sem a cláusula WHERE, para trazer tudo
         List<Disco> discos = new ArrayList<>();
 
-        try (PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                // 1. Tratamento da data
-                java.sql.Date dataBanco = rs.getDate("dataDeLancamento");
-                String dataFormatada = (dataBanco != null) ? dataBanco.toString() : "";
-
-                // 2. Conversão dos segundos do banco para Hh:Mm:Ss
-                int duracaoTotalSegundos = rs.getInt("duracao");
-                int horas = duracaoTotalSegundos / 3600;
-                int minutos = (duracaoTotalSegundos % 3600) / 60;
-                int segundos = duracaoTotalSegundos % 60;
-
-                // 3. Instanciação correta com 10 parâmetros
-                Disco disco = new Disco(
-                        rs.getString("titulo"),
-                        rs.getString("criadoPor"),
-                        rs.getString("genero"),
-                        rs.getDouble("valor"),
-                        dataFormatada,
-                        rs.getInt("qtdItens"),
-                        true, // isDisco
-                        horas,
-                        minutos,
-                        segundos
-                );
-                discos.add(disco);
+                discos.add(mapearDisco(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao listar discos: " + e.getMessage(), e);
         }
         return discos;
     }
@@ -82,41 +58,16 @@ public class DiscoDAO {
         String sql = "SELECT * FROM Discos WHERE ID = ?";
         Disco disco = null;
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
-
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    // 1. Pegar a data do banco e converter para String
-                    java.sql.Date dataBanco = rs.getDate("dataDeLancamento");
-                    String dataFormatada = (dataBanco != null) ? dataBanco.toString() : "";
-// Nota: Se a classe pai (ItemAcervo) exigir um formato específico como "dd/MM/yyyy",
-// você precisará usar um SimpleDateFormat aqui em vez de apenas .toString().
-
-// 2. Pegar a duração total em segundos do banco e converter de volta para horas, minutos e segundos
-                    int duracaoTotalSegundos = rs.getInt("duracao");
-                    int horas = duracaoTotalSegundos / 3600;
-                    int minutos = (duracaoTotalSegundos % 3600) / 60;
-                    int segundos = duracaoTotalSegundos % 60;
-
-// 3. Instanciar o Disco passando os 10 parâmetros exigidos
-                    disco = new Disco(
-                            rs.getString("titulo"),      // titulo (String)
-                            rs.getString("criadoPor"),   // criadoPor (String)
-                            rs.getString("genero"),      // genero (String)
-                            rs.getDouble("valor"),       // valor (double)
-                            dataFormatada,               // dataDeLancamentoFormatada (String)
-                            rs.getInt("qtdItens"),       // qtdItens (int)
-                            true,                        // isDisco (boolean - passando true diretamente)
-                            horas,                       // horas (int)
-                            minutos,                     // minutos (int)
-                            segundos                     // segundos (int)
-                    );
+                    disco = mapearDisco(rs);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar disco por ID: " + e.getMessage(), e);
         }
         return disco;
     }
@@ -124,31 +75,70 @@ public class DiscoDAO {
     public void update(Disco disco) {
         String sql = "UPDATE Discos SET titulo = ?, criadoPor = ?, genero = ?, valor = ?, dataDeLancamento = ?, qtdItens = ?, duracao = ? WHERE ID = ?";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, disco.getTitulo());
             ps.setString(2, disco.getCriadoPor());
             ps.setString(3, disco.getGenero());
             ps.setDouble(4, disco.getValor());
-            ps.setObject(5, disco.getDataDeLancamento());
+            ps.setDate(5, Date.valueOf(LocalDate.parse(disco.getDataDeLancamento(), FORMATADOR)));
             ps.setInt(6, disco.getQtdItens());
             ps.setInt(7, disco.getDuracao());
             ps.setString(8, disco.getID());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar disco: " + e.getMessage(), e);
         }
     }
 
     public void delete(String ID) {
         String sql = "DELETE FROM Discos WHERE ID = ?";
 
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao excluir disco: " + e.getMessage(), e);
+        }
+    }
+
+    private Disco mapearDisco(ResultSet rs) throws SQLException {
+        int duracaoTotalSegundos = rs.getInt("duracao");
+        int horas = duracaoTotalSegundos / 3600;
+        int minutos = (duracaoTotalSegundos % 3600) / 60;
+        int segundos = duracaoTotalSegundos % 60;
+
+        Disco disco = new Disco(
+                rs.getString("titulo"),
+                rs.getString("criadoPor"),
+                rs.getString("genero"),
+                rs.getDouble("valor"),
+                formatarData(rs.getDate("dataDeLancamento")),
+                rs.getInt("qtdItens"),
+                rs.getBoolean("isDisco"),
+                horas,
+                minutos,
+                segundos
+        );
+        definirId(disco, rs.getString("ID"));
+        return disco;
+    }
+
+    private String formatarData(Date dataBanco) {
+        if (dataBanco == null) {
+            throw new RuntimeException("Data de lançamento ausente no registro de disco.");
+        }
+        return dataBanco.toLocalDate().format(FORMATADOR);
+    }
+
+    private void definirId(Disco disco, String id) {
+        try {
+            Field field = ItemAcervo.class.getDeclaredField("ID");
+            field.setAccessible(true);
+            field.set(disco, id);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Erro ao aplicar ID ao disco lido do banco.", e);
         }
     }
 }

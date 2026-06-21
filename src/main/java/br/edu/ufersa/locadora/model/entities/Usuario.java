@@ -3,7 +3,7 @@ package br.edu.ufersa.locadora.model.entities;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
 
-public class Usuario {
+public abstract class Usuario {
     private String nome;
     private String login;
     private String senha;
