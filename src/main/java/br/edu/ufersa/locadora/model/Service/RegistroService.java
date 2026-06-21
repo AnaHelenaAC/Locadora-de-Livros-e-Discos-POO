@@ -5,7 +5,8 @@ import br.edu.ufersa.locadora.model.DAO.UsuarioFuncionarioDAO;
 import br.edu.ufersa.locadora.model.entities.Registro;
 import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
-import br.edu.ufersa.locadora.model.entities.ItemAcervo;
+import br.edu.ufersa.locadora.model.entities.ItemAluguel;
+import br.edu.ufersa.locadora.model.Service.AluguelService;
 import br.edu.ufersa.locadora.exceptions.RegistroException;
 import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 import java.util.List;
@@ -15,6 +16,7 @@ public class RegistroService {
 
     private RegistroDAO dao = new RegistroDAO();
     private UsuarioFuncionarioDAO funcionarioDAO = new UsuarioFuncionarioDAO();
+    private AluguelService aluguelService = new AluguelService(); // Adicionado para atualizar o estado do aluguel
 
     public Registro salvar(Registro reg) throws RegistroException {
         if (reg == null) {
@@ -60,24 +62,25 @@ public class RegistroService {
         }
     }
 
-    public void registrarAluguel(Registro reg, Aluguel aluguel, LocalDate dataFim) throws RegistroException {
-
+    public void registrarAluguel(Registro reg, Aluguel aluguel) throws RegistroException {
         if (reg == null || aluguel == null) {
-            throw new RegistroException("Dados inválidos!");
+            throw new RegistroException("Dados inválidos para registrar aluguel!");
         }
-        if (dataFim == null) {
-            throw new RegistroException("Data inválida!");
-        }
-        aluguel.finalizarAluguel(dataFim);
+        aluguelService.inserir(aluguel);
         reg.registrarAluguel(aluguel);
         dao.Update(reg);
     }
 
-    public void registrarDevolucao(Registro reg, ItemAcervo ite) throws RegistroException {
-        if (reg == null || ite == null) {
-            throw new RegistroException("Dados insuficientes para realizar a devolução!");
+    public void registrarDevolucaoDeItem(Registro reg, Aluguel aluguel, ItemAluguel item, LocalDate dataDevolucao) throws RegistroException {
+        if (reg == null || aluguel == null || item == null || dataDevolucao == null) {
+            throw new RegistroException("Dados insuficientes para realizar a devolução do item!");
         }
-        reg.registrarDevolucao(ite);
+        double multaAntes = aluguel.getValorMulta();
+        aluguelService.finalizarItemEspecifico(aluguel, item, dataDevolucao);
+        double multaGeradaPeloItem = aluguel.getValorMulta() - multaAntes;
+        if (multaGeradaPeloItem > 0) {
+            reg.registrarDevolucaoItem(multaGeradaPeloItem);
+        }
         dao.Update(reg);
     }
 

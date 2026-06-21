@@ -55,9 +55,9 @@ public class AluguelService {
                 item.getItem().setQtdItens(novaQuantidade);
 
                 if (item.getItem().getIsDisco()) {
-                    discoDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+                    discoDAO.updateQuantidade(item.getItem().getID(), novaQuantidade);
                 } else {
-                    livroDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+                    livroDAO.updateQuantidade(item.getItem().getID(), novaQuantidade);
                 }
             }
         } else {
@@ -149,9 +149,9 @@ public class AluguelService {
         item.getItem().setQtdItens(novaQuantidade);
 
         if (item.getItem().getIsDisco()) {
-            discoDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+            discoDAO.updateQuantidade(item.getItem().getID(), novaQuantidade);
         } else {
-            livroDAO.atualizarQuantidade(item.getItem().getID(), novaQuantidade);
+            livroDAO.updateQuantidade(item.getItem().getID(), novaQuantidade);
         }
     }
 }

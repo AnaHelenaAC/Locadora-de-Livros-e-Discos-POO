@@ -17,6 +17,18 @@ import java.time.format.DateTimeFormatter;
 public class LivroDAO {
     private static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    public void updateQuantidade(String id, int novaQuantidade) {
+        String sql = "UPDATE Lviros SET qtdItens = ? WHERE ID = ?";
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, novaQuantidade);
+            ps.setString(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void create(Livro livro) {
         String query = "INSERT INTO Livros (ID, titulo, criadoPor, genero, valor, dataDeLancamento, qtdItens, isDisco, qtdPaginas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

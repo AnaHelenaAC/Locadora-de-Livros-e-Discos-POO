@@ -17,6 +17,18 @@ import java.util.ArrayList;
 public class DiscoDAO {
     private static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    public void updateQuantidade(String id, int novaQuantidade) {
+        String sql = "UPDATE Discos SET qtdItens = ? WHERE ID = ?";
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, novaQuantidade);
+            ps.setString(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void create(Disco disco) {
         String sql = "INSERT INTO Discos (ID, titulo, criadoPor, genero, valor, dataDeLancamento, qtdItens, isDisco, duracao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

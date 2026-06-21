@@ -77,20 +77,22 @@ public class Registro {
         listaFuncionarios.add(fun);
     }
 
+    // CRIAÇÃO do aluguel
     public void registrarAluguel(Aluguel aluguel) throws RegistroException {
         if (aluguel == null) {
             throw new RegistroException("Negado! Aluguel inválido.");
         }
         listaAlugueis.add(aluguel);
-
         faturamentoTotal += aluguel.getValorBase();
-        faturamentoTotal += aluguel.getValorMulta();
     }
 
-    public void registrarDevolucao(ItemAcervo ite) throws RegistroException {
-        if (ite == null) {
-            throw new RegistroException("Item inválido para devolução.");
+    // Devolução de item
+    public void registrarDevolucaoItem(double valorMultaDoItem) throws RegistroException {
+        // Quando o item é devolvido, se houver multa acumulada dele, soma-se ao faturamento
+        if (valorMultaDoItem < 0) {
+            throw new RegistroException("Valor de multa inválido.");
         }
+        faturamentoTotal += valorMultaDoItem;
     }
 
     public void generarRelatorioAlugados(String categoria) throws RegistroException {
