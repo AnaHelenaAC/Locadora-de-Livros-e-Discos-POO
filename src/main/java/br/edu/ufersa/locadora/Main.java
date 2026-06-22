@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import br.edu.ufersa.locadora.util.ViewSwitcher;
+
 public class Main extends Application {
 
     @Override
@@ -14,7 +16,9 @@ public class Main extends Application {
         );
         Scene scene = new Scene(loader.load());
         stage.setTitle("Cultura Viva – Login");
+        ViewSwitcher.setScene(scene);
         stage.setScene(scene);
+
         stage.show();
     }
 

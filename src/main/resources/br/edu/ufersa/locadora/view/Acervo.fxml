@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.edu.ufersa.locadora.controllers.AcervoController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: transparent;" stylesheets="../css/Acervo.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.AcervoController">
+   <top>
+      <HBox prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <ToggleButton id="discosToggle" mnemonicParsing="false" prefHeight="60.0" prefWidth="300.0" selected="true" style="-fx-background-radius: 0 25 0 0; -fx-background-color: transparent;" text="Discos" textFill="#4a0730">
+               <graphic>
+                  <ImageView id="discIcon" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/disc-not-selected.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="Droid Sans Bold" size="30.0" />
+               </font>
+               <toggleGroup>
+                  <ToggleGroup fx:id="ItemAcervo" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton id="livrosToggle" mnemonicParsing="false" prefHeight="60.0" prefWidth="300.0" style="-fx-background-radius: 25 0 0 0; -fx-background-color: transparent;" text="Livros" textFill="#4a0730" toggleGroup="$ItemAcervo">
+               <graphic>
+                  <ImageView id="bookIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/book-not-selected.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="Droid Sans Bold" size="30.0" />
+               </font>
+            </ToggleButton>
+         </children>
+      </HBox>
+   </top>
+</BorderPane>
