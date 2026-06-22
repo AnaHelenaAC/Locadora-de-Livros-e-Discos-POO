@@ -50,7 +50,7 @@
                      <children>
                         <TableView fx:id="tabelaItens" maxHeight="-Infinity" maxWidth="-Infinity">
                           <columns>
-                            <TableColumn fx:id="colItemId" prefWidth="75.0" text="Tipo" />
+                            <TableColumn fx:id="colTipo" prefWidth="75.0" text="Tipo" />
                               <TableColumn fx:id="colTitulo" prefWidth="75.0" text="Título" />
                               <TableColumn fx:id="colDevolocao" prefWidth="75.0" text="Devolução" />
                               <TableColumn fx:id="colValor" prefWidth="75.0" text="Valor" />

@@ -16,13 +16,12 @@ public class ItemAluguelDAO {
         String sql = "INSERT INTO tb_itens_aluguel (aluguel_id, disco_id, livro_id, preco_diaria, dias_alugados, data_fim) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = ConnectionFactory.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, aluguelID);
 
             if (entity.getItem().getIsDisco()) {
                 ps.setString(2, entity.getItem().getID());
                 ps.setNull(3, Types.CHAR);
-
             } else {
                 ps.setNull(2, Types.CHAR);
                 ps.setString(3, entity.getItem().getID());
@@ -40,10 +39,42 @@ public class ItemAluguelDAO {
 
             ps.executeUpdate();
 
+            // captura o ID gerado e devolve preenchido na entidade
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    entity.setId(rs.getInt(1));
+                }
+            }
+
             return entity;
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir item do aluguel no banco: " + e.getMessage(), e);
+        }
+    }
+
+    // Atualiza a data_fim usando o id real da linha
+    public boolean Update(ItemAluguel entity) {
+        if (entity.getId() <= 0) {
+            throw new IllegalArgumentException("ItemAluguel sem ID válido para atualização.");
+        }
+
+        String sql = "UPDATE tb_itens_aluguel SET data_fim = ? WHERE id = ?";
+
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            if (entity.getDataFim() != null) {
+                ps.setDate(1, Date.valueOf(entity.getDataFim()));
+            } else {
+                ps.setNull(1, Types.DATE);
+            }
+            ps.setInt(2, entity.getId());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar item do aluguel: " + e.getMessage(), e);
         }
     }
 
@@ -52,7 +83,7 @@ public class ItemAluguelDAO {
         List<ItemAluguel> itens = new ArrayList<>();
 
         try (Connection con = ConnectionFactory.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, aluguelID);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -60,8 +91,9 @@ public class ItemAluguelDAO {
                 while (rs.next()) {
                     DiscoDAO discoDAO = new DiscoDAO();
                     LivroDAO livroDAO = new LivroDAO();
-                    ItemAluguel item = null; // Inicializar como null é mais limpo aqui
+                    ItemAluguel item;
 
+                    int itemId = rs.getInt("id");
                     String discoId = rs.getString("disco_id");
                     String livroId = rs.getString("livro_id");
                     double precoDiaria = rs.getDouble("preco_diaria");
@@ -72,10 +104,10 @@ public class ItemAluguelDAO {
 
                     if (discoId != null) {
                         Disco disco = discoDAO.readByID(discoId);
-                        item = new ItemAluguel(disco, precoDiaria, diasAlugados, dataFim);
+                        item = ItemAluguel.builder().id(itemId).item(disco).precoDiaria(precoDiaria).diasAlugados(diasAlugados).dataFim(dataFim).build();
                     } else {
                         Livro livro = livroDAO.readByID(livroId);
-                        item = new ItemAluguel(livro, precoDiaria, diasAlugados, dataFim);
+                        item = ItemAluguel.builder().id(itemId).item(livro).precoDiaria(precoDiaria).diasAlugados(diasAlugados).dataFim(dataFim).build();
                     }
                     itens.add(item);
                 }

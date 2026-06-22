@@ -32,7 +32,7 @@ public class AluguelController implements Initializable {
     @FXML private TableColumn<Aluguel, Double> colTotal;
 
     @FXML private TableView<ItemAluguel> tabelaItens;
-    @FXML private TableColumn<ItemAluguel, String> colItemId;
+    @FXML private TableColumn<ItemAluguel, String> colTipo;
     @FXML private TableColumn<ItemAluguel, String> colTitulo;
     @FXML private TableColumn<ItemAluguel, String> colDevolocao;
     @FXML private TableColumn<ItemAluguel, Double> colValor;
@@ -61,31 +61,31 @@ public class AluguelController implements Initializable {
     }
 
     private void configurarTabelas() {
-        // 1. Correção do ID Aluguel (int para Integer de forma segura)
+        //ID Aluguel (int para Integer de forma segura)
         colAluguelID.setCellValueFactory(cellData ->
                 javafx.beans.binding.Bindings.createObjectBinding(() -> cellData.getValue().getId())
         );
 
-        // 2. CPF do Cliente (Já estava correto!)
+        //CPF do Cliente (Já estava correto!)
         colCliente.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCliente().getCpf()));
 
-        // 3. Correção segura para LocalDate da Data de Início
+        //LocalDate da Data de Início
         colInicio.setCellValueFactory(cellData ->
                 javafx.beans.binding.Bindings.createObjectBinding(() -> cellData.getValue().getDataInicio())
         );
 
-        // 4. Correção segura para LocalDate da Data Prevista
+        //LocalDate da Data Prevista
         colPrevista.setCellValueFactory(cellData ->
                 javafx.beans.binding.Bindings.createObjectBinding(() -> cellData.getValue().getDataFimPrevista())
         );
 
-        // 5. Correção do Valor Total (double para Double de forma segura)
+        //Valor Total
         colTotal.setCellValueFactory(cellData ->
                 javafx.beans.binding.Bindings.createObjectBinding(() -> cellData.getValue().calcularValorFinalAtual())
         );
 
-        // Mapeamentos da tabela de itens (Mantenha como já estão abaixo se estiverem funcionando)
-        colItemId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getIsDisco() ? "Disco" : "Livro"));
+        // Mapeamentos da tabela de itens
+        colTipo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getIsDisco() ? "Disco" : "Livro"));
         colTitulo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getTitulo()));
         colDevolocao.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getDataFim() != null ? cellData.getValue().getDataFim().toString() : "Pendente"
@@ -108,51 +108,21 @@ public class AluguelController implements Initializable {
 
     private void carregarDadosOriginais() {
         try {
-
-            System.out.println("Passo 1");
-
             List<Aluguel> ativos = aluguelService.listarAtivos();
-
-            System.out.println("Passo 2");
-
             masterData.setAll(ativos);
-
-            System.out.println("Passo 3");
-
             tabelaAluguel.setItems(masterData);
-
-            System.out.println("Passo 4");
-
             tabelaItens.getItems().clear();
-
-            System.out.println("Passo 5");
-
             try {
-
-                System.out.println("Passo 6");
-
                 caixaAtual = registroService.buscarPorId(1L);
-
-                System.out.println("Passo 7");
-
             } catch (Exception e) {
-
-                System.out.println("Passo 8");
-
                 Registro novoCaixa = new Registro();
-
                 novoCaixa.setIdRegistro(1L);
                 novoCaixa.setFaturamentoTotal(0.0);
-
                 caixaAtual = registroService.salvar(novoCaixa);
-
-                System.out.println("Passo 9");
             }
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
             Alert alert = new Alert(
                     Alert.AlertType.ERROR,
                     "Erro ao carregar dados do banco: " + e.getMessage()

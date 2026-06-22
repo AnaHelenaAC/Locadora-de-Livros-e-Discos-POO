@@ -25,16 +25,15 @@ public class AluguelService {
         livroDAO = new LivroDAO();
     }
 
-    // método para criar um novo aluguel
+    // metodo para criar um novo aluguel em memória
     public Aluguel criarAluguel(Carrinho carrinho, int diasAlugados) {
-
         if (carrinho == null || carrinho.getItensNoCarrinho().isEmpty()) {
             throw new IllegalArgumentException("Carrinho inválido ou vazio.");
         }
-        return new Aluguel(carrinho, diasAlugados);
+        return Aluguel.builder().fromCarrinho(carrinho, diasAlugados).build();
     }
 
-    // salva aluguel e itens no banco
+    // salva aluguel e itens no banco, e atualiza estoque
     public Aluguel inserir(Aluguel aluguel) {
 
         if (aluguel == null) {
@@ -46,14 +45,15 @@ public class AluguelService {
                 throw new IllegalStateException("O item '" + item.getItem().getTitulo() + "' está esgotado!");
             }
         }
-
         aluguel = aluguelDAO.Create(aluguel);
 
         if (aluguel != null) {
             for (ItemAluguel item : aluguel.getItensAlugados()) {
+                // persiste o item do aluguel
+                itemAluguelDAO.Create(item, aluguel.getId());
+                // atualiza estoque
                 int novaQuantidade = item.getItem().getQtdItens() - 1;
                 item.getItem().setQtdItens(novaQuantidade);
-
                 if (item.getItem().getIsDisco()) {
                     discoDAO.updateQuantidade(item.getItem().getID(), novaQuantidade);
                 } else {
@@ -75,23 +75,20 @@ public class AluguelService {
     }
 
     public List<Aluguel> listarAtivos() {
-
         try {
             return aluguelDAO.ReadAtivos();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
-
     }
 
     public List<Aluguel> listarTodos() {
         return aluguelDAO.ReadAll();
     }
 
-    // atualiza aluguel
+    // atualiza aluguel (valor_multa)
     public Aluguel atualizar(Aluguel aluguel) {
-
         if (aluguel == null || aluguel.getId() <= 0) {
             throw new IllegalArgumentException("Aluguel inválido.");
         }
@@ -100,13 +97,13 @@ public class AluguelService {
 
     // remove aluguel ativo
     public boolean cancelar(Aluguel aluguel) {
-
         if (aluguel == null) {
             throw new IllegalArgumentException("Aluguel inválido.");
         }
         return aluguelDAO.Delete(aluguel);
     }
 
+    // Finaliza TODOS os itens de uma vez (devolução completa)
     public Aluguel finalizarAluguelCompleto(Aluguel aluguel, LocalDate dataDevolucao) {
         if (aluguel == null) {
             throw new IllegalArgumentException("Aluguel inválido.");
@@ -119,9 +116,16 @@ public class AluguelService {
         }
 
         aluguel.finalizarAluguelCompleto(dataDevolucao);
+
+        // persiste a data_fim de cada item devolvido
+        for (ItemAluguel item : aluguel.getItensAlugados()) {
+            itemAluguelDAO.Update(item);
+        }
+
         return aluguelDAO.Update(aluguel);
     }
 
+    // Finaliza apenas um item específico (devolução parcial)
     public Aluguel finalizarItemEspecifico(Aluguel aluguel, ItemAluguel item, LocalDate dataDevolucao) {
         if (aluguel == null || item == null) {
             throw new IllegalArgumentException("Parâmetros inválidos para finalização.");
@@ -130,17 +134,13 @@ public class AluguelService {
         if (item.getDataFim() != null) {
             throw new IllegalStateException("Este item já foi devolvido anteriormente.");
         }
+
         devolverItemAoEstoque(item);
         aluguel.finalizarItemEspecifico(item, dataDevolucao);
-        System.out.println("=== ITENS ANTES DE SALVAR ===");
 
-        for (ItemAluguel i : aluguel.getItensAlugados()) {
-            System.out.println(
-                    i.getItem().getTitulo()
-                            + " -> "
-                            + i.getDataFim()
-            );
-        }
+        // persiste a data_fim deste item específico
+        itemAluguelDAO.Update(item);
+
         return aluguelDAO.Update(aluguel);
     }
 
