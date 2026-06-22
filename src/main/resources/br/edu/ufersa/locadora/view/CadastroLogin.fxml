@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.edu.ufersa.locadora.controllers.CadastroLoginController"
+            prefWidth="830" prefHeight="596"
+            styleClass="root-cadastro"
+            stylesheets="@../css/Cadastro.css">
+    
+    <top>
+        <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="0">
+
+            <Label styleClass="topbar-brand"
+                   contentDisplay="LEFT" graphicTextGap="10">
+                <graphic>
+                    <ImageView fitHeight="36" fitWidth="36"
+                               pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/vynil-yellow.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+                Cultura Viva
+            </Label>
+
+        </HBox>
+    </top>
+
+    <center>
+        <StackPane>
+
+            <!-- 1. Fundo gradiente colorido (substitui a imagem de pedras) -->
+            <Pane style="
+                -fx-background-color:
+                    linear-gradient(
+                        from 0% 0% to 100% 100%,
+                        #A0522D 0%,
+                        #C06820 18%,
+                        #D4803A 30%,
+                        #7B3090 50%,
+                        #5A2070 68%,
+                        #8B4513 80%,
+                        #C07030 100%
+                    );
+            "/>
+
+            <!-- 2. Overlay roxo semitransparente -->
+            <Pane styleClass="overlay"/>
+
+            <!-- 3. Conteúdo centralizado -->
+            <VBox alignment="CENTER" spacing="0"
+                  style="-fx-padding: 0 0 0 0;">
+
+                <!-- ── Card principal ─────────────────────────────── -->
+                <VBox styleClass="card-cadastro"
+                      alignment="CENTER" spacing="0">
+
+                    <!-- Faixa roxa escura no topo do card -->
+                    <Pane styleClass="card-header" maxWidth="340"/>
+
+                    <!-- Corpo do card -->
+                    <VBox alignment="CENTER" spacing="0"
+                          style="-fx-padding: 0 30 28 30;">
+
+                        <!-- Título -->
+                        <Label text="Cadastre-se" styleClass="card-title"/>
+
+                        <!-- Campos agrupados num VBox com fundo cinza arredondado -->
+                        <VBox spacing="0"
+                              style="-fx-background-color:#D4CCCC;
+                                     -fx-background-radius:10;
+                                     -fx-pref-width:280px;">
+
+                            <!-- Nome Completo -->
+                            <TextField fx:id="tfNome"
+                                       styleClass="field-cadastro"
+                                       promptText="Nome Completo"
+                                       style="-fx-background-radius:10 10 0 0;"/>
+
+                            <!-- Separador -->
+                            <Separator style="-fx-background-color:#B0A8A8; -fx-pref-height:1px;
+                                              -fx-padding:0; -fx-opacity:0.5;"/>
+
+                            <!-- E-mail -->
+                            <TextField fx:id="tfEmail"
+                                       styleClass="field-cadastro"
+                                       promptText="E-mail"
+                                       style="-fx-background-radius:0;"/>
+
+                            <!-- Separador -->
+                            <Separator style="-fx-background-color:#B0A8A8; -fx-pref-height:1px;
+                                              -fx-padding:0; -fx-opacity:0.5;"/>
+
+                            <!-- CPF -->
+                            <TextField fx:id="tfCpf"
+                                       styleClass="field-cadastro"
+                                       promptText="CPF"
+                                       style="-fx-background-radius:0;"/>
+
+                            <!-- Separador -->
+                            <Separator style="-fx-background-color:#B0A8A8; -fx-pref-height:1px;
+                                              -fx-padding:0; -fx-opacity:0.5;"/>
+
+                            <!-- Confirmar Senha -->
+                            <PasswordField fx:id="pfSenha"
+                                           styleClass="field-cadastro"
+                                           promptText="Confirmar Senha"
+                                           style="-fx-background-radius:0 0 10 10;"/>
+                        </VBox>
+
+                        <!-- Mensagem de erro/sucesso -->
+                        <Label fx:id="lblMsg" text="" wrapText="true"
+                               styleClass="msg-erro"
+                               style="-fx-padding:8 0 0 0; -fx-pref-width:280px;"/>
+
+                        <!-- Espaço entre campos e botão -->
+                        <Region minHeight="14"/>
+
+                        <!-- Botão Cadastrar -->
+                        <Button fx:id="btnCadastrar"
+                                text="Cadastrar"
+                                styleClass="btn-cadastrar"
+                                onAction="#handleCadastrar"/>
+
+                    </VBox>
+                </VBox>
+
+                <!-- ── Rodapé abaixo do card ──────────────────────── -->
+                <VBox styleClass="footer-area" alignment="CENTER" spacing="4">
+                    <Label text="Já tem uma conta?" styleClass="footer-texto"/>
+                    <Label text="Faça Login"
+                           styleClass="link-login"
+                           onMouseClicked="#handleIrParaLogin"
+                           cursor="HAND"/>
+                </VBox>
+
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

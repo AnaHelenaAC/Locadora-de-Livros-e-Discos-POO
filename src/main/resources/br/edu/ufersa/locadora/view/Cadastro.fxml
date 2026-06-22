@@ -3,10 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
 
-<!--
-    Tela de Cadastros — Cultura Viva
-    Salvar em: src/main/resources/br/edu/ufersa/locadora/view/cadastros.fxml
--->
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="br.edu.ufersa.locadora.controllers.CadastrosController"
@@ -137,9 +133,6 @@
                     <!-- Espaço alinhado com coluna de ações -->
                     <Label text="" prefWidth="40"/>
                 </HBox>
-
-                <!-- ── LINHAS DE EXEMPLO ESTÁTICAS (visíveis no Scene Builder) ── -->
-                <!-- Em runtime estas são removidas e substituídas por linhas dinâmicas do controller -->
 
                 <!-- Linha exemplo 1 -->
                 <HBox alignment="CENTER_LEFT" spacing="10"

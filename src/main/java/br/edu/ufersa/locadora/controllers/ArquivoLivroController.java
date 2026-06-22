@@ -1,12 +1,7 @@
 package br.edu.ufersa.locadora.controllers;
-
 import br.edu.ufersa.locadora.model.SessaoUsuario;
-import br.edu.ufersa.locadora.model.entities.Disco;
-import br.edu.ufersa.locadora.model.entities.ItemAcervo;
 import br.edu.ufersa.locadora.model.entities.Livro;
 import br.edu.ufersa.locadora.exceptions.LivroException;
-import br.edu.ufersa.locadora.exceptions.DiscoException;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,161 +12,160 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+
 public class ArquivoLivroController implements Initializable {
 
-    // ── Navegação ─────────────────────────────────────────────
-    @FXML private Button btnNavAcervo;
-    @FXML private Button btnNavRelatorio;
-    @FXML private Button btnNavCadastros;
+    // ── Navbar ────────────────────────────────────────────────
+    @FXML private ToggleButton navAcervo;
+    @FXML private ToggleButton navAlugueis;
+    @FXML private ToggleButton navCadastros;
 
-    // ── Grade de cards ────────────────────────────────────────
-    @FXML private FlowPane painelLivros;
-    @FXML private FlowPane painelDiscos;
+    // ── Tabela ────────────────────────────────────────────────
+    @FXML private ScrollPane scrollTabela;
+    @FXML private VBox       listaLivros;
+    @FXML private Button     btnAdicionar;
 
-    // ── Formulário lateral ────────────────────────────────────
-    @FXML private VBox        painelForm;
-    @FXML private Label       lblFormTitulo;
-    @FXML private RadioButton rbLivro;
-    @FXML private RadioButton rbDisco;
-    @FXML private TextField   tfTitulo;
-    @FXML private TextField   tfCriadoPor;
-    @FXML private TextField   tfGenero;
-    @FXML private TextField   tfData;
-    @FXML private TextField   tfQtd;
-    @FXML private TextField   tfValor;
-    @FXML private Label       lblCampoExtra;
-    @FXML private TextField   tfCampoExtra;
-    @FXML private Label       lblFormMsg;
+    // ── Formulário ────────────────────────────────────────────
+    @FXML private VBox      painelForm;
+    @FXML private Label     lblFormTitulo;
+    @FXML private TextField tfTitulo;
+    @FXML private TextField tfAutor;
+    @FXML private TextField tfGenero;
+    @FXML private TextField tfData;
+    @FXML private TextField tfQtd;
+    @FXML private TextField tfValor;
+    @FXML private TextField tfPaginas;
+    @FXML private Label     lblFormMsg;
 
-    // ── Barra inferior ────────────────────────────────────────
-    @FXML private TextField        tfPesquisa;
-    @FXML private Button           btnAdicionar;
+    // ── Pesquisa ──────────────────────────────────────────────
+    @FXML private TextField tfPesquisa;
 
-    // ── Estado interno ────────────────────────────────────────
-    private final ToggleGroup tipoGroup = new ToggleGroup();
+    // ── Estado ────────────────────────────────────────────────
     private boolean modoEdicao   = false;
-    private boolean editandoLivro = true;
     private Livro   livroEmEdicao;
-    private Disco   discoEmEdicao;
 
     // ─────────────────────────────────────────────────────────
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        rbLivro.setToggleGroup(tipoGroup);
-        rbDisco.setToggleGroup(tipoGroup);
+        // Ativa scroll dinâmico e remove preview do Scene Builder
+        scrollTabela.setVisible(true);
+        scrollTabela.setManaged(true);
+        scrollTabela.setPrefHeight(400);
+        removerLinhasPreview();
 
-        // Botão adicionar só aparece para gerente
+        // Botão Adicionar só para gerente
         boolean gerente = SessaoUsuario.getInstance().usuarioEhGerente();
         btnAdicionar.setVisible(gerente);
         btnAdicionar.setManaged(gerente);
 
         carregarLivros();
-        carregarDiscos();
+    }
+
+    // ── Preview cleanup ───────────────────────────────────────
+
+    private void removerLinhasPreview() {
+        try {
+            VBox pai = (VBox) scrollTabela.getParent();
+            int idxScroll = pai.getChildren().indexOf(scrollTabela);
+            // índice 0 = cabeçalho; 1..idxScroll-1 = previews
+            if (idxScroll > 1) pai.getChildren().remove(1, idxScroll);
+        } catch (Exception ignored) {}
     }
 
     // ── Carregamento ──────────────────────────────────────────
 
     private void carregarLivros() {
-        painelLivros.getChildren().clear();
+        listaLivros.getChildren().clear();
         try {
-            List<Livro> livros = SessaoUsuario.getInstance().getLivroService().lerLivro();
-            for (Livro l : livros) painelLivros.getChildren().add(criarCard(l));
+            List<Livro> livros = SessaoUsuario.getInstance()
+                    .getLivroService().lerLivro();
+            for (Livro l : livros)
+                listaLivros.getChildren().add(criarLinha(l));
         } catch (LivroException e) {
-            painelLivros.getChildren().add(labelVazio("Nenhum livro cadastrado."));
+            listaLivros.getChildren().add(linhaVazia("Nenhum livro cadastrado."));
         }
     }
 
-    private void carregarDiscos() {
-        painelDiscos.getChildren().clear();
-        try {
-            List<Disco> discos = SessaoUsuario.getInstance().getDiscoService().lerDisco();
-            for (Disco d : discos) painelDiscos.getChildren().add(criarCard(d));
-        } catch (DiscoException e) {
-            painelDiscos.getChildren().add(labelVazio("Nenhum disco cadastrado."));
-        }
-    }
+    // ── Construção das linhas ─────────────────────────────────
 
-    // ── Construção dos cards ──────────────────────────────────
 
-    /**
-     * Cria um card visual idêntico ao design:
-     * fundo roxo escuro, capa cinza, textos brancos/lilás, botões editar/lixeira.
-     */
-    private VBox criarCard(ItemAcervo item) {
+    private HBox criarLinha(Livro livro) {
 
-        // --- capa (área cinza com ícone) ---
+        // Placeholder de imagem
         Label icone = new Label("🖼");
-        icone.setStyle("-fx-font-size: 22px; -fx-text-fill: #AAAAAA;");
+        icone.setStyle("-fx-font-size:20px; -fx-text-fill:#888888;");
+        StackPane imgBox = new StackPane(icone);
+        imgBox.setStyle(
+                "-fx-background-color:#C0B8B0; -fx-background-radius:4;" +
+                        "-fx-min-width:60px; -fx-min-height:60px;" +
+                        "-fx-pref-width:60px; -fx-pref-height:60px;"
+        );
 
-        StackPane capa = new StackPane(icone);
-        capa.setStyle("-fx-background-color: #8E8E8E; -fx-background-radius: 6;");
-        capa.setPrefSize(94, 110);
-        capa.setMinSize(94, 110);
+        // Título
+        Label lTitulo = new Label(livro.getTitulo());
+        lTitulo.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
+        HBox.setHgrow(lTitulo, Priority.ALWAYS);
+        lTitulo.setMaxWidth(Double.MAX_VALUE);
 
-        // --- textos ---
-        Label lblTitulo = new Label(item.getTitulo());
-        lblTitulo.setStyle("-fx-text-fill: #F8EED1; -fx-font-size: 11px;"
-                + "-fx-font-weight: bold; -fx-wrap-text: true; -fx-alignment: center;");
-        lblTitulo.setMaxWidth(100);
-        lblTitulo.setWrapText(true);
-        lblTitulo.setAlignment(Pos.CENTER);
+        // Data
+        String dataStr = livro.getDataDeLancamento().isEmpty()
+                ? "—" : livro.getDataDeLancamento();
+        Label lData = new Label(dataStr);
+        lData.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
+        lData.setPrefWidth(120);
 
-        String dataTexto = item.getDataDeLancamento().isEmpty() ? "—" : item.getDataDeLancamento();
-        Label lblData = new Label(dataTexto);
-        lblData.setStyle("-fx-text-fill: #C8B8E8; -fx-font-size: 10px;");
+        // Autor(a) — campo criadoPor
+        Label lAutor = new Label(livro.getCriadoPor());
+        lAutor.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
+        HBox.setHgrow(lAutor, Priority.ALWAYS);
+        lAutor.setMaxWidth(Double.MAX_VALUE);
 
-        Label lblAutor = new Label(item.getCriadoPor());
-        lblAutor.setStyle("-fx-text-fill: #C8B8E8; -fx-font-size: 10px;");
-        lblAutor.setMaxWidth(100);
-        lblAutor.setWrapText(true);
-        lblAutor.setAlignment(Pos.CENTER);
-
-        // --- botões ação ---
-        HBox acoes = new HBox(8);
+        // Botões de ação (só gerente)
+        VBox acoes = new VBox(4);
         acoes.setAlignment(Pos.CENTER);
-        acoes.setStyle("-fx-padding: 4 0 0 0;");
-
+        acoes.setPrefWidth(56);
         if (SessaoUsuario.getInstance().usuarioEhGerente()) {
             Button btnEdit = new Button("✏");
-            btnEdit.setStyle("-fx-background-color: transparent; -fx-text-fill: #F2D888;"
-                    + "-fx-font-size: 15px; -fx-cursor: hand; -fx-padding: 2 6 2 6;"
-                    + "-fx-background-radius: 4;");
-            btnEdit.setOnAction(e -> editarItem(item));
+            btnEdit.setStyle(
+                    "-fx-background-color:transparent; -fx-text-fill:#2E1A47;" +
+                            "-fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"
+            );
+            btnEdit.setOnAction(e -> editarLivro(livro));
 
             Button btnDel = new Button("🗑");
-            btnDel.setStyle("-fx-background-color: transparent; -fx-text-fill: #E05060;"
-                    + "-fx-font-size: 15px; -fx-cursor: hand; -fx-padding: 2 6 2 6;"
-                    + "-fx-background-radius: 4;");
-            btnDel.setOnAction(e -> excluirItem(item));
+            btnDel.setStyle(
+                    "-fx-background-color:transparent; -fx-text-fill:#2E1A47;" +
+                            "-fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"
+            );
+            btnDel.setOnAction(e -> excluirLivro(livro));
 
             acoes.getChildren().addAll(btnEdit, btnDel);
         }
 
-        // --- montagem do card ---
-        VBox card = new VBox(5, capa, lblTitulo, lblData, lblAutor, acoes);
-        card.setAlignment(Pos.TOP_CENTER);
-        card.setPrefWidth(114);
-        card.setMinWidth(114);
-        card.setMaxWidth(114);
-        card.setStyle("-fx-background-color: #3D2460; -fx-background-radius: 10;"
-                + "-fx-padding: 10 8 8 8;"
-                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.30), 8, 0, 1, 3);"
-                + "-fx-cursor: hand;");
-
-        return card;
+        HBox linha = new HBox(14, imgBox, lTitulo, lData, lAutor, acoes);
+        linha.setAlignment(Pos.CENTER_LEFT);
+        linha.setStyle(
+                "-fx-background-color:#F8EED1;" +
+                        "-fx-padding:8 16 8 16;" +
+                        "-fx-min-height:80px; -fx-pref-height:80px;" +
+                        "-fx-border-color:transparent transparent #D8C89A transparent;" +
+                        "-fx-border-width:0 0 1 0;"
+        );
+        return linha;
     }
 
-    private Label labelVazio(String msg) {
+    private HBox linhaVazia(String msg) {
         Label l = new Label(msg);
-        l.setStyle("-fx-text-fill: #9A8A7A; -fx-font-size: 13px;"
-                + "-fx-font-style: italic; -fx-padding: 20;");
-        return l;
+        l.setStyle("-fx-text-fill:#9A8A7A; -fx-font-style:italic; -fx-font-size:13px;");
+        HBox h = new HBox(l);
+        h.setStyle("-fx-padding:24; -fx-background-color:#F8EED1;");
+        h.setAlignment(Pos.CENTER);
+        return h;
     }
 
     // ── Pesquisa ──────────────────────────────────────────────
@@ -179,91 +173,51 @@ public class ArquivoLivroController implements Initializable {
     @FXML
     public void pesquisar(ActionEvent e) {
         String termo = tfPesquisa.getText().trim();
-
-        painelLivros.getChildren().clear();
-        List<Livro> livros = SessaoUsuario.getInstance()
+        listaLivros.getChildren().clear();
+        List<Livro> resultado = SessaoUsuario.getInstance()
                 .getLivroService().buscarPor("titulo", termo);
-        if (livros.isEmpty()) painelLivros.getChildren().add(labelVazio("Nenhum resultado."));
-        else livros.forEach(l -> painelLivros.getChildren().add(criarCard(l)));
-
-        painelDiscos.getChildren().clear();
-        List<Disco> discos = SessaoUsuario.getInstance()
-                .getDiscoService().buscarPor("titulo", termo);
-        if (discos.isEmpty()) painelDiscos.getChildren().add(labelVazio("Nenhum resultado."));
-        else discos.forEach(d -> painelDiscos.getChildren().add(criarCard(d)));
-
-        if (termo.isEmpty()) { carregarLivros(); carregarDiscos(); }
+        if (resultado.isEmpty())
+            listaLivros.getChildren().add(linhaVazia("Nenhum resultado para: " + termo));
+        else
+            resultado.forEach(l -> listaLivros.getChildren().add(criarLinha(l)));
+        if (termo.isEmpty()) carregarLivros();
     }
 
-    // ── Formulário: abrir / tipo ──────────────────────────────
+    // ── Formulário: abrir ─────────────────────────────────────
 
     @FXML
     public void abrirFormNovo(ActionEvent e) {
-        modoEdicao    = false;
-        editandoLivro = rbLivro.isSelected();
-        livroEmEdicao = null;
-        discoEmEdicao = null;
+        modoEdicao     = false;
+        livroEmEdicao  = null;
+        lblFormTitulo.setText("Novo Livro");
         limparForm();
-        atualizarLabels();
         mostrarForm(true);
     }
 
-    @FXML
-    public void onTipoSelecionado(ActionEvent e) {
-        editandoLivro = rbLivro.isSelected();
-        atualizarLabels();
-    }
-
-    private void atualizarLabels() {
-        if (editandoLivro) {
-            lblFormTitulo.setText(modoEdicao ? "Editar Livro" : "Novo Livro");
-            lblCampoExtra.setText("Qtd. de páginas:");
-            btnAdicionar.setText("Adicionar novo livro ＋");
-        } else {
-            lblFormTitulo.setText(modoEdicao ? "Editar Disco" : "Novo Disco");
-            lblCampoExtra.setText("Duração (segundos totais):");
-            btnAdicionar.setText("Adicionar novo disco ＋");
-        }
-    }
-
-    private void editarItem(ItemAcervo item) {
-        modoEdicao = true;
-        tfTitulo.setText(item.getTitulo());
-        tfCriadoPor.setText(item.getCriadoPor());
-        tfGenero.setText(item.getGenero());
-        tfData.setText(item.getDataDeLancamento());
-        tfQtd.setText(String.valueOf(item.getQtdItens()));
-        tfValor.setText(item.getValorFormatado());
-
-        if (item instanceof Livro l) {
-            editandoLivro = true; livroEmEdicao = l;
-            rbLivro.setSelected(true);
-            tfCampoExtra.setText(String.valueOf(l.getQtdPaginas()));
-        } else if (item instanceof Disco d) {
-            editandoLivro = false; discoEmEdicao = d;
-            rbDisco.setSelected(true);
-            tfCampoExtra.setText(String.valueOf(d.getDuracao()));
-        }
+    private void editarLivro(Livro l) {
+        modoEdicao    = true;
+        livroEmEdicao = l;
+        lblFormTitulo.setText("Editar Livro");
+        tfTitulo .setText(l.getTitulo());
+        tfAutor  .setText(l.getCriadoPor());
+        tfGenero .setText(l.getGenero());
+        tfData   .setText(l.getDataDeLancamento());
+        tfQtd    .setText(String.valueOf(l.getQtdItens()));
+        tfValor  .setText(l.getValorFormatado());
+        tfPaginas.setText(String.valueOf(l.getQtdPaginas()));
         lblFormMsg.setText("");
-        atualizarLabels();
         mostrarForm(true);
     }
 
-    private void excluirItem(ItemAcervo item) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Confirma a exclusão de \"" + item.getTitulo() + "\"?",
-                ButtonType.YES, ButtonType.NO);
-        confirm.setHeaderText(null);
-        confirm.showAndWait().ifPresent(btn -> {
+    private void excluirLivro(Livro l) {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "Excluir \"" + l.getTitulo() + "\"?", ButtonType.YES, ButtonType.NO);
+        a.setHeaderText(null);
+        a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 try {
-                    if (item instanceof Livro l) {
-                        SessaoUsuario.getInstance().getLivroService().apagarLivro(l.getID());
-                        carregarLivros();
-                    } else if (item instanceof Disco d) {
-                        SessaoUsuario.getInstance().getDiscoService().apagarDisco(d.getID());
-                        carregarDiscos();
-                    }
+                    SessaoUsuario.getInstance().getLivroService().apagarLivro(l.getID());
+                    carregarLivros();
                 } catch (Exception ex) {
                     new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage()).showAndWait();
                 }
@@ -274,50 +228,38 @@ public class ArquivoLivroController implements Initializable {
     // ── Formulário: salvar / fechar ───────────────────────────
 
     @FXML
-    public void salvarItem(ActionEvent e) {
+    public void salvarLivro(ActionEvent e) {
         lblFormMsg.setText("");
         try {
-            String titulo  = tfTitulo.getText().trim();
-            String criador = tfCriadoPor.getText().trim();
-            String genero  = tfGenero.getText().trim();
-            String data    = tfData.getText().trim();
-            int    qtd     = Integer.parseInt(tfQtd.getText().trim());
+            String titulo  = tfTitulo .getText().trim();
+            String autor   = tfAutor  .getText().trim();
+            String genero  = tfGenero .getText().trim();
+            String data    = tfData   .getText().trim();
+            int    qtd     = Integer.parseInt(tfQtd    .getText().trim());
             double valor   = Double.parseDouble(tfValor.getText().trim().replace(",", "."));
-            int    extra   = Integer.parseInt(tfCampoExtra.getText().trim());
+            int    paginas = Integer.parseInt(tfPaginas.getText().trim());
 
-            if (titulo.isEmpty() || criador.isEmpty() || genero.isEmpty() || data.isEmpty())
-                throw new IllegalArgumentException("Preencha todos os campos.");
+            if (titulo.isEmpty() || autor.isEmpty() || genero.isEmpty() || data.isEmpty())
+                throw new IllegalArgumentException("Preencha todos os campos obrigatórios.");
 
-            if (editandoLivro) {
-                if (modoEdicao && livroEmEdicao != null) {
-                    livroEmEdicao.setTitulo(titulo); livroEmEdicao.setCriadoPor(criador);
-                    livroEmEdicao.setGenero(genero); livroEmEdicao.setDataDeLancamento(data);
-                    livroEmEdicao.setQtdItens(qtd); livroEmEdicao.setValor(valor);
-                    livroEmEdicao.setQtdPaginas(extra);
-                    SessaoUsuario.getInstance().getLivroService().atualizarLivro(livroEmEdicao);
-                } else {
-                    SessaoUsuario.getInstance().getLivroService()
-                            .adicionarLivro(new Livro(titulo, criador, genero, valor, data, qtd, false, extra));
-                }
-                carregarLivros();
+            if (modoEdicao && livroEmEdicao != null) {
+                livroEmEdicao.setTitulo(titulo);
+                livroEmEdicao.setCriadoPor(autor);
+                livroEmEdicao.setGenero(genero);
+                livroEmEdicao.setDataDeLancamento(data);
+                livroEmEdicao.setQtdItens(qtd);
+                livroEmEdicao.setValor(valor);
+                livroEmEdicao.setQtdPaginas(paginas);
+                SessaoUsuario.getInstance().getLivroService().atualizarLivro(livroEmEdicao);
             } else {
-                if (modoEdicao && discoEmEdicao != null) {
-                    discoEmEdicao.setTitulo(titulo); discoEmEdicao.setCriadoPor(criador);
-                    discoEmEdicao.setGenero(genero); discoEmEdicao.setDataDeLancamento(data);
-                    discoEmEdicao.setQtdItens(qtd); discoEmEdicao.setValor(valor);
-                    discoEmEdicao.setDuracaoSegundos(extra);
-                    SessaoUsuario.getInstance().getDiscoService().atualizarDisco(discoEmEdicao);
-                } else {
-                    int h = extra / 3600, m = (extra % 3600) / 60, s = extra % 60;
-                    SessaoUsuario.getInstance().getDiscoService()
-                            .adicionarDisco(new Disco(titulo, criador, genero, valor, data, qtd, true, h, m, s));
-                }
-                carregarDiscos();
+                Livro novo = new Livro(titulo, autor, genero, valor, data, qtd, false, paginas);
+                SessaoUsuario.getInstance().getLivroService().adicionarLivro(novo);
             }
+            carregarLivros();
             mostrarForm(false);
 
         } catch (NumberFormatException ex) {
-            lblFormMsg.setText("Qtd, Valor e páginas/duração devem ser numéricos.");
+            lblFormMsg.setText("Qtd, Valor e Páginas devem ser numéricos.");
         } catch (Exception ex) {
             lblFormMsg.setText("Erro: " + ex.getMessage());
         }
@@ -325,11 +267,28 @@ public class ArquivoLivroController implements Initializable {
 
     @FXML public void fecharForm(ActionEvent e) { mostrarForm(false); }
 
-    // ── Navegação ─────────────────────────────────────────────
+    // ── Navegação — Navbar ────────────────────────────────────
 
-    @FXML public void navegarAcervo(ActionEvent e)    { /* já estamos aqui */ }
-    @FXML public void navegarRelatorio(ActionEvent e) { irPara("relatorio.fxml", e); }
-    @FXML public void navegarCadastros(ActionEvent e) { irPara("cadastros.fxml",  e); }
+    @FXML public void handleNavAcervo(ActionEvent e)    { /* já estamos aqui */ }
+    @FXML public void handleNavRelatorio(ActionEvent e) { irPara("financas.fxml",  e); }
+    @FXML public void handleNavCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
+
+    // ── Navegação — Abas ──────────────────────────────────────
+
+    @FXML public void navegarLivros(javafx.scene.input.MouseEvent e) { /* já estamos aqui */ }
+
+    @FXML
+    public void navegarDiscos(javafx.scene.input.MouseEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/br/edu/ufersa/locadora/view/ArquivoDisco.fxml"));
+            Stage stage = (Stage) scrollTabela.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (IOException ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage()).showAndWait();
+        }
+    }
 
     @FXML
     public void handleLogout(ActionEvent e) {
@@ -345,9 +304,9 @@ public class ArquivoLivroController implements Initializable {
     }
 
     private void limparForm() {
-        tfTitulo.clear(); tfCriadoPor.clear(); tfGenero.clear();
-        tfData.clear();   tfQtd.clear();       tfValor.clear();
-        tfCampoExtra.clear(); lblFormMsg.setText("");
+        tfTitulo.clear(); tfAutor.clear();  tfGenero.clear();
+        tfData.clear();   tfQtd.clear();    tfValor.clear();
+        tfPaginas.clear(); lblFormMsg.setText("");
     }
 
     private void irPara(String fxml, ActionEvent e) {

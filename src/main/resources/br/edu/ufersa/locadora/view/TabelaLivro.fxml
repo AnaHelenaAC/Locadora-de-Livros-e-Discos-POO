@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="br.edu.ufersa.locadora.controllers.TabelaLivrosController"
+      spacing="0"
+      stylesheets="@../css/ArquivoLivro.css"
+      style="-fx-background-color:#F8EED1;">
+
+    <!-- ── Cabeçalho amarelo ─────────────────────────────────────── -->
+    <HBox style="-fx-background-color:#E8DC78; -fx-padding:10 16 10 16; -fx-min-height:40px;"
+          alignment="CENTER_LEFT" spacing="0">
+        <Label text="Imagem"
+               style="-fx-text-fill:#2E1A47; -fx-font-weight:bold; -fx-font-size:13px;
+                      -fx-alignment:CENTER;"
+               prefWidth="90" minWidth="90"/>
+        <Label text="Título"
+               style="-fx-text-fill:#2E1A47; -fx-font-weight:bold; -fx-font-size:13px;
+                      -fx-alignment:CENTER;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <Label text="Data"
+               style="-fx-text-fill:#2E1A47; -fx-font-weight:bold; -fx-font-size:13px;
+                      -fx-alignment:CENTER;"
+               prefWidth="120" minWidth="100"/>
+        <Label text="Autor(a)"
+               style="-fx-text-fill:#2E1A47; -fx-font-weight:bold; -fx-font-size:13px;
+                      -fx-alignment:CENTER;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <Label text="" prefWidth="56"/>
+    </HBox>
+
+    <!-- ── Preview linha 1 (Scene Builder) ──────────────────────── -->
+    <HBox style="-fx-background-color:#F8EED1; -fx-padding:8 16 8 16;
+                 -fx-min-height:80px; -fx-pref-height:80px;
+                 -fx-border-color:transparent transparent #D8C89A transparent;
+                 -fx-border-width:0 0 1 0;"
+          alignment="CENTER_LEFT" spacing="14">
+        <StackPane style="-fx-background-color:#C0B8B0; -fx-background-radius:4;
+                          -fx-min-width:60px; -fx-min-height:60px;
+                          -fx-pref-width:60px; -fx-pref-height:60px;">
+            <Label text="🖼" style="-fx-font-size:20px; -fx-text-fill:#888888;"/>
+        </StackPane>
+        <Label text="O pequeno príncipe"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <Label text="01/02//2023"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;" prefWidth="120"/>
+        <Label text="O pequeno príncipe"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <VBox alignment="CENTER" spacing="4" prefWidth="56">
+            <Button text="✏" style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                                    -fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"/>
+            <Button text="🗑" style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                                     -fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"/>
+        </VBox>
+    </HBox>
+
+    <!-- ── Preview linha 2 ───────────────────────────────────────── -->
+    <HBox style="-fx-background-color:#F8EED1; -fx-padding:8 16 8 16;
+                 -fx-min-height:80px; -fx-pref-height:80px;
+                 -fx-border-color:transparent transparent #D8C89A transparent;
+                 -fx-border-width:0 0 1 0;"
+          alignment="CENTER_LEFT" spacing="14">
+        <StackPane style="-fx-background-color:#C0B8B0; -fx-background-radius:4;
+                          -fx-min-width:60px; -fx-min-height:60px;
+                          -fx-pref-width:60px; -fx-pref-height:60px;">
+            <Label text="🖼" style="-fx-font-size:20px; -fx-text-fill:#888888;"/>
+        </StackPane>
+        <Label text="O pequeno príncipe"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <Label text="01/02//2023"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;" prefWidth="120"/>
+        <Label text="O pequeno príncipe"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <VBox alignment="CENTER" spacing="4" prefWidth="56">
+            <Button text="✏" style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                                    -fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"/>
+            <Button text="🗑" style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                                     -fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"/>
+        </VBox>
+    </HBox>
+
+    <!-- ── Preview linha 3 ───────────────────────────────────────── -->
+    <HBox style="-fx-background-color:#F8EED1; -fx-padding:8 16 8 16;
+                 -fx-min-height:80px; -fx-pref-height:80px;
+                 -fx-border-color:transparent transparent #D8C89A transparent;
+                 -fx-border-width:0 0 1 0;"
+          alignment="CENTER_LEFT" spacing="14">
+        <StackPane style="-fx-background-color:#C0B8B0; -fx-background-radius:4;
+                          -fx-min-width:60px; -fx-min-height:60px;
+                          -fx-pref-width:60px; -fx-pref-height:60px;">
+            <Label text="🖼" style="-fx-font-size:20px; -fx-text-fill:#888888;"/>
+        </StackPane>
+        <Label text="O pequeno príncipe"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <Label text="01/02//2023"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;" prefWidth="120"/>
+        <Label text="O pequeno príncipe"
+               style="-fx-font-size:14px; -fx-text-fill:#2E1A47;"
+               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <VBox alignment="CENTER" spacing="4" prefWidth="56">
+            <Button text="✏" style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                                    -fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"/>
+            <Button text="🗑" style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                                     -fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"/>
+        </VBox>
+    </HBox>
+
+    <!-- ── ScrollPane dinâmico ────────────────────────────────────── -->
+    <ScrollPane fx:id="scrollTabela"
+                fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                VBox.vgrow="ALWAYS"
+                style="-fx-background:transparent; -fx-background-color:transparent;
+                       -fx-border-color:transparent;"
+                visible="false" managed="false">
+        <VBox fx:id="listaLivros" spacing="0"
+              style="-fx-background-color:transparent;"/>
+    </ScrollPane>
+
+</VBox>
