@@ -1,0 +1,267 @@
+/* ================================================================
+   ArquivoDisco.css  —  Tela de Acervo de Discos
+   Paleta: #2E1A47 roxo | #F8EED1 creme | #F2D888 dourado
+           #D1203A crimson | #E8DC78 amarelo-cabeçalho
+   ================================================================ */
+
+/* ── Root ─────────────────────────────────────────────────────── */
+.root-disco {
+    -fx-background-color: #F8EED1;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ── Barra superior (navbar) ──────────────────────────────────── */
+.navbar {
+    -fx-background-color: #2E1A47;
+    -fx-min-height: 56px;
+    -fx-pref-height: 56px;
+}
+
+.navbar-brand {
+    -fx-text-fill: #F2D888;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 0 8px;
+}
+
+/* ToggleButton de navegação */
+.nav-toggle {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: Impact, Arial;
+    -fx-font-size: 13px;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 56px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 6px;
+}
+.nav-toggle:selected {
+    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-text-fill: #F2D888;
+    -fx-border-color: transparent transparent #F2D888 transparent;
+    -fx-border-width: 0 0 3 0;
+}
+.nav-toggle:hover {
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+
+/* Botão Logout na navbar */
+.btn-logout-nav {
+    -fx-background-color: #9E1400;
+    -fx-background-radius: 50 0 0 50;
+    -fx-text-fill: white;
+    -fx-font-family: Impact, Arial;
+    -fx-font-size: 12px;
+    -fx-pref-width: 100px;
+    -fx-pref-height: 56px;
+    -fx-cursor: hand;
+}
+.btn-logout-nav:hover { -fx-background-color: #7A1000; }
+
+/* ── Área central (abas Livros / Discos) ──────────────────────── */
+.content-area {
+    -fx-background-color: #F8EED1;
+    -fx-padding: 16 16 0 16;
+}
+
+/* ── Abas ─────────────────────────────────────────────────────── */
+.tab-inactive {
+    -fx-background-color: #F0E4C0;
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 14 32 14 32;
+    -fx-cursor: hand;
+}
+.tab-inactive-label {
+    -fx-text-fill: #2E1A47;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: Georgia;
+}
+
+.tab-active {
+    -fx-background-color: #2E1A47;
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 14 32 14 32;
+    -fx-cursor: hand;
+}
+.tab-active-label {
+    -fx-text-fill: #F2D888;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: Georgia;
+}
+
+/* ── Tabela de discos ─────────────────────────────────────────── */
+.tabela-container {
+    -fx-background-color: #F8EED1;
+    -fx-background-radius: 0 12 12 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0, 0, 2);
+}
+
+/* Cabeçalho amarelo */
+.tabela-header {
+    -fx-background-color: #E8DC78;
+    -fx-padding: 10 16 10 16;
+    -fx-min-height: 40px;
+}
+.tabela-header-label {
+    -fx-text-fill: #2E1A47;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+/* Linha de registro */
+.linha-disco {
+    -fx-background-color: #F8EED1;
+    -fx-padding: 8 16 8 16;
+    -fx-border-color: transparent transparent #D8C89A transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 80px;
+    -fx-pref-height: 80px;
+}
+.linha-disco:hover {
+    -fx-background-color: #F0E4C0;
+}
+
+/* Placeholder de imagem (quadrado cinza) */
+.img-placeholder {
+    -fx-background-color: #C8C0C0;
+    -fx-background-radius: 4;
+    -fx-min-width: 60px;
+    -fx-min-height: 60px;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
+}
+.img-icon {
+    -fx-text-fill: #888888;
+    -fx-font-size: 20px;
+}
+
+/* Texto das células */
+.cell-text {
+    -fx-text-fill: #2E1A47;
+    -fx-font-size: 14px;
+}
+
+/* Botões ação */
+.btn-editar {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2E1A47;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+    -fx-padding: 2 6 2 6;
+}
+.btn-editar:hover { -fx-text-fill: #5A3A8A; }
+
+.btn-excluir {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2E1A47;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+    -fx-padding: 2 6 2 6;
+}
+.btn-excluir:hover { -fx-text-fill: #D1203A; }
+
+/* Scrollbar personalizada */
+.scroll-bar:vertical {
+    -fx-background-color: #E8E0D0;
+    -fx-pref-width: 10px;
+}
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #2E1A47;
+    -fx-background-radius: 4px;
+}
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-pref-height: 0; -fx-min-height: 0;
+}
+
+/* ── Barra inferior ───────────────────────────────────────────── */
+.bottombar {
+    -fx-background-color: #2E1A47;
+    -fx-padding: 0 14 0 14;
+    -fx-min-height: 50px;
+    -fx-pref-height: 50px;
+}
+
+/* Campo de pesquisa */
+.search-field {
+    -fx-background-color: #F8EED1;
+    -fx-background-radius: 20;
+    -fx-border-color: transparent;
+    -fx-padding: 7 14 7 36;
+    -fx-font-size: 13px;
+    -fx-text-fill: #2E1A47;
+    -fx-prompt-text-fill: #7A6A5A;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 34px;
+}
+
+/* Botão Logout (barra inferior) */
+.btn-logout-bottom {
+    -fx-background-color: #D1203A;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 7 20 7 20;
+    -fx-cursor: hand;
+}
+.btn-logout-bottom:hover { -fx-background-color: #B01830; }
+
+/* Botão Adicionar */
+.btn-adicionar {
+    -fx-background-color: #D1203A;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 7 20 7 20;
+    -fx-cursor: hand;
+}
+.btn-adicionar:hover { -fx-background-color: #B01830; }
+
+/* ── Painel de formulário (novo disco) ────────────────────────── */
+.form-panel {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 14, 0, 0, 4);
+    -fx-padding: 20 22 20 22;
+    -fx-pref-width: 300px;
+}
+.form-title {
+    -fx-text-fill: #2E1A47;
+    -fx-font-family: Georgia;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+.form-label {
+    -fx-text-fill: #555555;
+    -fx-font-size: 11px;
+}
+.form-field {
+    -fx-background-color: #F0EAEA;
+    -fx-background-radius: 6;
+    -fx-border-color: #D8D0D0;
+    -fx-border-radius: 6;
+    -fx-padding: 7 10 7 10;
+    -fx-font-size: 12px;
+    -fx-pref-width: 256px;
+}
+.form-field:focused {
+    -fx-border-color: #7B4FBF;
+    -fx-background-color: #FAFAFA;
+}
+.form-msg  { -fx-text-fill: #C0392B; -fx-font-size: 11px; }
+.btn-salvar {
+    -fx-background-color: #2E1A47; -fx-text-fill: #F2D888;
+    -fx-font-weight: bold; -fx-background-radius: 8;
+    -fx-padding: 8 24 8 24; -fx-cursor: hand;
+}
+.btn-salvar:hover   { -fx-background-color: #4A2E70; }
+.btn-cancelar {
+    -fx-background-color: #E0D8C8; -fx-text-fill: #555555;
+    -fx-background-radius: 8; -fx-padding: 8 16 8 16; -fx-cursor: hand;
+}
+.btn-cancelar:hover { -fx-background-color: #D0C8B8; }
