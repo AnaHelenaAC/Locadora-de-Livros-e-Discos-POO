@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.edu.ufersa.locadora.controllers.ArquivoDiscoController"
+            prefWidth="994" prefHeight="640"
+            styleClass="root-disco"
+            stylesheets="@../css/ArquivoDisco.css">
+
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="0">
+
+            <!-- Logo  -->
+            <Label styleClass="navbar-brand" contentDisplay="LEFT" graphicTextGap="8">
+                <graphic>
+                    <ImageView fitHeight="30" fitWidth="30"
+                               pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/vynil-yellow.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+                Cultura Viva
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- ToggleGroup igual ao NavArea -->
+            <ToggleButton fx:id="navAcervo" id="navAcervo"
+                          text="Acervo" selected="true"
+                          styleClass="nav-toggle"
+                          onAction="#handleNavAcervo">
+                <toggleGroup><ToggleGroup fx:id="NavItems"/></toggleGroup>
+                <graphic>
+                    <HBox spacing="4" alignment="CENTER">
+                        <ImageView fitHeight="22" fitWidth="22"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/disc.png"/></image>
+                        </ImageView>
+                        <ImageView fitHeight="18" fitWidth="18"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/book.png"/></image>
+                        </ImageView>
+                    </HBox>
+                </graphic>
+                <font><Font name="Impact" size="13"/></font>
+            </ToggleButton>
+
+            <ToggleButton fx:id="navAlugueis" id="navAlugueis"
+                          text="Relatório"
+                          styleClass="nav-toggle"
+                          toggleGroup="$NavItems"
+                          onAction="#handleNavRelatorio">
+                <graphic>
+                    <ImageView fitHeight="22" fitWidth="22"
+                               pickOnBounds="true" preserveRatio="true">
+                        <image><Image url="@../images/report.png"/></image>
+                    </ImageView>
+                </graphic>
+                <font><Font name="Impact" size="13"/></font>
+            </ToggleButton>
+
+            <ToggleButton fx:id="navCadastros" id="navCadastros"
+                          text="Cadastros"
+                          styleClass="nav-toggle"
+                          toggleGroup="$NavItems"
+                          onAction="#handleNavCadastros">
+                <graphic>
+                    <ImageView fitHeight="22" fitWidth="22"
+                               pickOnBounds="true" preserveRatio="true">
+                        <image><Image url="@../images/user.png"/></image>
+                    </ImageView>
+                </graphic>
+                <font><Font name="Impact" size="13"/></font>
+            </ToggleButton>
+
+        </HBox>
+    </top>
+
+
+    <center>
+        <HBox styleClass="content-area" spacing="0" alignment="TOP_LEFT">
+
+            <!-- ── ABAS: Livros (inativa) | Discos (ativa) ─────────── -->
+            <VBox HBox.hgrow="ALWAYS" spacing="0">
+
+                <!-- Linha das abas -->
+                <HBox spacing="0" alignment="BOTTOM_LEFT">
+
+                    <!-- Aba Livros — inativa -->
+                    <VBox styleClass="tab-inactive" alignment="CENTER" spacing="6"
+                          onMouseClicked="#navegarLivros" cursor="HAND">
+                        <HBox spacing="10" alignment="CENTER">
+                            <ImageView fitHeight="24" fitWidth="24"
+                                       pickOnBounds="true" preserveRatio="true">
+                                <image><Image url="@../images/book.png"/></image>
+                            </ImageView>
+                            <Label text="Livros" styleClass="tab-inactive-label"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Aba Discos — ATIVA (roxa) -->
+                    <VBox styleClass="tab-active" alignment="CENTER" spacing="6"
+                          onMouseClicked="#navegarDiscos" cursor="HAND">
+                        <HBox spacing="10" alignment="CENTER">
+                            <ImageView fitHeight="24" fitWidth="24"
+                                       pickOnBounds="true" preserveRatio="true">
+                                <image><Image url="@../images/disc.png"/></image>
+                            </ImageView>
+                            <Label text="Discos" styleClass="tab-active-label"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+
+                <!-- ── TABELA DE DISCOS ─────────────────────────────── -->
+                <VBox styleClass="tabela-container" VBox.vgrow="ALWAYS" spacing="0">
+
+                    <!-- Cabeçalho amarelo -->
+                    <HBox styleClass="tabela-header" alignment="CENTER_LEFT" spacing="0">
+                        <Label text="Imagem" styleClass="tabela-header-label"
+                               prefWidth="90" minWidth="90"/>
+                        <Label text="Título"  styleClass="tabela-header-label"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Label text="Data"    styleClass="tabela-header-label"
+                               prefWidth="120" minWidth="100"/>
+                        <Label text="Banda"   styleClass="tabela-header-label"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <!-- espaço para botões ação -->
+                        <Label text="" prefWidth="56"/>
+                    </HBox>
+
+                    <!-- Linhas de preview (Scene Builder) — removidas em runtime -->
+                    <HBox styleClass="linha-disco" alignment="CENTER_LEFT" spacing="14">
+                        <StackPane styleClass="img-placeholder">
+                            <Label text="🖼" styleClass="img-icon"/>
+                        </StackPane>
+                        <Label text="O pequeno príncipe" styleClass="cell-text"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Label text="01/02/2023" styleClass="cell-text" prefWidth="120"/>
+                        <Label text="O pequeno príncipe" styleClass="cell-text"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <VBox alignment="CENTER" spacing="4" prefWidth="56">
+                            <Button text="✏" styleClass="btn-editar"/>
+                            <Button text="🗑" styleClass="btn-excluir"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox styleClass="linha-disco" alignment="CENTER_LEFT" spacing="14">
+                        <StackPane styleClass="img-placeholder">
+                            <Label text="🖼" styleClass="img-icon"/>
+                        </StackPane>
+                        <Label text="O pequeno príncipe" styleClass="cell-text"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Label text="01/02/2023" styleClass="cell-text" prefWidth="120"/>
+                        <Label text="O pequeno príncipe" styleClass="cell-text"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <VBox alignment="CENTER" spacing="4" prefWidth="56">
+                            <Button text="✏" styleClass="btn-editar"/>
+                            <Button text="🗑" styleClass="btn-excluir"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox styleClass="linha-disco" alignment="CENTER_LEFT" spacing="14">
+                        <StackPane styleClass="img-placeholder">
+                            <Label text="🖼" styleClass="img-icon"/>
+                        </StackPane>
+                        <Label text="O pequeno príncipe" styleClass="cell-text"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <Label text="01/02/2023" styleClass="cell-text" prefWidth="120"/>
+                        <Label text="O pequeno príncipe" styleClass="cell-text"
+                               HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+                        <VBox alignment="CENTER" spacing="4" prefWidth="56">
+                            <Button text="✏" styleClass="btn-editar"/>
+                            <Button text="🗑" styleClass="btn-excluir"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- ScrollPane dinâmico — preenchido pelo controller em runtime -->
+                    <ScrollPane fx:id="scrollTabela"
+                                fitToWidth="true"
+                                hbarPolicy="NEVER"
+                                vbarPolicy="AS_NEEDED"
+                                VBox.vgrow="ALWAYS"
+                                style="-fx-background:transparent;
+                                       -fx-background-color:transparent;
+                                       -fx-border-color:transparent;"
+                                visible="false" managed="false">
+                        <VBox fx:id="listaDiscos" spacing="0"
+                              style="-fx-background-color:transparent;"/>
+                    </ScrollPane>
+
+                </VBox>
+            </VBox>
+
+            <!-- ── PAINEL FORMULÁRIO — oculto por padrão ────────────── -->
+            <VBox fx:id="painelForm" styleClass="form-panel"
+                  spacing="8" visible="false" managed="false">
+                <Label fx:id="lblFormTitulo" text="Novo Disco" styleClass="form-title"/>
+
+                <Label text="Título:" styleClass="form-label"/>
+                <TextField fx:id="tfTitulo"  styleClass="form-field" promptText="Ex: Abbey Road"/>
+
+                <Label text="Banda / Artista:" styleClass="form-label"/>
+                <TextField fx:id="tfBanda"    styleClass="form-field" promptText="Ex: The Beatles"/>
+
+                <Label text="Estilo:" styleClass="form-label"/>
+                <TextField fx:id="tfEstilo"   styleClass="form-field" promptText="Ex: Rock, MPB..."/>
+
+                <Label text="Data de lançamento (dd/MM/yyyy):" styleClass="form-label"/>
+                <TextField fx:id="tfData"     styleClass="form-field" promptText="01/01/2000"/>
+
+                <Label text="Qtd. exemplares:" styleClass="form-label"/>
+                <TextField fx:id="tfQtd"      styleClass="form-field" promptText="0"/>
+
+                <Label text="Valor diária (R$):" styleClass="form-label"/>
+                <TextField fx:id="tfValor"    styleClass="form-field" promptText="0.00"/>
+
+                <Label text="Duração (segundos totais):" styleClass="form-label"/>
+                <TextField fx:id="tfDuracao"  styleClass="form-field" promptText="0"/>
+
+                <Label fx:id="lblFormMsg" text="" styleClass="form-msg" wrapText="true"/>
+
+                <HBox spacing="8" style="-fx-padding:6 0 0 0;">
+                    <Button text="Salvar"   styleClass="btn-salvar"   onAction="#salvarDisco"/>
+                    <Button text="Cancelar" styleClass="btn-cancelar" onAction="#fecharForm"/>
+                </HBox>
+            </VBox>
+
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox styleClass="bottombar" alignment="CENTER_LEFT" spacing="10">
+
+            <!-- Ícone filtro + campo pesquisa -->
+            <Label text="▼" style="-fx-text-fill:#F8EED1; -fx-font-size:13px;"/>
+            <TextField fx:id="tfPesquisa"
+                       styleClass="search-field"
+                       promptText="Pesquisar"
+                       onAction="#pesquisar"/>
+            <Label text="🔍"
+                   style="-fx-text-fill:#7A6A5A; -fx-font-size:13px;
+                          -fx-translate-x:-32px; -fx-mouse-transparent:true;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="Logout ➜"
+                    styleClass="btn-logout-bottom"
+                    onAction="#handleLogout"/>
+
+            <Button fx:id="btnAdicionar"
+                    text="Adicionar novo disco ＋"
+                    styleClass="btn-adicionar"
+                    onAction="#abrirFormNovo"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
