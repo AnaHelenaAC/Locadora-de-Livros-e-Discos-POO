@@ -6,15 +6,17 @@ import java.util.List;
 
 public class Registro {
 
-    private static List<UsuarioFuncionario> listaFuncionarios = new ArrayList<>();
+    private List<Usuario> listaFuncionarios = new ArrayList<>();
+
     private Long idRegistro;
-    private UsuarioGerente gerenteLogado;
+    private Usuario gerenteLogado;
     private double faturamentoTotal;
     private List<Aluguel> listaAlugueis;
 
     public Registro() {
         this.faturamentoTotal = 0.0;
         this.listaAlugueis = new ArrayList<>();
+        this.listaFuncionarios = new ArrayList<>();
         this.gerenteLogado = null;
     }
 
@@ -28,24 +30,28 @@ public class Registro {
         }
     }
 
-    public static List<UsuarioFuncionario> getListaFuncionarios() {
+    public List<Usuario> getListaFuncionarios() {
         return new ArrayList<>(listaFuncionarios);
     }
 
-    public static void setListaFuncionarios(List<UsuarioFuncionario> listaFuncionarios) {
+    public void setListaFuncionarios(List<Usuario> listaFuncionarios) {
         if (listaFuncionarios != null) {
-            Registro.listaFuncionarios = new ArrayList<>(listaFuncionarios);
+            this.listaFuncionarios = new ArrayList<>(listaFuncionarios);
         }
     }
 
-    public UsuarioGerente getGerenteLogado() {
+    public Usuario getGerenteLogado() {
         return gerenteLogado;
     }
 
-    public void setGerenteLogado(UsuarioGerente gerenteLogado) {
-        if (gerenteLogado != null) {
-            this.gerenteLogado = gerenteLogado;
+    public void setGerenteLogado(Usuario gerenteLogado) throws RegistroException {
+        if (gerenteLogado == null) {
+            throw new RegistroException("O gerente logado não pode ser nulo.");
         }
+        if (!gerenteLogado.isGerente()) {
+            throw new RegistroException("O usuário informado não é o gerente do sistema.");
+        }
+        this.gerenteLogado = gerenteLogado;
     }
 
     public double getFaturamentoTotal() {
@@ -70,14 +76,16 @@ public class Registro {
         }
     }
 
-    public static void salvarFuncionarioNoSistema(UsuarioFuncionario fun) throws RegistroException {
+    public void salvarFuncionarioNoSistema(Usuario fun) throws RegistroException {
         if (fun == null) {
             throw new RegistroException("Não é possível salvar um funcionário nulo no sistema.");
+        }
+        if (fun.isGerente()) {
+            throw new RegistroException("O gerente não pode ser adicionado como funcionário.");
         }
         listaFuncionarios.add(fun);
     }
 
-    // CRIAÇÃO do aluguel
     public void registrarAluguel(Aluguel aluguel) throws RegistroException {
         if (aluguel == null) {
             throw new RegistroException("Negado! Aluguel inválido.");
@@ -86,16 +94,14 @@ public class Registro {
         faturamentoTotal += aluguel.getValorBase();
     }
 
-    // Devolução de item
     public void registrarDevolucaoItem(double valorMultaDoItem) throws RegistroException {
-        // Quando o item é devolvido, se houver multa acumulada dele, soma-se ao faturamento
         if (valorMultaDoItem < 0) {
             throw new RegistroException("Valor de multa inválido.");
         }
         faturamentoTotal += valorMultaDoItem;
     }
 
-    public void generarRelatorioAlugados(String categoria) throws RegistroException {
+    public void gerarRelatorioAlugados(String categoria) throws RegistroException {
         if (categoria == null || categoria.trim().isEmpty()) {
             throw new RegistroException("A categoria do relatório não pode ser vazia.");
         }

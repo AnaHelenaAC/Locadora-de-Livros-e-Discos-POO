@@ -30,7 +30,6 @@ public class ItemAluguelDAO {
             ps.setDouble(4, entity.getPrecoDiaria());
             ps.setInt(5, entity.getDiasAlugados());
 
-            // Itens novos começam sem data_fim (nulos)
             if (entity.getDataFim() != null) {
                 ps.setDate(6, Date.valueOf(entity.getDataFim()));
             } else {
@@ -39,7 +38,6 @@ public class ItemAluguelDAO {
 
             ps.executeUpdate();
 
-            // captura o ID gerado e devolve preenchido na entidade
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     entity.setId(rs.getInt(1));
@@ -53,7 +51,6 @@ public class ItemAluguelDAO {
         }
     }
 
-    // Atualiza a data_fim usando o id real da linha
     public boolean Update(ItemAluguel entity) {
         if (entity.getId() <= 0) {
             throw new IllegalArgumentException("ItemAluguel sem ID válido para atualização.");
@@ -104,10 +101,10 @@ public class ItemAluguelDAO {
 
                     if (discoId != null) {
                         Disco disco = discoDAO.readByID(discoId);
-                        item = ItemAluguel.builder().id(itemId).item(disco).precoDiaria(precoDiaria).diasAlugados(diasAlugados).dataFim(dataFim).build();
+                        item = new ItemAluguel(itemId, disco, precoDiaria, diasAlugados, dataFim);
                     } else {
                         Livro livro = livroDAO.readByID(livroId);
-                        item = ItemAluguel.builder().id(itemId).item(livro).precoDiaria(precoDiaria).diasAlugados(diasAlugados).dataFim(dataFim).build();
+                        item = new ItemAluguel(itemId, livro, precoDiaria, diasAlugados, dataFim);
                     }
                     itens.add(item);
                 }

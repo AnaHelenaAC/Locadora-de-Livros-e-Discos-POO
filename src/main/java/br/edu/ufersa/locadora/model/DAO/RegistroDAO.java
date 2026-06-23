@@ -1,7 +1,8 @@
 package br.edu.ufersa.locadora.model.DAO;
 
+import br.edu.ufersa.locadora.exceptions.RegistroException;
 import br.edu.ufersa.locadora.model.entities.Registro;
-import br.edu.ufersa.locadora.model.entities.UsuarioGerente;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegistroDAO {
+
     public Registro Create(Registro entity) {
         String sql = "INSERT INTO tb_registro (faturamento_total, id_gerente_logado) VALUES (?, ?)";
 
@@ -21,7 +23,7 @@ public class RegistroDAO {
             stmt.setDouble(1, entity.getFaturamentoTotal());
 
             if (entity.getGerenteLogado() != null) {
-                stmt.setInt(2, entity.getGerenteLogado().getIdGerente());
+                stmt.setLong(2, entity.getGerenteLogado().getId());
             } else {
                 stmt.setNull(2, Types.INTEGER);
             }
@@ -50,19 +52,32 @@ public class RegistroDAO {
                 while (rset.next()) {
                     Registro reg = new Registro();
                     reg.setIdRegistro(rset.getLong("id_registro"));
-                    reg.setFaturamentoTotal(rset.getDouble("faturamento_total"));
+                    try {
+                        reg.setFaturamentoTotal(rset.getDouble("faturamento_total"));
+                    } catch (RegistroException e) {
+                        throw new RuntimeException("Erro ao definir faturamento: " + e.getMessage(), e);
+                    }
+
                     long idGerente = rset.getLong("id_gerente_logado");
                     if (!rset.wasNull()) {
-                        UsuarioGerente gerente = new UsuarioGerente();
-                        gerente.setIdGerente((int) idGerente);
-                        reg.setGerenteLogado(gerente);
+                        UsuarioDAO usuarioDAO = new UsuarioDAO();
+                        Usuario gerente = usuarioDAO.ReadPorId(idGerente);
+                        if (gerente != null) {
+                            try {
+                                reg.setGerenteLogado(gerente);
+                            } catch (RegistroException e) {
+                                throw new RuntimeException("Erro ao definir gerente no registro: " + e.getMessage(), e);
+                            }
+                        }
                     }
+
                     lista.add(reg);
                 }
             }
-        } catch (Exception exe){
+        } catch (SQLException exe) {
             throw new RuntimeException("Erro ao buscar o registro no banco de dados: " + exe.getMessage(), exe);
         }
+
         return lista;
     }
 
@@ -71,10 +86,11 @@ public class RegistroDAO {
 
         try (Connection con = ConnectionFactory.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
+
             stmt.setDouble(1, entity.getFaturamentoTotal());
 
             if (entity.getGerenteLogado() != null) {
-                stmt.setInt(2, entity.getGerenteLogado().getIdGerente());
+                stmt.setLong(2, entity.getGerenteLogado().getId()); // CORRIGIDO: getId()
             } else {
                 stmt.setNull(2, Types.INTEGER);
             }
