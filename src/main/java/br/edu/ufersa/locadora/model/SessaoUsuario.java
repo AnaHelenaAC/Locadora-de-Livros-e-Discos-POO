@@ -5,8 +5,6 @@ import br.edu.ufersa.locadora.model.Service.ClienteService;
 import br.edu.ufersa.locadora.model.Service.DiscoService;
 import br.edu.ufersa.locadora.model.Service.LivroService;
 import br.edu.ufersa.locadora.model.Service.RegistroService;
-import br.edu.ufersa.locadora.model.Service.UsuarioFuncionarioService;
-import br.edu.ufersa.locadora.model.Service.UsuarioGerenteService;
 import br.edu.ufersa.locadora.model.Service.UsuarioService;
 import br.edu.ufersa.locadora.model.entities.Usuario;
 
@@ -17,8 +15,6 @@ public final class SessaoUsuario {
     private Usuario usuarioLogado;
 
     private final UsuarioService usuarioService;
-    private final UsuarioGerenteService usuarioGerenteService;
-    private final UsuarioFuncionarioService usuarioFuncionarioService;
     private final ClienteService clienteService;
     private final LivroService livroService;
     private final DiscoService discoService;
@@ -27,8 +23,6 @@ public final class SessaoUsuario {
 
     private SessaoUsuario() {
         this.usuarioService = new UsuarioService();
-        this.usuarioGerenteService = new UsuarioGerenteService();
-        this.usuarioFuncionarioService = new UsuarioFuncionarioService();
         this.clienteService = new ClienteService();
         this.livroService = new LivroService(new br.edu.ufersa.locadora.model.DAO.LivroDAO());
         this.discoService = new DiscoService(new br.edu.ufersa.locadora.model.DAO.DiscoDAO());
@@ -70,14 +64,6 @@ public final class SessaoUsuario {
 
     public UsuarioService getUsuarioService() {
         return usuarioService;
-    }
-
-    public UsuarioGerenteService getUsuarioGerenteService() {
-        return usuarioGerenteService;
-    }
-
-    public UsuarioFuncionarioService getUsuarioFuncionarioService() {
-        return usuarioFuncionarioService;
     }
 
     public ClienteService getClienteService() {

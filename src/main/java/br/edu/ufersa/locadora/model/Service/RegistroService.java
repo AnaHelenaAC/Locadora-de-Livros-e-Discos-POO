@@ -1,21 +1,22 @@
 package br.edu.ufersa.locadora.model.Service;
 
 import br.edu.ufersa.locadora.model.DAO.RegistroDAO;
-import br.edu.ufersa.locadora.model.DAO.UsuarioFuncionarioDAO;
+import br.edu.ufersa.locadora.model.DAO.UsuarioDAO;
 import br.edu.ufersa.locadora.model.entities.Registro;
-import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import br.edu.ufersa.locadora.exceptions.RegistroException;
-import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
+
 import java.util.List;
 import java.time.LocalDate;
 
 public class RegistroService {
 
-    private RegistroDAO dao = new RegistroDAO();
-    private UsuarioFuncionarioDAO funcionarioDAO = new UsuarioFuncionarioDAO();
-    private AluguelService aluguelService = new AluguelService(); // Adicionado para atualizar o estado do aluguel
+    private final RegistroDAO dao = new RegistroDAO();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private final AluguelService aluguelService = new AluguelService();
 
     public Registro salvar(Registro reg) throws RegistroException {
         if (reg == null) {
@@ -49,14 +50,16 @@ public class RegistroService {
         return dao.Delete(reg);
     }
 
-    public void salvarFuncionarioNoSistema(UsuarioFuncionario fun) throws RegistroException {
+    public void salvarFuncionarioNoSistema(Usuario fun) throws RegistroException {
         if (fun == null) {
             throw new RegistroException("Funcionário inválido!");
         }
-        funcionarioDAO.Create(fun);
+        if (fun.isGerente()) {
+            throw new RegistroException("Este método destina-se apenas a funcionários, não ao gerente!");
+        }
         try {
-            Registro.salvarFuncionarioNoSistema(fun);
-        } catch (UsuarioFuncionarioException e) {
+            usuarioDAO.Create(fun);
+        } catch (UsuarioException e) {
             throw new RegistroException("Erro ao salvar funcionário: " + e.getMessage());
         }
     }
@@ -70,7 +73,8 @@ public class RegistroService {
         dao.Update(reg);
     }
 
-    public void registrarDevolucaoDeItem(Registro reg, Aluguel aluguel, ItemAluguel item, LocalDate dataDevolucao) throws RegistroException {
+    public void registrarDevolucaoDeItem(Registro reg, Aluguel aluguel, ItemAluguel item,
+                                         LocalDate dataDevolucao) throws RegistroException {
         if (reg == null || aluguel == null || item == null || dataDevolucao == null) {
             throw new RegistroException("Dados insuficientes para realizar a devolução do item!");
         }
@@ -87,20 +91,18 @@ public class RegistroService {
         if (categoria == null || categoria.trim().isEmpty()) {
             throw new RegistroException("A categoria não pode ser vazia!");
         }
-    }
-
-    public double calcularFaturamentoMensal(int mes) throws RegistroException {
-        if (mes < 1 || mes > 12) {
-            throw new RegistroException("Mês informado deve estar entre 1 e 12!");
-        }
-        return 0.0;
+        // TODO: implementar geração de relatório
     }
 
     public double calcularFaturamentoMensal(int mes, int ano) throws RegistroException {
+        if (mes < 1 || mes > 12) {
+            throw new RegistroException("Mês informado deve estar entre 1 e 12!");
+        }
         if (ano <= 0) {
             throw new RegistroException("Ano informado inválido!");
         }
-        return calcularFaturamentoMensal(mes);
+        // TODO: implementar consulta real ao banco por mês/ano
+        return 0.0;
     }
 
     public double calcularFaturamentoMensal(Integer mes, Integer ano) throws RegistroException {

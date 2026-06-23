@@ -7,7 +7,7 @@ import java.util.List;
 
 public class UsuarioService {
 
-    private UsuarioDAO dao = new UsuarioDAO();
+    private final UsuarioDAO dao = new UsuarioDAO();
 
     public Usuario salvar(Usuario usu) throws UsuarioException {
         if (usu == null) {
@@ -41,30 +41,34 @@ public class UsuarioService {
         throw new UsuarioException("Nenhum usuário localizado com o nome informado!");
     }
 
+    public Usuario buscarGerente() throws UsuarioException {
+        Usuario gerente = dao.ReadGerente();
+        if (gerente == null) {
+            throw new UsuarioException(
+                    "Nenhum gerente cadastrado (usuário de ID 1 não encontrado)!");
+        }
+        return gerente;
+    }
+
+    public List<Usuario> buscarFuncionariosPorNome(String nome) throws UsuarioException {
+        return dao.ReadFuncionarios(nome == null ? "" : nome);
+    }
+
     public boolean autenticar(String login, String senha) throws UsuarioException {
         if (login == null || senha == null) {
             throw new UsuarioException("Credenciais incompletas para autenticação!");
         }
-        List<Usuario> resultados = dao.Read("");
-        for (Usuario usu : resultados) {
-            if (usu.getLogin() != null && usu.getLogin().equals(login) &&
-                    usu.getSenha() != null && usu.getSenha().equals(senha)) {
-                return true;
-            }
-        }
-        return false;
+        Usuario usu = dao.ReadPorLogin(login);
+        return usu != null && senha.equals(usu.getSenha());
     }
 
     public Usuario autenticarUsuario(String login, String senha) throws UsuarioException {
         if (login == null || senha == null) {
             throw new UsuarioException("Credenciais incompletas para autenticação!");
         }
-
-        List<Usuario> resultados = dao.Read("");
-        for (Usuario usu : resultados) {
-            if (login.equals(usu.getLogin()) && senha.equals(usu.getSenha())) {
-                return usu;
-            }
+        Usuario usu = dao.ReadPorLogin(login);
+        if (usu != null && senha.equals(usu.getSenha())) {
+            return usu;
         }
         return null;
     }
