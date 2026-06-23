@@ -15,7 +15,6 @@ public class Aluguel {
     private final double valorBase;
     private double valorMulta;
 
-    // Construtor privado de Builder
     private Aluguel(Builder builder) {
         this.id = builder.id;
         this.cliente = builder.cliente;
@@ -40,26 +39,23 @@ public class Aluguel {
         return totalMulta;
     }
 
-    // Consulta o valor final atualizado
-    public double calcularValorFinalAtual() {return valorBase + calcularMultaAcumulada();
+    public double calcularValorFinalAtual() {
+        return valorBase + calcularMultaAcumulada();
     }
 
-    // Finaliza TODOS os itens de uma vez só (caso todos sejam devolvidos juntos)
     public void finalizarAluguelCompleto(LocalDate dataDevolucao) {
         if (getStatus().equals("FINALIZADO")) {
             throw new IllegalStateException("Aluguel já está completamente finalizado.");
         }
 
         for (ItemAluguel item : itensAlugados) {
-            if (item.getDataFim() == null) { // finaliza apenas os que ainda faltam
+            if (item.getDataFim() == null) {
                 item.finalizarItem(dataDevolucao, dataInicio);
             }
         }
-        // Atualiza a multa gravada no objeto
         this.valorMulta = calcularMultaAcumulada();
     }
 
-    // Permite finalizar apenas um item específico (Devolução parcial)
     public void finalizarItemEspecifico(ItemAluguel item, LocalDate dataDevolucao) {
         if (!itensAlugados.contains(item)) {
             throw new IllegalArgumentException("Este item não pertence a este aluguel.");
@@ -74,7 +70,6 @@ public class Aluguel {
         }
     }
 
-    // Valor efetivamente pago após a finalização
     public double getValorTotalPago() {
         return valorBase + valorMulta;
     }
@@ -178,7 +173,7 @@ public class Aluguel {
             return this;
         }
 
-        // Conveniência: monta um aluguel novo a partir de um carrinho
+        //monta um aluguel novo a partir de um carrinho
         public Builder fromCarrinho(Carrinho carrinho, int diasAlugados) {
             if (carrinho == null || carrinho.getItensNoCarrinho().isEmpty()) {
                 throw new IllegalArgumentException("Carrinho vazio.");
@@ -196,9 +191,7 @@ public class Aluguel {
             this.itensAlugados = new ArrayList<>();
             for (ItemCarrinho itemCarrinho : carrinho.getItensNoCarrinho()) {
                 this.itensAlugados.add(
-                        ItemAluguel.builder()
-                                .fromItemAcervo(itemCarrinho.getItemAcervo(), itemCarrinho.getDiasAlugados())
-                                .build());
+                        new ItemAluguel(itemCarrinho.getItemAcervo(), itemCarrinho.getDiasAlugados()));
             }
             return this;
         }
