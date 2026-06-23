@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CadastrosController implements Initializable {
+public class CadastroController implements Initializable {
 
     // ── Abas ──────────────────────────────────────────────────
     @FXML private Button btnAbaFuncionario;
