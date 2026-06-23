@@ -15,7 +15,7 @@ public class Main extends Application {
                 getClass().getResource("/br/edu/ufersa/locadora/view/login.fxml")
         );
         Scene scene = new Scene(loader.load());
-        stage.setTitle("Cultura Viva – Login");
+        stage.setTitle("Cultura Viva – Login0");
         ViewSwitcher.setScene(scene);
         stage.setScene(scene);
 
