@@ -52,11 +52,10 @@ public abstract class Usuario {
     }
 
     public void setSenha(String senha) throws UsuarioException {
-        if (senha != null && senha.length() >= 6 && senha.length() <= 100) {
-            this.senha = senha;
-        } else {
-            throw new UsuarioException("A senha deve ter pelo menos 6 caracteres e, no máximo, 100 caracteres.");
+        if (senha == null) {
+            throw new UsuarioException("A senha não pode ser nula.");
         }
+        this.senha = senha;
     }
 
     public Long getId() {
