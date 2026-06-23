@@ -129,7 +129,6 @@ public class FuncionarioController implements Initializable {
         }
         lblMsg.setText("");
         try {
-            // CORRIGIDO: cria Usuario diretamente e usa UsuarioService.salvar()
             Usuario novoFuncionario = new Usuario(nome, email, cpf);
             SessaoUsuario.getInstance().getUsuarioService().salvar(novoFuncionario);
             tfNome.clear();
