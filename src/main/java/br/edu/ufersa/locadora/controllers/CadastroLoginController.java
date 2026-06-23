@@ -75,7 +75,7 @@ public class CadastroLoginController implements Initializable {
             UsuarioFuncionario novo = new UsuarioFuncionario(nome, email, senha);
             SessaoUsuario.getInstance()
                     .getUsuarioFuncionarioService()
-                    .cadastrar(novo);
+                    .salvar(novo);
 
             // Sucesso
             lblMsg.getStyleClass().setAll("msg-sucesso");

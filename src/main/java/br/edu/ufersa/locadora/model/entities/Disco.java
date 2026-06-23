@@ -8,13 +8,15 @@ public class Disco extends ItemAcervo {
   public int getDuracao() { //Recebe duração em segundos
     return duracao;
   }
+  public void setDuracao(int duracao) {
+    setDuracaoSegundos(duracao);
+  }
   public String getDuracaoString() { //Recebe duração em String no formato HH:mm:ss
     String duracaoString = "";
     int horas = duracao / 3600;
-    duracao %= 3600;
-    int minutos = duracao / 60;
-    duracao %= 60;
-    int segundos = duracao;
+    int resto = duracao % 3600;
+    int minutos = resto / 60;
+    int segundos = resto % 60;
     String horasString = String.format("%02d", horas);
     String minutosString = String.format("%02d", minutos);
     String segundosString = String.format("%02d", segundos);
@@ -32,6 +34,11 @@ public class Disco extends ItemAcervo {
     duracao += minutos * 60;
     duracao += segundos;
     this.duracao = duracao;
+  }
+
+  public void setDuracaoSegundos(int duracaoSegundos) {
+    if (duracaoSegundos < 0) throw new IllegalArgumentException("A duração não pode ser negativa.");
+    this.duracao = duracaoSegundos;
   }
 
   //Método de exclusão de objeto:

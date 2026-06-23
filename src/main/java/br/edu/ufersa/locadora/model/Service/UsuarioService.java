@@ -54,4 +54,18 @@ public class UsuarioService {
         }
         return false;
     }
+
+    public Usuario autenticarUsuario(String login, String senha) throws UsuarioException {
+        if (login == null || senha == null) {
+            throw new UsuarioException("Credenciais incompletas para autenticação!");
+        }
+
+        List<Usuario> resultados = dao.Read("");
+        for (Usuario usu : resultados) {
+            if (login.equals(usu.getLogin()) && senha.equals(usu.getSenha())) {
+                return usu;
+            }
+        }
+        return null;
+    }
 }

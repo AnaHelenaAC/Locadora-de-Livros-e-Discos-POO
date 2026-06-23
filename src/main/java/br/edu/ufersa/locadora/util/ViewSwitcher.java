@@ -20,8 +20,7 @@ public class ViewSwitcher {
             scene.setRoot(root);
         }
         catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(fxmlPath + "não carregou.");
+            throw new RuntimeException("Não foi possível carregar a view: " + fxmlPath, e);
         }
     }
 }

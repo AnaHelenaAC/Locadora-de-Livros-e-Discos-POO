@@ -174,13 +174,18 @@ public class ArquivoLivroController implements Initializable {
     public void pesquisar(ActionEvent e) {
         String termo = tfPesquisa.getText().trim();
         listaLivros.getChildren().clear();
-        List<Livro> resultado = SessaoUsuario.getInstance()
-                .getLivroService().buscarPor("titulo", termo);
-        if (resultado.isEmpty())
-            listaLivros.getChildren().add(linhaVazia("Nenhum resultado para: " + termo));
-        else
-            resultado.forEach(l -> listaLivros.getChildren().add(criarLinha(l)));
-        if (termo.isEmpty()) carregarLivros();
+        try {
+            List<Livro> resultado = SessaoUsuario.getInstance()
+                    .getLivroService().buscarPor("titulo", termo);
+            if (resultado.isEmpty()) {
+                listaLivros.getChildren().add(linhaVazia("Nenhum resultado para: " + termo));
+            } else {
+                resultado.forEach(l -> listaLivros.getChildren().add(criarLinha(l)));
+            }
+            if (termo.isEmpty()) carregarLivros();
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro na pesquisa: " + ex.getMessage()).showAndWait();
+        }
     }
 
     // ── Formulário: abrir ─────────────────────────────────────

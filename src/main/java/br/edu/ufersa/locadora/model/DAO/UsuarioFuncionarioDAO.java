@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioFuncionarioDAO {
+
     public UsuarioFuncionario Create(UsuarioFuncionario entity) throws UsuarioFuncionarioException {
         String sql = "INSERT INTO Usuarios (nome, login, senha, isGerente) VALUES (?, ?, ?, ?)";
 
@@ -35,6 +36,23 @@ public class UsuarioFuncionarioDAO {
         }
 
         return entity;
+    }
+
+    public List<UsuarioFuncionario> FindAll() throws UsuarioFuncionarioException {
+        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios WHERE isGerente = false";
+        List<UsuarioFuncionario> lista = new ArrayList<>();
+
+        try (Connection con = ConnectionFactory.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(mapearFuncionario(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar todos os funcionários: " + e.getMessage(), e);
+        }
+        return lista;
     }
 
     public List<UsuarioFuncionario> Read(String param) throws UsuarioFuncionarioException {

@@ -91,7 +91,8 @@ public class FinancasController implements Initializable {
         painel.setStyle("-fx-padding:0; -fx-pref-width:210px;");
 
         // Nome do mês (ex: JAN)
-        String nomeMes = ym.getMonth().getDisplayName(TextStyle.SHORT, new Locale("pt", "BR"))
+        String nomeMes = ym.getMonth().getDisplayName(TextStyle.SHORT,
+            new Locale.Builder().setLanguage("pt").setRegion("BR").build())
                 .toUpperCase().replace(".", "");
         Label lblMes = new Label(nomeMes);
         lblMes.setStyle("-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#2E1A47;" +

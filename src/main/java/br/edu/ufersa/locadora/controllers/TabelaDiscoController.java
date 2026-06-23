@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TabelaDiscosController implements Initializable {
+public class TabelaDiscoController implements Initializable {
 
     @FXML private ScrollPane scrollTabela;
     @FXML private VBox       listaDiscos;

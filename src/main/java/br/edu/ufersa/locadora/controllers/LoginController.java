@@ -1,5 +1,8 @@
 package br.edu.ufersa.locadora.controllers;
 
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
+import br.edu.ufersa.locadora.model.SessaoUsuario;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -94,27 +97,37 @@ public class LoginController implements Initializable {
 
     @FXML
     public void handleLogin(ActionEvent event) {
-        String identifier = nameField.getText();
-        String password   = passwordField.getText();
-        String cargo      = cargoField.getText();
-        String testeIdentificador = "3";
-        String testePassword = "1234";
-        String testeCargo = "Gerente";
+        String identifier = nameField.getText() != null ? nameField.getText().trim() : "";
+        String password = passwordField.getText() != null ? passwordField.getText() : "";
+        String cargo = cargoField.getText() != null ? cargoField.getText().trim() : "";
 
-        if(identifier.equals(testeIdentificador) && password.equals(testePassword) && cargo.equals(testeCargo)){
-             showAlert(AlertType.INFORMATION, "Login", "Bem-vindo, " + identifier + "!");
-                    } else {
-                        showAlert(AlertType.ERROR, "Erro", "Usuário ou senha inválidos.");
-                    }
+        if (identifier.isEmpty() || password.isEmpty()) {
+            showAlert(AlertType.WARNING, "Campos obrigatórios", "Informe o usuário e a senha.");
+            return;
+        }
 
+        try {
+            Usuario usuario = SessaoUsuario.getInstance().getUsuarioService().autenticarUsuario(identifier, password);
+            if (usuario == null) {
+                showAlert(AlertType.ERROR, "Erro", "Usuário ou senha inválidos.");
+                return;
+            }
 
-        // TODO: validate fields and authenticate the user.
-        System.out.printf(
-                "[LoginController] handleLogin called%n" +
-                        "  identifier : %s%n" +
-                        "  cargo      : %s%n",
-                identifier, cargo
-        );
+            if (!cargo.isEmpty()) {
+                boolean cargoGerente = cargo.equalsIgnoreCase("gerente");
+                if (usuario.isGerente() != cargoGerente) {
+                    showAlert(AlertType.ERROR, "Erro", "O cargo informado não corresponde ao usuário autenticado.");
+                    return;
+                }
+            }
+
+            SessaoUsuario.getInstance().setUsuarioLogado(usuario);
+            showAlert(AlertType.INFORMATION, "Login", "Bem-vindo, " + usuario.getNome() + "!");
+        } catch (UsuarioException e) {
+            showAlert(AlertType.ERROR, "Erro", e.getMessage());
+        } catch (RuntimeException e) {
+            showAlert(AlertType.ERROR, "Erro", "Não foi possível realizar o login no momento.");
+        }
     }
 
     /**
@@ -135,7 +148,6 @@ public class LoginController implements Initializable {
     /** Shared logic for both mouse-click and keyboard activation of the
      *  cadastro / sign-up link. */
     private void handleCadastroAction() {
-        // TODO: navigate to the registration screen.
-        System.out.println("[LoginController] handleCadastro called — navigate to registration.");
+        showAlert(AlertType.INFORMATION, "Cadastro", "Fluxo de cadastro ainda não implementado.");
     }
 }
