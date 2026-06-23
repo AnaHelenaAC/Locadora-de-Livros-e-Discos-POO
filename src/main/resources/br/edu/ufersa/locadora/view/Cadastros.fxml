@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: transparent;" stylesheets="../css/SubNavArea.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.CadastrosController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: transparent;" stylesheets="@../css/SubNavArea.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.CadastrosController">
     <top>
         <HBox prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>

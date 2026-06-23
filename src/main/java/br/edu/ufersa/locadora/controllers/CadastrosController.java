@@ -9,13 +9,13 @@ import javafx.scene.control.*;
 import java.io.IOException;
 
 public class CadastrosController {
-    @FXML private ToggleGroup itemCadastros;
+    @FXML private ToggleGroup ItemCadastros;
     @FXML private ToggleButton ClientesToggle;
     @FXML private ToggleButton FuncionariosToggle;
     @FXML private StackPane CadastrosContent;
 
     @FXML public void initialize() {
-        itemCadastros.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
+        ItemCadastros.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
             if (newVal != null) {
                 ToggleButton selectedBtn = (ToggleButton) newVal;
 

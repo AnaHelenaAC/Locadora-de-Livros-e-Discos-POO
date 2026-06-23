@@ -9,13 +9,13 @@ import javafx.scene.control.*;
 import java.io.IOException;
 
 public class AlugueisController {
-    @FXML private ToggleGroup itemAlugueis;
+    @FXML private ToggleGroup ItemAlugueis;
     @FXML private ToggleButton AlugueisAtivosToggle;
     @FXML private ToggleButton FinancasToggle;
     @FXML private StackPane AlugueisContent;
 
     @FXML public void initialize() {
-        itemAlugueis.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
+        ItemAlugueis.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
             if (newVal != null) {
                 ToggleButton selectedBtn = (ToggleButton) newVal;
 

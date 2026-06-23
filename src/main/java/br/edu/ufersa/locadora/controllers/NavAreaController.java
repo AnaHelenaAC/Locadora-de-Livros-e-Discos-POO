@@ -5,59 +5,59 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.event.*;
-import javafx.scene.image.*;
 import javafx.scene.Parent;
 import java.io.IOException;
-
 import br.edu.ufersa.locadora.util.ViewSwitcher;
 
 public class NavAreaController {
-    @FXML private ToggleGroup navItems;
+    @FXML private ToggleGroup NavItems;
     @FXML private ToggleButton navAcervo;
     @FXML private ToggleButton navAlugueis;
     @FXML private ToggleButton navCadastros;
     @FXML private Button logout;
-    @FXML private ImageView navDiscIcon;
-    @FXML private ImageView navBookIcon;
-    @FXML private ImageView navReportIcon;
-    @FXML private ImageView navUserIcon;
     @FXML private StackPane navContent;
 
-    @FXML public void initialize() {
-        navItems.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
+    // Base paths for cleaner code
+    private final String VIEW_PATH = "/br/edu/ufersa/locadora/view/";
+
+    @FXML
+    public void initialize() {
+        NavItems.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
             if (newVal != null) {
                 ToggleButton selectedBtn = (ToggleButton) newVal;
-
                 String id = selectedBtn.getId();
 
                 switch(id) {
                     case "navAcervo":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/Acervo.fxml"); //Navega entre telas (vai para Acervo.fxml)
-                        navDiscIcon.setImage(new Image(getClass().getResourceAsStream("../../resources/br/edu/ufersa/locadora/images/nav-disc-selected.png"))); //Atualiza ícone de disco
-                        navBookIcon.setImage(new Image(getClass().getResourceAsStream("../../resources/br/edu/ufersa/locadora/images/nav-book-selected.png"))); //Atualiza ícone de livro
+                        switchView(VIEW_PATH + "Acervo.fxml");
                         break;
                     case "navAlugueis":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/Alugueis.fxml"); //Navega entre telas (vai para Alugueis.fxml)
-                        navDiscIcon.setImage(new Image(getClass().getResourceAsStream("../../resources/br/edu/ufersa/locadora/images/nav-report-selected.png"))); //Atualiza ícone de prancheta
+                        switchView(VIEW_PATH + "Alugueis.fxml");
                         break;
                     case "navCadastros":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/Cadastros.fxml"); //Navega entre telas (vai para Cadastros.fxml)
-                        navDiscIcon.setImage(new Image(getClass().getResourceAsStream("../../resources/br/edu/ufersa/locadora/images/nav-users-selected.png"))); //Atualiza ícone de usuário
+                        switchView(VIEW_PATH + "Cadastros.fxml");
                         break;
                 }
             }
         });
     }
-    @FXML public void handleLogout(ActionEvent event) {
-        ViewSwitcher.switchTo("../../resources/br/edu/ufersa/locadora/view/login.fxml");
+
+    @FXML
+    public void handleLogout(ActionEvent event) {
+        ViewSwitcher.switchTo(VIEW_PATH + "login.fxml");
     }
 
-    private void switchView(String fxmlFile) {
+    private void switchView(String absoluteFxmlPath) {
         try {
-            Parent view = FXMLLoader.load(getClass().getResource(fxmlFile));
+            Parent view = FXMLLoader.load(getClass().getResource(absoluteFxmlPath));
+
+            if (view instanceof Region) {
+                ((Region) view).setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            }
+
             navContent.getChildren().setAll(view);
-        }
-        catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Failed to load FXML file: " + absoluteFxmlPath);
             e.printStackTrace();
         }
     }
