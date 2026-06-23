@@ -184,7 +184,7 @@ public class ArquivoLivroController implements Initializable {
             }
             if (termo.isEmpty()) carregarLivros();
         } catch (Exception ex) {
-            new Alert(Alert.AlertType.ERROR, "Erro na pesquisa: " + ex.getMessage()).showAndWait();
+            mostrarErro("Erro na pesquisa: " + ex.getMessage());
         }
     }
 
@@ -324,5 +324,9 @@ public class ArquivoLivroController implements Initializable {
         } catch (IOException ex) {
             new Alert(Alert.AlertType.ERROR, "Erro ao navegar: " + ex.getMessage()).showAndWait();
         }
+    }
+
+    private void mostrarErro(String mensagem) {
+        new Alert(Alert.AlertType.ERROR, mensagem).showAndWait();
     }
 }
