@@ -3,6 +3,7 @@ package br.edu.ufersa.locadora.model.DAO;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import br.edu.ufersa.locadora.model.entities.Usuario;
+import br.edu.ufersa.locadora.model.DAO.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

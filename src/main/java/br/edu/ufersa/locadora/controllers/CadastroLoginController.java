@@ -63,8 +63,8 @@ public class CadastroLoginController implements Initializable {
             tfCpf.requestFocus();
             return;
         }
-        if (senha.length() < 6) {
-            lblMsg.setText("A senha deve ter pelo menos 6 caracteres.");
+        if (senha.isEmpty()) {
+            lblMsg.setText("Informe uma senha.");
             pfSenha.requestFocus();
             return;
         }

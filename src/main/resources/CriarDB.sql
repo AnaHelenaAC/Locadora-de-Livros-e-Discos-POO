@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS locadora_de_discos_e_livros;
+CREATE DATABASE IF NOT EXISTS locadora_de_discos_e_livros;
 USE locadora_de_discos_e_livros;
 
 CREATE TABLE Discos (

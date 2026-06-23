@@ -127,11 +127,6 @@
                                   styleClass="grouped-field grouped-field-bottom"/>
                 </VBox>
 
-                <!-- Standalone Cargo field -->
-                <TextField fx:id="cargoField"
-                           promptText="CARGO"
-                           styleClass="standalone-field"/>
-
                 <!-- Login button -->
                 <Button fx:id="loginButton"
                         text="ENTRAR"

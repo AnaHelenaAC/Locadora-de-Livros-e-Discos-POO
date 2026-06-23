@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
-    private final static String URL = "jdbc:mysql://localhost/poo";
+    private final static String URL = "jdbc:mysql://localhost/locadora_de_discos_e_livros";
     private final static String USER = "poo";
     private final static String PASS = "AH443162ah";
 
