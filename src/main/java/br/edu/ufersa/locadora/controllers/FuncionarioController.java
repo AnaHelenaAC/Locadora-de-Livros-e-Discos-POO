@@ -167,7 +167,7 @@ public class FuncionarioController implements Initializable {
         a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 try {
-                    SessaoUsuario.getInstance().getUsuarioService().deletar(f);
+                    SessaoUsuario.getInstance().getUsuarioService().excluir(f);
                     carregarFuncionarios();
                 } catch (Exception ex) {
                     lblMsg.setText("Erro: " + ex.getMessage());
