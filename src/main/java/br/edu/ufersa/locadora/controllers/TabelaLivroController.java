@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 
-public class TabelaLivrosController implements Initializable {
+public class TabelaLivroController implements Initializable {
 
     @FXML private ScrollPane scrollTabela;
     @FXML private VBox       listaLivros;

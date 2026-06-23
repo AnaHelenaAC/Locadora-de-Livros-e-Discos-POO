@@ -8,6 +8,26 @@ import java.util.List;
 public class UsuarioFuncionarioService {
 
     private UsuarioFuncionarioDAO dao = new UsuarioFuncionarioDAO();
+    
+    public List<UsuarioFuncionario> listarTodos() throws UsuarioFuncionarioException {
+        try {
+            return dao.FindAll();
+        } catch (Exception e) {
+            throw new UsuarioFuncionarioException("Erro ao buscar a lista de funcionários: " + e.getMessage());
+        }
+    }
+
+    public List<UsuarioFuncionario> List() throws UsuarioFuncionarioException {
+        return listarTodos();
+    }
+
+    public UsuarioFuncionario cadastrar(UsuarioFuncionario fun) throws UsuarioFuncionarioException {
+        return salvar(fun);
+    }
+
+    public boolean excluir(UsuarioFuncionario fun) throws UsuarioFuncionarioException {
+        return deletar(fun);
+    }
 
     public UsuarioFuncionario salvar(UsuarioFuncionario fun) throws UsuarioFuncionarioException {
         if (fun == null) {

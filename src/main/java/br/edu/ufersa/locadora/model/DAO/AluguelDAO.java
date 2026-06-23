@@ -140,8 +140,7 @@ public class AluguelDAO {
                 lista.add(montarAluguel(rs, cliente, listaItens));
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao listar aluguéis ativos: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Erro ao listar aluguéis ativos: " + e.getMessage(), e);
         }
         return lista;
     }

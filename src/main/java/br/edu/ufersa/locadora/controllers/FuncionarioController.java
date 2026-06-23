@@ -98,11 +98,11 @@ public class FuncionarioController implements Initializable {
         VBox acoes = new VBox(2, btnEdit, btnDel);
         acoes.setAlignment(Pos.CENTER); acoes.setPrefWidth(40);
 
-        HBox linha = new HBox(10, avatar, lNome, lEmail, lCpf, acoes);
-        linha.setAlignment(Pos.CENTER_LEFT);
-        linha.setStyle("-fx-padding:10 16 10 10; -fx-background-color:#FFFFFF;" +
+        HBox FrogRow = new HBox(10, avatar, lNome, lEmail, lCpf, acoes);
+        FrogRow.setAlignment(Pos.CENTER_LEFT);
+        FrogRow.setStyle("-fx-padding:10 16 10 10; -fx-background-color:#FFFFFF;" +
                 "-fx-border-color:transparent transparent #EAE0D0 transparent; -fx-border-width:0 0 1 0;");
-        return linha;
+        return FrogRow;
     }
 
     private HBox linhaVazia(String msg) {

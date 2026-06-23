@@ -6,7 +6,6 @@ import br.edu.ufersa.locadora.model.entities.Registro;
 import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
-import br.edu.ufersa.locadora.model.Service.AluguelService;
 import br.edu.ufersa.locadora.exceptions.RegistroException;
 import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 import java.util.List;
@@ -95,5 +94,19 @@ public class RegistroService {
             throw new RegistroException("Mês informado deve estar entre 1 e 12!");
         }
         return 0.0;
+    }
+
+    public double calcularFaturamentoMensal(int mes, int ano) throws RegistroException {
+        if (ano <= 0) {
+            throw new RegistroException("Ano informado inválido!");
+        }
+        return calcularFaturamentoMensal(mes);
+    }
+
+    public double calcularFaturamentoMensal(Integer mes, Integer ano) throws RegistroException {
+        if (mes == null || ano == null) {
+            throw new RegistroException("Mês e ano informados não podem ser nulos!");
+        }
+        return calcularFaturamentoMensal(mes.intValue(), ano.intValue());
     }
 }

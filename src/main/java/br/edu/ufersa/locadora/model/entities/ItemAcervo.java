@@ -83,7 +83,6 @@ public void setValor(double valor) {
       if (isDisco == false || isDisco == true) isDisco = !isDisco; //Checa se "isDisco" não é nulo. Se não for, inverte o valor de "isDisco", transformando um disco em livro ou um livro em disco. "false" = livro; "true" = disco.  
     }
     catch (NullPointerException e) {
-      System.out.println("Valor de isDisco = null");
       throw e;
     }
   }

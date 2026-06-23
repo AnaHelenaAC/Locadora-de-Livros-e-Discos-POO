@@ -4,6 +4,7 @@ import br.edu.ufersa.locadora.model.DAO.LivroDAO;
 import br.edu.ufersa.locadora.model.entities.Livro;
 import br.edu.ufersa.locadora.exceptions.LivroException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LivroService {
@@ -19,19 +20,16 @@ public class LivroService {
         if (livro.getValor() < 0 || livro.getQtdItens() < 0 || livro.getQtdPaginas() < 0) throw new LivroException("Os campos Valor, Quantidade de Itens e Quantidade de Páginas não podem ter valores negativos.");
 
         livroDAO.create(livro);
-        System.out.println(livro.getTitulo() + " adicionado com sucesso.");
     }
     public List<Livro> lerLivro() throws LivroException {
         if (livroDAO.read().isEmpty()) throw new LivroException("Nenhum livro foi encontrado no banco de dados.");
         else {
-            System.out.println("Livro(s) encontrado(s).");
             return livroDAO.read();
         }
     }
     public Livro lerLivroPorID(String ID) throws LivroException {
         if (livroDAO.readByID(ID) == null) throw new LivroException("Nenhum livro foi com o ID utilizado (" + ID + ") foi encontrado no banco de dados.");
         else {
-            System.out.println("Livro encontrado.");
             return livroDAO.readByID(ID);
         }
     }
@@ -42,13 +40,36 @@ public class LivroService {
         if (livro.getValor() < 0 || livro.getQtdItens() < 0 || livro.getQtdPaginas() < 0) throw new LivroException("Os campos Valor, Quantidade de Itens e Quantidade de Páginas não podem ter valores negativos.");
 
         livroDAO.update(livro);
-        System.out.println(livro.getTitulo() + " alterado com sucesso.");
     }
     public void apagarLivro(String ID) throws LivroException {
         if (livroDAO.readByID(ID) == null) {
             throw new LivroException("Nenhum livro foi com o ID utilizado (" + ID + ") foi encontrado no banco de dados.");
         }
         livroDAO.delete(ID);
-        System.out.println("Livro apagado.");
+    }
+
+    public List<Livro> buscarPor(String campo, String termo) throws LivroException {
+        if (termo == null) {
+            throw new LivroException("O termo de busca não pode ser nulo.");
+        }
+
+        String termoNormalizado = termo.trim().toLowerCase();
+        List<Livro> resultado = new ArrayList<>();
+
+        for (Livro livro : livroDAO.read()) {
+            boolean corresponde;
+            switch (campo == null ? "" : campo.trim().toLowerCase()) {
+                case "autor", "criadopor" -> corresponde = livro.getCriadoPor() != null && livro.getCriadoPor().toLowerCase().contains(termoNormalizado);
+                case "genero" -> corresponde = livro.getGenero() != null && livro.getGenero().toLowerCase().contains(termoNormalizado);
+                case "titulo" -> corresponde = livro.getTitulo() != null && livro.getTitulo().toLowerCase().contains(termoNormalizado);
+                default -> corresponde = livro.getTitulo() != null && livro.getTitulo().toLowerCase().contains(termoNormalizado);
+            }
+
+            if (corresponde) {
+                resultado.add(livro);
+            }
+        }
+
+        return resultado;
     }
 }
