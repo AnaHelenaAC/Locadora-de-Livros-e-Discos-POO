@@ -86,6 +86,7 @@ public class RegistroDAO {
 
         try (Connection con = ConnectionFactory.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
+
             stmt.setDouble(1, entity.getFaturamentoTotal());
 
             if (entity.getGerenteLogado() != null) {

@@ -12,17 +12,45 @@ public class ItemAluguel {
     private final int diasAlugados;
     private LocalDate dataFim;
 
-    // Construtor privado — só o Builder cria instâncias agora
-    private ItemAluguel(Builder builder) {
-        this.id = builder.id;
-        this.item = builder.item;
-        this.precoDiaria = builder.precoDiaria;
-        this.diasAlugados = builder.diasAlugados;
-        this.dataFim = builder.dataFim;
+    public ItemAluguel() {
+        this.id = 0;
+        this.item = null;
+        this.precoDiaria = 0;
+        this.diasAlugados = 0;
+        this.dataFim = null;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    // CONSTRUTOR PARA NOVOS ALUGUÉIS
+    public ItemAluguel(ItemAcervo item, int diasAlugados) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item nulo.");
+        }
+        if (diasAlugados <= 0) {
+            throw new IllegalArgumentException("Dias de aluguel inválidos.");
+        }
+        this.id = 0; // ainda não persistido; preenchido depois via setId pelo DAO
+        this.item = item;
+        this.precoDiaria = item.getValor();
+        this.diasAlugados = diasAlugados;
+        this.dataFim = null;
+    }
+
+    // CONSTRUTOR PARA RECONSTRUÇÃO VIA DAO
+    public ItemAluguel(int id, ItemAcervo item, double precoDiaria, int diasAlugados, LocalDate dataFim) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item nulo.");
+        }
+        if (precoDiaria < 0) {
+            throw new IllegalArgumentException("Preço da diária inválido.");
+        }
+        if (diasAlugados <= 0) {
+            throw new IllegalArgumentException("Dias de aluguel inválidos.");
+        }
+        this.id = id;
+        this.item = item;
+        this.precoDiaria = precoDiaria;
+        this.diasAlugados = diasAlugados;
+        this.dataFim = dataFim;
     }
 
     // MÉTODOS
@@ -30,6 +58,7 @@ public class ItemAluguel {
         return precoDiaria * diasAlugados;
     }
 
+    // Finaliza este item especificamente
     public void finalizarItem(LocalDate dataFimDevolucao, LocalDate dataInicioAluguel) {
         if (dataFimDevolucao == null) {
             throw new IllegalArgumentException("Data de devolução inválida.");
@@ -56,7 +85,7 @@ public class ItemAluguel {
 
         long atraso = ChronoUnit.DAYS.between(dataFimPrevista, dataDevolucaoEfetiva);
 
-        //multa fixa de 5.0 por item atrasado + 200% da diária dele por dia de atraso
+        // multa fixa de 5.0 por item atrasado + 200% da diária dele por dia de atraso
         double multaFixa = 5.0;
         double jurosDiarios = this.precoDiaria * 2.0 * atraso;
 
@@ -67,83 +96,24 @@ public class ItemAluguel {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public ItemAcervo getItem() {
         return item;
     }
+
     public double getPrecoDiaria() {
         return precoDiaria;
     }
+
     public int getDiasAlugados() {
         return diasAlugados;
     }
+
     public LocalDate getDataFim() {
         return dataFim;
-    }
-
-    //BUILDER
-    public static class Builder {
-        private int id;
-        private ItemAcervo item;
-        private double precoDiaria;
-        private int diasAlugados;
-        private LocalDate dataFim;
-
-        private Builder() {
-        }
-
-        public Builder id(int id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder item(ItemAcervo item) {
-            this.item = item;
-            return this;
-        }
-
-        public Builder precoDiaria(double precoDiaria) {
-            this.precoDiaria = precoDiaria;
-            return this;
-        }
-
-        public Builder diasAlugados(int diasAlugados) {
-            this.diasAlugados = diasAlugados;
-            return this;
-        }
-
-        public Builder dataFim(LocalDate dataFim) {
-            this.dataFim = dataFim;
-            return this;
-        }
-
-        public Builder fromItemAcervo(ItemAcervo item, int diasAlugados) {
-            if (item == null) {
-                throw new IllegalArgumentException("Item nulo.");
-            }
-            if (diasAlugados <= 0) {
-                throw new IllegalArgumentException("Dias de aluguel inválidos.");
-            }
-            this.item = item;
-            this.precoDiaria = item.getValor();
-            this.diasAlugados = diasAlugados;
-            this.dataFim = null;
-            return this;
-        }
-
-        public ItemAluguel build() {
-            if (item == null) {
-                throw new IllegalArgumentException("Item nulo.");
-            }
-            if (precoDiaria < 0) {
-                throw new IllegalArgumentException("Preço da diária inválido.");
-            }
-            if (diasAlugados <= 0) {
-                throw new IllegalArgumentException("Dias de aluguel inválidos.");
-            }
-            return new ItemAluguel(this);
-        }
     }
 }
