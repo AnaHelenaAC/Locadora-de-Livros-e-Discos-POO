@@ -1,10 +1,9 @@
 package br.edu.ufersa.locadora.controllers;
 
 import br.edu.ufersa.locadora.model.SessaoUsuario;
-import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
-import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -64,17 +63,17 @@ public class CadastroLoginController implements Initializable {
             tfCpf.requestFocus();
             return;
         }
-        if (senha.length() < 6) {
-            lblMsg.setText("A senha deve ter pelo menos 6 caracteres.");
+        if (senha.isEmpty()) {
+            lblMsg.setText("Informe uma senha.");
             pfSenha.requestFocus();
             return;
         }
 
         // ── Persistência ───────────────────────────────────────
         try {
-            UsuarioFuncionario novo = new UsuarioFuncionario(nome, email, senha);
+            Usuario novo = new Usuario(nome, email, senha);
             SessaoUsuario.getInstance()
-                    .getUsuarioFuncionarioService()
+                    .getUsuarioService()
                     .salvar(novo);
 
             // Sucesso
@@ -87,7 +86,7 @@ public class CadastroLoginController implements Initializable {
             pausa.setOnFinished(e -> irParaLogin());
             pausa.play();
 
-        } catch (SemNomeException | UsuarioException | UsuarioFuncionarioException ex) {
+        } catch (SemNomeException | UsuarioException ex) {
             lblMsg.setText("Erro de validação: " + ex.getMessage());
         } catch (Exception ex) {
             lblMsg.setText("Erro ao cadastrar: " + ex.getMessage());

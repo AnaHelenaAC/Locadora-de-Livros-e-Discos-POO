@@ -129,7 +129,6 @@ public class FuncionarioController implements Initializable {
         }
         lblMsg.setText("");
         try {
-            // CORRIGIDO: cria Usuario diretamente e usa UsuarioService.salvar()
             Usuario novoFuncionario = new Usuario(nome, email, cpf);
             SessaoUsuario.getInstance().getUsuarioService().salvar(novoFuncionario);
             tfNome.clear();
@@ -167,7 +166,7 @@ public class FuncionarioController implements Initializable {
         a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 try {
-                    SessaoUsuario.getInstance().getUsuarioService().deletar(f);
+                    SessaoUsuario.getInstance().getUsuarioService().excluir(f);
                     carregarFuncionarios();
                 } catch (Exception ex) {
                     lblMsg.setText("Erro: " + ex.getMessage());

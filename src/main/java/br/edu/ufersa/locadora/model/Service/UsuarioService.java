@@ -23,7 +23,7 @@ public class UsuarioService {
         return dao.Update(usu);
     }
 
-    public boolean deletar(Usuario usu) throws UsuarioException {
+    public boolean excluir(Usuario usu) throws UsuarioException {
         if (usu == null || usu.getId() == null) {
             throw new UsuarioException("Usuário inválido para deleção!");
         }

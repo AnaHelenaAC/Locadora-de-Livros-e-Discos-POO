@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
 
 /**
  * Controller for the Cultura Viva login screen (login.fxml).
- *
  * Wire-up is done entirely via @FXML annotations; no manual
  * lookup is required when the FXMLLoader initialises the scene.
  */
@@ -34,10 +33,6 @@ public class LoginController implements Initializable {
     /** Password input below the name field inside the grouped box. */
     @FXML
     private PasswordField passwordField;
-
-    /** Standalone "Cargo" (role / position) field. */
-    @FXML
-    private TextField cargoField;
 
     // ── Action controls ───────────────────────────────────────────────────────
 
@@ -77,7 +72,7 @@ public class LoginController implements Initializable {
 
     // ── Action handlers ───────────────────────────────────────────────────────
 
-    /**
+    /*
      * Handles the "ENTRAR" button click.
      *
      * <p>Currently a stub — wire up your authentication logic here
@@ -99,7 +94,6 @@ public class LoginController implements Initializable {
     public void handleLogin(ActionEvent event) {
         String identifier = nameField.getText() != null ? nameField.getText().trim() : "";
         String password = passwordField.getText() != null ? passwordField.getText() : "";
-        String cargo = cargoField.getText() != null ? cargoField.getText().trim() : "";
 
         if (identifier.isEmpty() || password.isEmpty()) {
             showAlert(AlertType.WARNING, "Campos obrigatórios", "Informe o usuário e a senha.");
@@ -111,14 +105,6 @@ public class LoginController implements Initializable {
             if (usuario == null) {
                 showAlert(AlertType.ERROR, "Erro", "Usuário ou senha inválidos.");
                 return;
-            }
-
-            if (!cargo.isEmpty()) {
-                boolean cargoGerente = cargo.equalsIgnoreCase("gerente");
-                if (usuario.isGerente() != cargoGerente) {
-                    showAlert(AlertType.ERROR, "Erro", "O cargo informado não corresponde ao usuário autenticado.");
-                    return;
-                }
             }
 
             SessaoUsuario.getInstance().setUsuarioLogado(usuario);

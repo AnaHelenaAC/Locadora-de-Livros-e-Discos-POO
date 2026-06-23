@@ -2,10 +2,9 @@ package br.edu.ufersa.locadora.controllers;
 
 import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.model.entities.Cliente;
-import br.edu.ufersa.locadora.model.entities.UsuarioFuncionario;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
-import br.edu.ufersa.locadora.exceptions.UsuarioFuncionarioException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -144,12 +143,12 @@ public class CadastroController implements Initializable {
         listaRegistros.getChildren().clear();
         lblMsg.setText("");
         try {
-            List<UsuarioFuncionario> funcs = SessaoUsuario.getInstance()
-                    .getUsuarioFuncionarioService().listarTodos();
+            List<Usuario> funcs = SessaoUsuario.getInstance()
+                    .getUsuarioService().buscarFuncionariosPorNome("");
             if (funcs.isEmpty()) {
                 listaRegistros.getChildren().add(linhaVazia("Nenhum funcionário cadastrado."));
             } else {
-                for (UsuarioFuncionario f : funcs)
+                for (Usuario f : funcs)
                     listaRegistros.getChildren().add(criarLinhaFuncionario(f));
             }
         } catch (Exception ex) {
@@ -169,8 +168,8 @@ public class CadastroController implements Initializable {
         );
     }
 
-    private HBox criarLinhaFuncionario(UsuarioFuncionario f) {
-        String idStr = f.getIdFuncionario() != null ? "#" + f.getIdFuncionario() : "—";
+    private HBox criarLinhaFuncionario(Usuario f) {
+        String idStr = f.getId() != null ? "#" + f.getId() : "—";
         return criarLinha(
                 f.getNome(),
                 f.getLogin(),
@@ -268,12 +267,12 @@ public class CadastroController implements Initializable {
                 carregarClientes();
             } else {
                 // campo2 = login, campo3 = senha
-                SessaoUsuario.getInstance().getUsuarioFuncionarioService()
-                        .cadastrar(new UsuarioFuncionario(nome, campo2, campo3));
+                SessaoUsuario.getInstance().getUsuarioService()
+                        .salvar(new Usuario(nome, campo2, campo3));
                 carregarFuncionarios();
             }
             tfNome.clear(); tfEndereco.clear(); tfCpf.clear();
-        } catch (SemNomeException | UsuarioException | UsuarioFuncionarioException ex) {
+        } catch (SemNomeException | UsuarioException ex) {
             lblMsg.setText("Erro de validação: " + ex.getMessage());
         } catch (Exception ex) {
             lblMsg.setText("Erro ao salvar: " + ex.getMessage());
@@ -312,28 +311,28 @@ public class CadastroController implements Initializable {
 
     // ── Editar / Excluir funcionários ─────────────────────────
 
-    private void editarFuncionario(UsuarioFuncionario f) {
+    private void editarFuncionario(Usuario f) {
         TextInputDialog dlg = new TextInputDialog(f.getNome());
         dlg.setTitle("Editar Funcionário"); dlg.setHeaderText("Novo nome:");
         dlg.showAndWait().ifPresent(n -> {
             if (!n.isBlank()) {
                 try {
                     f.setNome(n);
-                    SessaoUsuario.getInstance().getUsuarioFuncionarioService().atualizar(f);
+                    SessaoUsuario.getInstance().getUsuarioService().atualizar(f);
                     carregarFuncionarios();
                 } catch (Exception ex) { lblMsg.setText("Erro: " + ex.getMessage()); }
             }
         });
     }
 
-    private void excluirFuncionario(UsuarioFuncionario f) {
+    private void excluirFuncionario(Usuario f) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION,
                 "Excluir \"" + f.getNome() + "\"?", ButtonType.YES, ButtonType.NO);
         a.setHeaderText(null);
         a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 try {
-                    SessaoUsuario.getInstance().getUsuarioFuncionarioService().excluir(f);
+                    SessaoUsuario.getInstance().getUsuarioService().excluir(f);
                     carregarFuncionarios();
                 } catch (Exception ex) { lblMsg.setText("Erro: " + ex.getMessage()); }
             }
