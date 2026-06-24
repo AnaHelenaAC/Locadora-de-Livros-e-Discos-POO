@@ -29,6 +29,13 @@ public class FuncionarioController implements Initializable {
     @FXML private VBox       listaRegistros;
     @FXML private Label      lblMsg;
 
+    @FXML private Button relatorioButton;
+    @FXML private Button alugueisButton;
+    @FXML private Button acervoButton;
+    @FXML private Button cadastrosButton;
+    @FXML private Button sairButton;
+    @FXML private Button clienteButton;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         scrollLista.setVisible(true);
@@ -176,10 +183,6 @@ public class FuncionarioController implements Initializable {
     }
 
     @FXML public void mostrarFuncionarios(ActionEvent e) { /* já estamos aqui */ }
-    @FXML public void navegarClientes(ActionEvent e)     { irPara("cliente.fxml",    e); }
-    @FXML public void navegarAcervo(ActionEvent e)       { irPara("arquivolivro.fxml",     e); }
-    @FXML public void navegarRelatorio(ActionEvent e)    { irPara("financas.fxml",   e); }
-    @FXML public void navegarCadastros(ActionEvent e)    { irPara("funcionario.fxml", e); }
 
     @FXML
     public void handleLogout(ActionEvent e) {
@@ -197,5 +200,19 @@ public class FuncionarioController implements Initializable {
         } catch (IOException ex) {
             new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage()).showAndWait();
         }
+    }
+    //faixa
+    @FXML
+    private void mostrarCliente() { NavigationHelper.goTo(clienteButton, "ClienteGerente.fxml"); }
+    @FXML
+    private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
+    @FXML
+    private void aoAlugueis() {
+        NavigationHelper.goTo(alugueisButton, "aluguel.fxml");
+    }
+    @FXML
+    private void aoAcervo() {NavigationHelper.goTo(acervoButton, "ArquivoLivro.fxml"); }
+    @FXML
+    private void aoSair() { NavigationHelper.goTo(acervoButton, "Login.fxml");
     }
 }

@@ -4,8 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -15,67 +13,56 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="620.0" prefWidth="848.0" styleClass="root-livro" stylesheets="@../css/ArquivoLivro.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.ArquivoLivroController">
-
-    <fx:define>
-        <ToggleGroup fx:id="NavItems" />
-    </fx:define>
+<BorderPane prefHeight="520.0" prefWidth="820.0" styleClass="root-livro" stylesheets="@../css/ArquivoLivro.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.ArquivoLivroController">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="0.0" styleClass="navbar">
+        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
             <children>
-                <Label contentDisplay="LEFT" graphicTextGap="8.0" styleClass="navbar-brand">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image><Image url="@../images/vynil-yellow.png" /></image>
-                        </ImageView>
-                    </graphic>
-                    <text>Cultura Viva</text>
-                </Label>
-
-                <Region HBox.hgrow="ALWAYS" />
-
-                <ToggleButton fx:id="navAcervo" onAction="#handleNavAcervo" selected="true" styleClass="nav-toggle" text="Acervo" toggleGroup="$NavItems">
-                    <graphic>
-                        <HBox alignment="CENTER" spacing="4.0">
-                            <children>
-                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                                    <image><Image url="@../images/disc.png" /></image>
-                                </ImageView>
-                                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                    <image><Image url="@../images/book.png" /></image>
-                                </ImageView>
-                            </children>
-                        </HBox>
-                    </graphic>
-                    <font>
-                        <Font name="Impact" size="13.0" />
-                    </font>
-                </ToggleButton>
-
-                <ToggleButton fx:id="navAlugueis" onAction="#handleNavRelatorio" styleClass="nav-toggle" text="Relatório" toggleGroup="$NavItems">
-                    <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                            <image><Image url="@../images/report.png" /></image>
-                        </ImageView>
-                    </graphic>
-                    <font>
-                        <Font name="Impact" size="13.0" />
-                    </font>
-                </ToggleButton>
-
-                <ToggleButton fx:id="navCadastros" onAction="#handleNavCadastros" styleClass="nav-toggle" text="Cadastros" toggleGroup="$NavItems">
-                    <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                            <image><Image url="@../images/user.png" /></image>
-                        </ImageView>
-                    </graphic>
-                    <font>
-                        <Font name="Impact" size="13.0" />
-                    </font>
-                </ToggleButton>
-            </children>
-        </HBox>
+                <HBox prefHeight="72.0" prefWidth="310.0">
+                    <children>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="62.0" text=" ♫" textAlignment="RIGHT" textFill="#ffed78">
+                            <font>
+                                <Font name="Bookman Old Style Bold" size="48.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="72.0" prefWidth="151.0" text="Cultura Viva" textFill="#ffed78">
+                            <font>
+                                <Font name="Baskerville Old Face" size="30.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="cadastroButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoCadastros" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="acervoButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAcervo" styleClass="button-dot" text="Acervo" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAlugueis" styleClass="button-dt" text="Alúgueis" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="relatorioButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoRelatorio" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox layoutX="677.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="sairButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoSair" styleClass="button-dot" text="Sair" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+            </children></HBox>
     </top>
 
     <center>

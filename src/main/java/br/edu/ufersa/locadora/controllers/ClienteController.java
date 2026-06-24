@@ -2,6 +2,7 @@ package br.edu.ufersa.locadora.controllers;
 
 import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.model.entities.Cliente;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,12 @@ public class ClienteController implements Initializable {
     @FXML private ScrollPane scrollLista;
     @FXML private VBox       listaClientes;
     @FXML private Label      lblMsg;
+
+    @FXML private Button relatorioButton;
+    @FXML private Button alugueisButton;
+    @FXML private Button acervoButton;
+    @FXML private Button cadastrosButton;
+    @FXML private Button sairButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -177,5 +184,30 @@ public class ClienteController implements Initializable {
         } catch (IOException ex) {
             new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage()).showAndWait();
         }
+    }
+    //faixa
+    @FXML
+    private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
+    @FXML
+    private void aoAlugeuis() {
+        NavigationHelper.goTo(alugueisButton, "aluguel.fxml");
+    }
+    @FXML
+    private void aoAcervo() {NavigationHelper.goTo(acervoButton, "ArquivoLivro.fxml"); }
+    @FXML
+    private void aoCadastros() {
+        Usuario usuario = SessaoUsuario.getInstance().getUsuarioLogado();
+        if (usuario == null) {
+            NavigationHelper.showError("Nenhum usuário logado.");
+            return;
+        }
+        if (usuario.getId() == 1) {
+            NavigationHelper.goTo(cadastrosButton, "Funcionario.fxml");
+        } else {
+            NavigationHelper.goTo(cadastrosButton, "Cliente.fxml");
+        }
+    }
+    @FXML
+    private void aoSair() { NavigationHelper.goTo(acervoButton, "Login.fxml");
     }
 }

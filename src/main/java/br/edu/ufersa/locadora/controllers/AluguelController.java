@@ -1,11 +1,12 @@
 package br.edu.ufersa.locadora.controllers;
 
+import br.edu.ufersa.locadora.model.Service.AluguelService;
+import br.edu.ufersa.locadora.model.Service.RegistroService;
 import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 import br.edu.ufersa.locadora.model.entities.Registro;
-import br.edu.ufersa.locadora.model.Service.AluguelService;
-import br.edu.ufersa.locadora.model.Service.RegistroService;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +38,11 @@ public class AluguelController implements Initializable {
     @FXML private TableColumn<ItemAluguel, String> colDevolocao;
     @FXML private TableColumn<ItemAluguel, Double> colValor;
     @FXML private TableColumn<ItemAluguel, Double> colMulta;
+
+    @FXML private Button relatorioButton;
+    @FXML private Button acervoButton;
+    @FXML private Button cadastrosButton;
+    @FXML private Button sairButton;
 
     private AluguelService aluguelService;
     private RegistroService registroService;
@@ -169,6 +175,29 @@ public class AluguelController implements Initializable {
         comboTipo.setValue("Todos");
         txtCliente.clear();
         carregarDadosOriginais();
+    }
+
+    @FXML
+    private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
+    @FXML
+    private void aoAcervo() {
+        NavigationHelper.goTo(acervoButton, "ArquivoLivro.fxml");
+    }
+    @FXML
+    private void aoCadastros() {
+        Usuario usuario = SessaoUsuario.getInstance().getUsuarioLogado();
+        if (usuario == null) {
+            NavigationHelper.showError("Nenhum usuário logado.");
+            return;
+        }
+        if (usuario.getId() == 1) {
+            NavigationHelper.goTo(cadastrosButton, "Funcionario.fxml");
+        } else {
+            NavigationHelper.goTo(cadastrosButton, "Cliente.fxml");
+        }
+    }
+    @FXML
+    private void aoSair() { NavigationHelper.goTo(acervoButton, "Login.fxml");
     }
 
     @FXML

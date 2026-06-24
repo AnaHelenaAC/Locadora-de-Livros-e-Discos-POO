@@ -2,6 +2,7 @@ package br.edu.ufersa.locadora.controllers;
 
 import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.exceptions.RegistroException;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +33,13 @@ public class FinancasController implements Initializable {
     @FXML private Label      lblDataHoje;
 
     private int anoAtual;
+
+    @FXML private Button relatorioButton;
+    @FXML private Button alugueisButton;
+    @FXML private Button acervoButton;
+    @FXML private Button cadastrosButton;
+    @FXML private Button sairButton;
+    @FXML private Button clienteButton;
 
     // Dias da semana abreviados conforme o design
     private static final String[] DIAS = {"DO", "SE", "TE", "QA", "QI", "SE", "SA"};
@@ -142,9 +150,33 @@ public class FinancasController implements Initializable {
 
     // ── Navegação ─────────────────────────────────────────────
 
-    @FXML public void navegarAcervo(ActionEvent e)    { irPara("acervo.fxml",   e); }
-    @FXML public void navegarRelatorio(ActionEvent e) { /* já estamos aqui */ }
-    @FXML public void navegarCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
+    //faixa
+    @FXML
+    private void mostrarCliente() { NavigationHelper.goTo(clienteButton, "ClienteGerente.fxml"); }
+    @FXML
+    private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
+    @FXML
+    private void aoAlugueis() {
+        NavigationHelper.goTo(alugueisButton, "aluguel.fxml");
+    }
+    @FXML
+    private void aoAcervo() {NavigationHelper.goTo(acervoButton, "ArquivoLivro.fxml"); }
+    @FXML
+    private void aoSair() { NavigationHelper.goTo(acervoButton, "Login.fxml");
+    }
+    @FXML
+    private void aoCadastros() {
+        Usuario usuario = SessaoUsuario.getInstance().getUsuarioLogado();
+        if (usuario == null) {
+            NavigationHelper.showError("Nenhum usuário logado.");
+            return;
+        }
+        if (usuario.getId() == 1) {
+            NavigationHelper.goTo(cadastrosButton, "Funcionario.fxml");
+        } else {
+            NavigationHelper.goTo(cadastrosButton, "Cliente.fxml");
+        }
+    }
 
     @FXML
     public void handleLogout(ActionEvent e) {

@@ -11,12 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!--
-    Tela de Cadastro de Funcionários — Cultura Viva
-    Salvar em: src/main/resources/br/edu/ufersa/locadora/view/funcionario.fxml
-    Visível APENAS para gerentes (verificado no DashboardController)
--->
-
 <BorderPane prefHeight="540" prefWidth="748" style="-fx-background-color: #F8EED1;" stylesheets="@../css/aluguel.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.FuncionarioController">
     <top>
         <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
@@ -37,7 +31,7 @@
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dt" text="Cadastros" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="cadastroButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoCadastros" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
@@ -47,7 +41,7 @@
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
                     <children>
-                        <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAlugueis" styleClass="button-dot" text="Alúgueis" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAlugueis" styleClass="button-dt" text="Alúgueis" HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>
                 <HBox prefHeight="100.0" prefWidth="200.0">
@@ -72,10 +66,10 @@
                 <Region HBox.hgrow="ALWAYS" />
 
                 <!-- Aba Funcionário — ATIVA (roxa escura) -->
-                <Button fx:id="funcionarioButton" onAction="#mostrarFuncionarios" style="-fx-background-color:#2E1A47; -fx-text-fill:#F8EED1;                                -fx-font-size:13px; -fx-font-weight:bold;                                -fx-background-radius:20 0 0 20;                                -fx-border-color:#2E1A47; -fx-border-width:1.5;                                -fx-border-radius:20 0 0 20;                                -fx-padding:8 20 8 22; -fx-cursor:hand;" text="Funcionário" />
+                <Button fx:id="funcionarioButton" onAction="#mostrarFuncionarios" style="-fx-background-color: #F8EED1; -fx-text-fill: #2E1A47; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 20 0 0 20; -fx-border-color: #2E1A47; -fx-border-width: 1.5; -fx-border-radius: 20 0 0 20; -fx-padding: 8 20 8 22; -fx-cursor: hand;" text="Funcionário" />
 
                 <!-- Aba Cliente — inativa (creme com borda) -->
-                <Button fx:id="ClienteButton" onAction="#mostrarCliente" style="-fx-background-color:#F8EED1; -fx-text-fill:#2E1A47;                                -fx-font-size:13px; -fx-font-weight:bold;                                -fx-background-radius:0 20 20 0;                                -fx-border-color:#2E1A47; -fx-border-width:1.5;                                -fx-border-radius:0 20 20 0;                                -fx-padding:8 22 8 20; -fx-cursor:hand;" text="Cliente" />
+                <Button fx:id="ClienteButton" onAction="#mostrarClientes" style="-fx-background-color: #2E1A47; -fx-text-fill: #F8EED1; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 0 20 20 0; -fx-border-color: #2E1A47; -fx-border-width: 1.5; -fx-border-radius: 0 20 20 0; -fx-padding: 8 22 8 20; -fx-cursor: hand;" text="Cliente" />
             </HBox>
 
             <!-- Tabela -->
@@ -84,8 +78,8 @@
                 <!-- Cabeçalho roxo -->
                 <HBox alignment="CENTER_LEFT" spacing="0" style="-fx-background-color:#2E1A47; -fx-background-radius:12 12 0 0;                              -fx-padding:12 16 12 60;">
                     <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="Nome" HBox.hgrow="ALWAYS" />
-                    <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="login" HBox.hgrow="ALWAYS" />
-                    <Label prefWidth="150" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="senha" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="Email" HBox.hgrow="ALWAYS" />
+                    <Label prefWidth="150" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="CPF" />
                     <Label prefWidth="40" text="" />
                 </HBox>
 

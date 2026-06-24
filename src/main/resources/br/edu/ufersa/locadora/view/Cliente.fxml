@@ -7,42 +7,59 @@
     Tela de Cadastro de Clientes — Cultura Viva
     Salvar em: src/main/resources/br/edu/ufersa/locadora/view/cliente.fxml
 -->
+<?import javafx.scene.text.Font?>
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="br.edu.ufersa.locadora.controllers.ClienteController"
             prefWidth="748" prefHeight="540"
-            style="-fx-background-color: #F8EED1;">
+            style="-fx-background-color: #F8EED1;"
+            stylesheets="@../css/aluguel.css">
+
 
     <!-- ══ BARRA SUPERIOR ══════════════════════════════════════════════ -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="0"
-              style="-fx-background-color:#2E1A47;
-                     -fx-min-height:56px; -fx-pref-height:56px;">
-            <padding><Insets left="16" right="0" top="0" bottom="0"/></padding>
-
-            <Label text="🎵"
-                   style="-fx-font-size:24px; -fx-text-fill:#F2D888; -fx-padding:0 4 0 0;"/>
-            <Label text="Cultura Viva"
-                   style="-fx-text-fill:#F2D888; -fx-font-family:Georgia;
-                          -fx-font-size:22px; -fx-font-weight:bold; -fx-padding:0 24 0 4;"/>
-
-            <Region HBox.hgrow="ALWAYS"/>
-
-            <Button text="⊙ ▤   Acervo" onAction="#navegarAcervo"
-                    style="-fx-background-color:transparent; -fx-text-fill:#C8B8E8;
-                           -fx-font-size:13px; -fx-font-weight:bold;
-                           -fx-padding:18 22 16 22; -fx-background-radius:0; -fx-cursor:hand;"/>
-            <Button text="📋   Relatório" onAction="#navegarRelatorio"
-                    style="-fx-background-color:transparent; -fx-text-fill:#C8B8E8;
-                           -fx-font-size:13px; -fx-font-weight:bold;
-                           -fx-padding:18 22 16 22; -fx-background-radius:0; -fx-cursor:hand;"/>
-            <Button text="👤   Cadastros" onAction="#navegarCadastros"
-                    style="-fx-background-color:rgba(255,255,255,0.15); -fx-text-fill:#F2D888;
-                           -fx-font-size:13px; -fx-font-weight:bold;
-                           -fx-padding:18 22 16 22; -fx-background-radius:0; -fx-cursor:hand;
-                           -fx-border-color:transparent transparent #F2D888 transparent;
-                           -fx-border-width:0 0 2 0;"/>
-        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="72.0" prefWidth="310.0">
+                    <children>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="62.0" text=" ♫" textAlignment="RIGHT" textFill="#ffed78">
+                            <font>
+                                <Font name="Bookman Old Style Bold" size="48.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="72.0" prefWidth="151.0" text="Cultura Viva" textFill="#ffed78">
+                            <font>
+                                <Font name="Baskerville Old Face" size="30.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dt" text="Cadastros" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dot" text="Acervo" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dot" text="Alúgueis" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox layoutX="677.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dot" text="Sair" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+            </children></HBox>
     </top>
 
     <!-- ══ CONTEÚDO CENTRAL ══════════════════════════════════════════ -->

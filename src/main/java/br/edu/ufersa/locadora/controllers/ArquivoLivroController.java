@@ -3,6 +3,7 @@ package br.edu.ufersa.locadora.controllers;
 import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.model.entities.Livro;
 import br.edu.ufersa.locadora.exceptions.LivroException;
+import br.edu.ufersa.locadora.model.entities.Usuario;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -46,6 +47,12 @@ public class ArquivoLivroController implements Initializable {
     // ── Pesquisa ──────────────────────────────────────────────
     @FXML private TextField tfPesquisa;
 
+    //faixa//
+    @FXML private Button relatorioButton;
+    @FXML private Button alugueisButton;
+    @FXML private Button acervoButton;
+    @FXML private Button cadastrosButton;
+    @FXML private Button sairButton;
     // ── Estado ────────────────────────────────────────────────
     private boolean modoEdicao   = false;
     private Livro   livroEmEdicao;
@@ -236,11 +243,6 @@ public class ArquivoLivroController implements Initializable {
 
     @FXML public void fecharForm(ActionEvent e) { mostrarForm(false); }
 
-    @FXML public void handleNavAcervo(ActionEvent e)    { /* No-op */ }
-    @FXML public void handleNavRelatorio(ActionEvent e) { irPara("financas.fxml",  e); }
-    @FXML public void handleNavCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
-    @FXML public void navegarLivros(javafx.scene.input.MouseEvent e) { /* No-op */ }
-
     @FXML
     public void navegarDiscos(javafx.scene.input.MouseEvent e) {
         try {
@@ -284,4 +286,32 @@ public class ArquivoLivroController implements Initializable {
     private void mostrarErro(String mensagem) {
         new Alert(Alert.AlertType.ERROR, mensagem).showAndWait();
     }
+
+    //faixa
+    @FXML
+    private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
+    @FXML
+    private void aoAlugueis() {
+        NavigationHelper.goTo(alugueisButton, "aluguel.fxml");
+    }
+    @FXML
+    private void aoAcervo() {}
+    @FXML
+    private void aoCadastros() {
+        Usuario usuario = SessaoUsuario.getInstance().getUsuarioLogado();
+        if (usuario == null) {
+            NavigationHelper.showError("Nenhum usuário logado.");
+            return;
+        }
+        if (usuario.getId() == 1) {
+            NavigationHelper.goTo(cadastrosButton, "Funcionario.fxml");
+        } else {
+            NavigationHelper.goTo(cadastrosButton, "Cliente.fxml");
+        }
+    }
+    @FXML
+    private void aoSair() { NavigationHelper.goTo(acervoButton, "Login.fxml");
+    }
 }
+
+

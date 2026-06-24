@@ -2,20 +2,59 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="520" prefWidth="820" styleClass="root-pane" stylesheets="@../css/aluguel.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.AluguelController">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
          <children>
-            <ButtonBar prefHeight="40.0" prefWidth="200.0" />
+            <HBox prefHeight="72.0" prefWidth="310.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="62.0" text=" ♫" textAlignment="RIGHT" textFill="#ffed78">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="48.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="72.0" prefWidth="151.0" text="Cultura Viva" textFill="#ffed78">
+                     <font>
+                        <Font name="Baskerville Old Face" size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="cadastroButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoCadastros" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="acervoButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAcervo" styleClass="button-dot" text="Acervo" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="button-dt" text="Alúgueis" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="relatorioButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoRelatorio" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox layoutX="677.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="sairButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoSair" styleClass="button-dot" text="Sair" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
          </children></HBox>
    </top>
    <bottom>
