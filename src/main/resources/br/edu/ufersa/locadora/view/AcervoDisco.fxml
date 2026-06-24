@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="br.edu.ufersa.locadora.controllers.ArquivoDiscoController"
+            prefWidth="900" prefHeight="650">
+
+    <!-- TOPO -->
+    <top>
+        <HBox style="-fx-background-color: #2E1A47; -fx-padding: 15 20;" spacing="15" alignment="CENTER_LEFT">
+            <Label style="-fx-text-fill: #F8EED1; -fx-font-size: 22px; -fx-font-weight: bold;" text="Cultura Viva"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label style="-fx-text-fill: #C8B89A; -fx-font-size: 14px;" text="Arquivo de Discos"/>
+        </HBox>
+    </top>
+
+    <!-- MENU LATERAL -->
+    <left>
+        <VBox style="-fx-background-color: #2E1A47; -fx-pref-width: 150px; -fx-padding: 20 10;" spacing="8" alignment="TOP_CENTER">
+            <ToggleGroup fx:id="navItems">
+                <ToggleButton fx:id="navAcervo" text="Acervo" style="-fx-background-color: #F8EED1; -fx-text-fill: #2E1A47; -fx-padding: 8 12; -fx-background-radius: 4;" selected="true"/>
+                <ToggleButton fx:id="navAlugueis" text="Relatório" style="-fx-background-color: transparent; -fx-text-fill: #C8B89A; -fx-padding: 8 12; -fx-background-radius: 4;"/>
+                <ToggleButton fx:id="navCadastros" text="Cadastros" style="-fx-background-color: transparent; -fx-text-fill: #C8B89A; -fx-padding: 8 12; -fx-background-radius: 4;"/>
+            </ToggleGroup>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button text="Logout" style="-fx-background-color: #C62828; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 4;" onAction="#handleLogout"/>
+        </VBox>
+    </left>
+
+    <!-- CONTEÚDO CENTRAL -->
+    <center>
+        <VBox style="-fx-background-color: #F8F4EE; -fx-padding: 15 20;" spacing="12">
+            
+            <!-- Abas -->
+            <HBox spacing="0" alignment="CENTER_LEFT">
+                <Label style="-fx-background-color: #E8E0D0; -fx-text-fill: #555; -fx-padding: 6 16; -fx-background-radius: 6 6 0 0;" text="Livros" onMouseClicked="#navegarLivros" cursor="HAND"/>
+                <Label style="-fx-background-color: #2E1A47; -fx-text-fill: #F8EED1; -fx-padding: 6 16; -fx-background-radius: 6 6 0 0;" text="Discos" onMouseClicked="#navegarDiscos" cursor="HAND"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label style="-fx-text-fill: #2E1A47; -fx-font-weight: bold; -fx-font-size: 11px;" text="Ver todos os itens"/>
+            </HBox>
+
+            <!-- CONTAINER DA TABELA -->
+            <VBox style="-fx-background-color: white; -fx-border-color: #E0D8C8; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6;">
+                
+                <!-- Cabeçalho -->
+                <HBox style="-fx-background-color: #2E1A47; -fx-padding: 8 12; -fx-background-radius: 6 6 0 0;">
+                    <Region prefWidth="50"/>
+                    <Label style="-fx-text-fill: #F8EED1; -fx-font-weight: bold; -fx-font-size: 12px;" text="Título" HBox.hgrow="ALWAYS"/>
+                    <Label style="-fx-text-fill: #F8EED1; -fx-font-weight: bold; -fx-font-size: 12px;" text="Data" prefWidth="100"/>
+                    <Label style="-fx-text-fill: #F8EED1; -fx-font-weight: bold; -fx-font-size: 12px;" text="Banda" HBox.hgrow="ALWAYS"/>
+                    <Region prefWidth="50"/>
+                </HBox>
+                
+                <!-- ScrollPane com a lista -->
+                <ScrollPane fx:id="scrollTabela" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                    <VBox fx:id="listaDiscos" style="-fx-background-color: white;"/>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Barra de Pesquisa -->
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <TextField fx:id="tfPesquisa" promptText="Pesquisar..." style="-fx-background-color: white; -fx-border-color: #D8C89A; -fx-border-radius: 15; -fx-padding: 6 12;" onAction="#pesquisar" HBox.hgrow="ALWAYS"/>
+                <Button text="Buscar" style="-fx-background-color: #E8E0D0; -fx-padding: 6 16; -fx-background-radius: 15;" onAction="#pesquisar"/>
+                <Button fx:id="btnAdicionar" text="Adicionar novo disco" style="-fx-background-color: #2E1A47; -fx-text-fill: #F8EED1; -fx-padding: 6 16; -fx-background-radius: 15;" onAction="#abrirFormNovo"/>
+            </HBox>
+
+            <!-- Mensagem -->
+            <Label fx:id="lblMensagem" style="-fx-font-size: 12px;"/>
+
+            <!-- Formulário -->
+            <VBox fx:id="painelForm" style="-fx-background-color: white; -fx-border-color: #E0D8C8; -fx-border-width: 1; -fx-border-radius: 6; -fx-padding: 15;" spacing="6" visible="false" managed="false">
+                <Label fx:id="lblFormTitulo" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2E1A47;" text="Novo Disco"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Título:"/>
+                <TextField fx:id="tfTitulo" promptText="Ex: Abbey Road"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Banda:"/>
+                <TextField fx:id="tfBanda" promptText="Ex: The Beatles"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Gênero:"/>
+                <TextField fx:id="tfEstilo" promptText="Ex: Rock"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Data (dd/MM/yyyy):"/>
+                <TextField fx:id="tfData" promptText="01/01/2000"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Qtd. exemplares:"/>
+                <TextField fx:id="tfQtd" promptText="0"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Valor diária (R$):"/>
+                <TextField fx:id="tfValor" promptText="0.00"/>
+                
+                <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Duração (segundos):"/>
+                <TextField fx:id="tfDuracao" promptText="0"/>
+                
+                <Label fx:id="lblFormMsg" style="-fx-font-size: 11px; -fx-text-fill: #C62828;"/>
+                
+                <HBox spacing="8" style="-fx-padding: 4 0 0 0;">
+                    <Button text="Salvar" style="-fx-background-color: #2E7D32; -fx-text-fill: white; -fx-padding: 6 16; -fx-background-radius: 4;" onAction="#salvarDisco"/>
+                    <Button text="Cancelar" style="-fx-background-color: #C62828; -fx-text-fill: white; -fx-padding: 6 16; -fx-background-radius: 4;" onAction="#fecharForm"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </center>
+</BorderPane>

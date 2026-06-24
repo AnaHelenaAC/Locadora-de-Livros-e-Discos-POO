@@ -264,7 +264,7 @@ public class ArquivoDiscoController implements Initializable {
 
     @FXML public void handleNavAcervo(ActionEvent e)    { /* já estamos aqui */ }
     @FXML public void handleNavRelatorio(ActionEvent e) { irPara("financas.fxml", e); }
-    @FXML public void handleNavCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
+    @FXML public void handleNavCadastros(ActionEvent e) { irPara("funcionario.fxml", e); }
 
     // ── Navegação — Abas ──────────────────────────────────────
 

@@ -43,6 +43,13 @@ public class FinancasController implements Initializable {
         renderizarAno();
     }
 
+    // ── Navegação entre telas ─────────────────────────────────────
+
+    
+    @FXML public void navegarAcervo(ActionEvent e)       { irPara("ArquivoLivro.fxml",  e); }
+    @FXML public void navegarRelatorio(ActionEvent e)    { irPara("financas.fxml", e); }
+    @FXML public void navegarCadastros(ActionEvent e)    { irPara("funcionario.fxml", e); }
+
     // ── Navegação de ano ──────────────────────────────────────
 
     @FXML public void anoAnterior(ActionEvent e)  { anoAtual--; renderizarAno(); }
@@ -142,10 +149,7 @@ public class FinancasController implements Initializable {
 
     // ── Navegação ─────────────────────────────────────────────
 
-    @FXML public void navegarAcervo(ActionEvent e)    { irPara("acervo.fxml",   e); }
-    @FXML public void navegarRelatorio(ActionEvent e) { /* já estamos aqui */ }
-    @FXML public void navegarCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
-
+ 
     @FXML
     public void handleLogout(ActionEvent e) {
         SessaoUsuario.getInstance().limparSessao();

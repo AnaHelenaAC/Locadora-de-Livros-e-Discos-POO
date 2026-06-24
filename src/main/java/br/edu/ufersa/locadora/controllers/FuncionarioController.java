@@ -166,7 +166,7 @@ public class FuncionarioController implements Initializable {
 
     @FXML public void mostrarFuncionarios(ActionEvent e) { /* já estamos aqui */ }
     @FXML public void navegarClientes(ActionEvent e)     { irPara("cliente.fxml", e); }
-    @FXML public void navegarAcervo(ActionEvent e)       { irPara("acervo.fxml",  e); }
+    @FXML public void navegarAcervo(ActionEvent e)       { irPara("ArquivoLivro.fxml",  e); }
     @FXML public void navegarRelatorio(ActionEvent e)    { irPara("financas.fxml", e); }
     @FXML public void navegarCadastros(ActionEvent e)    { irPara("funcionario.fxml", e); }
 

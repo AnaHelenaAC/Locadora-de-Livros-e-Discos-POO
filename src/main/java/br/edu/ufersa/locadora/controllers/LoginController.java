@@ -26,39 +26,24 @@ public class LoginController implements Initializable {
 
     // ── Form fields ───────────────────────────────────────────────────────────
 
-    /** Combined "Name / CPF / Email" input at the top of the grouped box. */
     @FXML
     private TextField nameField;
 
-    /** Password input below the name field inside the grouped box. */
     @FXML
     private PasswordField passwordField;
 
     // ── Action controls ───────────────────────────────────────────────────────
 
-    /** The crimson "ENTRAR" button. */
     @FXML
     private Button loginButton;
 
-    /**
-     * The clickable "Cadastre-se" label that acts as a sign-up link.
-     * Declared as Label so we can attach an onMouseClicked handler in FXML
-     * or handle it programmatically below.
-     */
     @FXML
     private Label cadastroLink;
 
     // ── Initializable ─────────────────────────────────────────────────────────
 
-    /**
-     * Called automatically by the FXMLLoader after all @FXML fields have been
-     * injected. Use this method for any one-time setup (e.g. input validation
-     * listeners, focus traversal policy, i18n).
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Allow the cadastro label to be activated by keyboard (Enter / Space)
-        // so keyboard-only users can still reach the sign-up flow.
         cadastroLink.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ENTER, SPACE -> handleCadastroAction();
@@ -66,21 +51,10 @@ public class LoginController implements Initializable {
             }
         });
 
-        // Make the label focusable for accessibility.
         cadastroLink.setFocusTraversable(true);
     }
 
     // ── Action handlers ───────────────────────────────────────────────────────
-
-    /*
-     * Handles the "ENTRAR" button click.
-     *
-     * <p>Currently a stub — wire up your authentication logic here
-     * (e.g. call a service layer, navigate to the main scene, show
-     * an error dialog on bad credentials, etc.).</p>
-     *
-     * @param event the ActionEvent fired by the Button
-     */
 
     private void showAlert(AlertType type, String title, String message) {
         Alert alert = new Alert(type);
@@ -95,44 +69,45 @@ public class LoginController implements Initializable {
         String identifier = nameField.getText() != null ? nameField.getText().trim() : "";
         String password = passwordField.getText() != null ? passwordField.getText() : "";
 
+        // 1. Validação de campos vazios
         if (identifier.isEmpty() || password.isEmpty()) {
             showAlert(AlertType.WARNING, "Campos obrigatórios", "Informe o usuário e a senha.");
             return;
         }
 
         try {
+            // 2. Tentativa de autenticação no banco de dados
             Usuario usuario = SessaoUsuario.getInstance().getUsuarioService().autenticarUsuario(identifier, password);
+            
             if (usuario == null) {
                 showAlert(AlertType.ERROR, "Erro", "Usuário ou senha inválidos.");
                 return;
             }
 
+            // 3. Salva o usuário autenticado na sessão
             SessaoUsuario.getInstance().setUsuarioLogado(usuario);
             showAlert(AlertType.INFORMATION, "Login", "Bem-vindo, " + usuario.getNome() + "!");
+
+            // 4. MUDANÇA IMPORTANTE: Redireciona para a tela principal usando o NavigationHelper
+            // ATENÇÃO: Verifique se o seu arquivo se chama "MainScene.fxml" ou "NavArea.fxml"
+            NavigationHelper.goTo(loginButton, "Funcionario.fxml"); 
+
         } catch (UsuarioException e) {
-            showAlert(AlertType.ERROR, "Erro", e.getMessage());
-        } catch (RuntimeException e) {
-            showAlert(AlertType.ERROR, "Erro", "Não foi possível realizar o login no momento.");
+            // Captura erros intencionais de negócio (ex: senha incorreta)
+            showAlert(AlertType.ERROR, "Erro de Autenticação", e.getMessage());
+        } catch (Exception e) {
+            // EXTREMAMENTE IMPORTANTE: Imprime o erro real no console do IntelliJ para você saber se o problema
+            // é falta de tabela no MySQL, conexão offline ou erro ao carregar o arquivo FXML.
+            e.printStackTrace(); 
+            showAlert(AlertType.ERROR, "Erro Crítico", "Falha no sistema: " + e.getMessage());
         }
     }
 
-    /**
-     * Handles a mouse-click on the "Cadastre-se" label (sign-up link).
-     *
-     * <p>Currently a stub — navigate to a registration screen or open
-     * a registration dialog here.</p>
-     *
-     * @param event the MouseEvent fired when the label is clicked
-     */
     @FXML
     public void handleCadastro(MouseEvent event) {
         handleCadastroAction();
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
-
-    /** Shared logic for both mouse-click and keyboard activation of the
-     *  cadastro / sign-up link. */
     private void handleCadastroAction() {
         showAlert(AlertType.INFORMATION, "Cadastro", "Fluxo de cadastro ainda não implementado.");
     }
