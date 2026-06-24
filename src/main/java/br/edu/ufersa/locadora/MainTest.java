@@ -22,7 +22,6 @@
 //            }
 //            novo.setLogin("teste123");
 //            novo.setSenha("123456");
-//            novo.setGerente(false);
 //
 //            dao.Create(novo);
 //            System.out.println("✅ Inserido com ID: " + novo.getId());
@@ -41,6 +40,7 @@
 //    }
 //}
 //
+///*
 //public class Main {
 //    public static void main(String[] args) {
 //        UsuarioDAO dao = new UsuarioDAO();
@@ -126,4 +126,4 @@
 //
 //
 //    }
-//}
+//}*/

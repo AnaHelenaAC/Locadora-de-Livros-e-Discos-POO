@@ -1,5 +1,6 @@
 package br.edu.ufersa.locadora.controllers;
 
+import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.model.entities.Aluguel;
 import br.edu.ufersa.locadora.model.entities.ItemAluguel;
 import br.edu.ufersa.locadora.model.entities.Registro;
@@ -44,8 +45,8 @@ public class AluguelController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        aluguelService = new AluguelService();
-        registroService = new RegistroService();
+        aluguelService = SessaoUsuario.getInstance().getAluguelService();
+        registroService = SessaoUsuario.getInstance().getRegistroService();
         masterData = FXCollections.observableArrayList();
 
         comboTipo.setItems(FXCollections.observableArrayList("Todos", "Livro", "Disco"));

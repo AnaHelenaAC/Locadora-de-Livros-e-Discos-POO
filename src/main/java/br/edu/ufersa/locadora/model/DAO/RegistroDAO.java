@@ -15,10 +15,18 @@ import java.util.List;
 
 public class RegistroDAO {
 
+    private final ConnectionFactory connectionFactory;
+    private final UsuarioDAO usuarioDAO;
+
+    public RegistroDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+        this.usuarioDAO = new UsuarioDAO(connectionFactory);
+    }
+
     public Registro Create(Registro entity) {
         String sql = "INSERT INTO tb_registro (faturamento_total, id_gerente_logado) VALUES (?, ?)";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setDouble(1, entity.getFaturamentoTotal());
 
@@ -45,7 +53,7 @@ public class RegistroDAO {
         String sql = "SELECT * FROM tb_registro WHERE id_registro = ?";
         List<Registro> lista = new ArrayList<>();
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setLong(1, Long.parseLong(param));
             try (ResultSet rset = stmt.executeQuery()) {
@@ -60,7 +68,6 @@ public class RegistroDAO {
 
                     long idGerente = rset.getLong("id_gerente_logado");
                     if (!rset.wasNull()) {
-                        UsuarioDAO usuarioDAO = new UsuarioDAO();
                         Usuario gerente = usuarioDAO.ReadPorId(idGerente);
                         if (gerente != null) {
                             try {
@@ -84,13 +91,13 @@ public class RegistroDAO {
     public boolean Update(Registro entity) {
         String sql = "UPDATE tb_registro SET faturamento_total = ?, id_gerente_logado = ? WHERE id_registro = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setDouble(1, entity.getFaturamentoTotal());
 
             if (entity.getGerenteLogado() != null) {
-                stmt.setLong(2, entity.getGerenteLogado().getId()); // CORRIGIDO: getId()
+                stmt.setLong(2, entity.getGerenteLogado().getId());
             } else {
                 stmt.setNull(2, Types.INTEGER);
             }
@@ -105,7 +112,7 @@ public class RegistroDAO {
     public boolean Delete(Registro entity) {
         String sql = "DELETE FROM tb_registro WHERE id_registro = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setLong(1, entity.getIdRegistro());
 

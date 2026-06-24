@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.Service;
 
 import br.edu.ufersa.locadora.model.DAO.AluguelDAO;
+import br.edu.ufersa.locadora.model.DAO.ConnectionFactory;
 import br.edu.ufersa.locadora.model.DAO.ItemAluguelDAO;
 import br.edu.ufersa.locadora.model.DAO.DiscoDAO;
 import br.edu.ufersa.locadora.model.DAO.LivroDAO;
@@ -18,11 +19,11 @@ public class AluguelService {
     private final DiscoDAO discoDAO;
     private final LivroDAO livroDAO;
 
-    public AluguelService() {
-        aluguelDAO = new AluguelDAO();
-        itemAluguelDAO = new ItemAluguelDAO();
-        discoDAO = new DiscoDAO();
-        livroDAO = new LivroDAO();
+    public AluguelService(ConnectionFactory connectionFactory) {
+        aluguelDAO = new AluguelDAO(connectionFactory);
+        itemAluguelDAO = new ItemAluguelDAO(connectionFactory);
+        discoDAO = new DiscoDAO(connectionFactory);
+        livroDAO = new LivroDAO(connectionFactory);
     }
 
     // metodo para criar um novo aluguel em memória

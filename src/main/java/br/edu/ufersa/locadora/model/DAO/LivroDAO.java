@@ -17,9 +17,15 @@ import java.time.format.DateTimeFormatter;
 public class LivroDAO {
     private static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private final ConnectionFactory connectionFactory;
+
+    public LivroDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
     public void updateQuantidade(String id, int novaQuantidade) {
         String sql = "UPDATE Lviros SET qtdItens = ? WHERE ID = ?";
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, novaQuantidade);
             ps.setString(2, id);
@@ -32,7 +38,7 @@ public class LivroDAO {
     public void create(Livro livro) {
         String query = "INSERT INTO Livros (ID, titulo, criadoPor, genero, valor, dataDeLancamento, qtdItens, isDisco, qtdPaginas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, livro.getID());
             ps.setString(2, livro.getTitulo());
@@ -53,7 +59,7 @@ public class LivroDAO {
         String query = "SELECT * FROM Livros";
         List<Livro> livros = new ArrayList<>();
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
@@ -71,7 +77,7 @@ public class LivroDAO {
         String query = "SELECT * FROM Livros WHERE ID = ?";
         Livro livro = null;
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
 
             ps.setString(1, ID);
@@ -90,7 +96,7 @@ public class LivroDAO {
     public void update(Livro livro) {
         String query = "UPDATE Livros SET titulo = ?, criadoPor = ?, genero = ?, valor = ?, dataDeLancamento = ?, qtdItens = ?, qtdPaginas = ? WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, livro.getTitulo());
             ps.setString(2, livro.getCriadoPor());
@@ -109,7 +115,7 @@ public class LivroDAO {
     public void delete(String ID) {
         String query = "DELETE FROM Livros WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, ID);
             ps.executeUpdate();

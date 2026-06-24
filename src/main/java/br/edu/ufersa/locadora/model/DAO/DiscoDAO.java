@@ -17,9 +17,15 @@ import java.util.ArrayList;
 public class DiscoDAO {
     private static final DateTimeFormatter FORMATADOR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private final ConnectionFactory connectionFactory;
+
+    public DiscoDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
     public void updateQuantidade(String id, int novaQuantidade) {
         String sql = "UPDATE Discos SET qtdItens = ? WHERE ID = ?";
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, novaQuantidade);
             ps.setString(2, id);
@@ -32,7 +38,7 @@ public class DiscoDAO {
     public void create(Disco disco) {
         String sql = "INSERT INTO Discos (ID, titulo, criadoPor, genero, valor, dataDeLancamento, qtdItens, isDisco, duracao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, disco.getID());
             ps.setString(1, disco.getTitulo());
@@ -53,7 +59,7 @@ public class DiscoDAO {
         String sql = "SELECT * FROM Discos"; // Sem a cláusula WHERE, para trazer tudo
         List<Disco> discos = new ArrayList<>();
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -70,7 +76,7 @@ public class DiscoDAO {
         String sql = "SELECT * FROM Discos WHERE ID = ?";
         Disco disco = null;
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID);
             try (ResultSet rs = ps.executeQuery()) {
@@ -87,7 +93,7 @@ public class DiscoDAO {
     public void update(Disco disco) {
         String sql = "UPDATE Discos SET titulo = ?, criadoPor = ?, genero = ?, valor = ?, dataDeLancamento = ?, qtdItens = ?, duracao = ? WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, disco.getTitulo());
             ps.setString(2, disco.getCriadoPor());
@@ -106,7 +112,7 @@ public class DiscoDAO {
     public void delete(String ID) {
         String sql = "DELETE FROM Discos WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID);
             ps.executeUpdate();

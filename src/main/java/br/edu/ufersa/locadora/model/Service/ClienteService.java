@@ -1,6 +1,7 @@
 package br.edu.ufersa.locadora.model.Service;
 
 import br.edu.ufersa.locadora.model.DAO.ClienteDAO;
+import br.edu.ufersa.locadora.model.DAO.ConnectionFactory;
 import br.edu.ufersa.locadora.model.entities.Cliente;
 
 import java.util.List;
@@ -9,8 +10,8 @@ public class ClienteService {
 
     private final ClienteDAO dao;
 
-    public ClienteService() {
-        dao = new ClienteDAO();
+    public ClienteService(ConnectionFactory connectionFactory) {
+        dao = new ClienteDAO(connectionFactory);
     }
 
     public Cliente cadastrar(Cliente cliente) {

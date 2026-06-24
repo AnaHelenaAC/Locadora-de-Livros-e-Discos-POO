@@ -109,6 +109,7 @@ public class LoginController implements Initializable {
 
             SessaoUsuario.getInstance().setUsuarioLogado(usuario);
             showAlert(AlertType.INFORMATION, "Login", "Bem-vindo, " + usuario.getNome() + "!");
+            NavigationHelper.goTo(loginButton, "Funcionario.fxml");
         } catch (UsuarioException e) {
             showAlert(AlertType.ERROR, "Erro", e.getMessage());
         } catch (RuntimeException e) {

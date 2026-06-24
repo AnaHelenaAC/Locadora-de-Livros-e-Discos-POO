@@ -12,10 +12,20 @@ import java.sql.Date;
 
 public class ItemAluguelDAO {
 
+    private final ConnectionFactory connectionFactory;
+    private final DiscoDAO discoDAO;
+    private final LivroDAO livroDAO;
+
+    public ItemAluguelDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+        this.discoDAO = new DiscoDAO(connectionFactory);
+        this.livroDAO = new LivroDAO(connectionFactory);
+    }
+
     public ItemAluguel Create(ItemAluguel entity, int aluguelID) {
         String sql = "INSERT INTO tb_itens_aluguel (aluguel_id, disco_id, livro_id, preco_diaria, dias_alugados, data_fim) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, aluguelID);
 
@@ -58,7 +68,7 @@ public class ItemAluguelDAO {
 
         String sql = "UPDATE tb_itens_aluguel SET data_fim = ? WHERE id = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             if (entity.getDataFim() != null) {
@@ -79,15 +89,13 @@ public class ItemAluguelDAO {
         String sql = "SELECT * FROM tb_itens_aluguel WHERE aluguel_id = ?";
         List<ItemAluguel> itens = new ArrayList<>();
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, aluguelID);
 
             try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
-                    DiscoDAO discoDAO = new DiscoDAO();
-                    LivroDAO livroDAO = new LivroDAO();
                     ItemAluguel item;
 
                     int itemId = rs.getInt("id");

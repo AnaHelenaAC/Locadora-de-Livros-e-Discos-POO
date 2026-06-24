@@ -1,5 +1,6 @@
 package br.edu.ufersa.locadora.model.Service;
 
+import br.edu.ufersa.locadora.model.DAO.ConnectionFactory;
 import br.edu.ufersa.locadora.model.DAO.RegistroDAO;
 import br.edu.ufersa.locadora.model.DAO.UsuarioDAO;
 import br.edu.ufersa.locadora.model.entities.Registro;
@@ -14,9 +15,15 @@ import java.time.LocalDate;
 
 public class RegistroService {
 
-    private final RegistroDAO dao = new RegistroDAO();
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
-    private final AluguelService aluguelService = new AluguelService();
+    private final RegistroDAO dao;
+    private final UsuarioDAO usuarioDAO;
+    private final AluguelService aluguelService;
+
+    public RegistroService(ConnectionFactory connectionFactory) {
+        this.dao = new RegistroDAO(connectionFactory);
+        this.usuarioDAO = new UsuarioDAO(connectionFactory);
+        this.aluguelService = new AluguelService(connectionFactory);
+    }
 
     public Registro salvar(Registro reg) throws RegistroException {
         if (reg == null) {
