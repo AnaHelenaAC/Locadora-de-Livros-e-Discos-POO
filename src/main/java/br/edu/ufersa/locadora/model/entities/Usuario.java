@@ -11,7 +11,6 @@ public class Usuario {
     private String nome;
     private String login;
     private String senha;
-    private boolean gerente;
 
     public Usuario() {
     }
@@ -70,12 +69,8 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public void setGerente(boolean gerente) {
-        this.gerente = gerente;
-    }
-
     public boolean isGerente() {
-        return (id != null && ID_GERENTE.equals(id)) || gerente;
+        return id != null && ID_GERENTE.equals(id);
     }
 
     public boolean fazerLogin(String loginRecebido, String senhaRecebida) throws UsuarioException {

@@ -3,7 +3,6 @@ package br.edu.ufersa.locadora.model.DAO;
 import br.edu.ufersa.locadora.exceptions.SemNomeException;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
 import br.edu.ufersa.locadora.model.entities.Usuario;
-import br.edu.ufersa.locadora.model.DAO.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,16 +14,21 @@ import java.util.List;
 
 public class UsuarioDAO {
 
-    public Usuario Create(Usuario entity) throws UsuarioException {
-        String sql = "INSERT INTO Usuarios (nome, login, senha, isGerente) VALUES (?, ?, ?, ?)";
+    private final ConnectionFactory connectionFactory;
 
-        try (Connection con = ConnectionFactory.getConnection();
+    public UsuarioDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
+    public Usuario Create(Usuario entity) throws UsuarioException {
+        String sql = "INSERT INTO Usuarios (nome, login, senha) VALUES (?, ?, ?)";
+
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, entity.getNome());
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
-            ps.setBoolean(4, entity.isGerente());
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -40,11 +44,10 @@ public class UsuarioDAO {
     }
 
     public List<Usuario> Read(String param) {
-        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios " +
-                "WHERE nome LIKE ? OR login LIKE ?";
+        String sql = "SELECT ID, nome, login, senha FROM Usuarios WHERE nome LIKE ? OR login LIKE ?";
         List<Usuario> lista = new ArrayList<>();
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             String like = "%" + param + "%";
@@ -63,16 +66,15 @@ public class UsuarioDAO {
     }
 
     public boolean Update(Usuario entity) {
-        String sql = "UPDATE Usuarios SET nome = ?, login = ?, senha = ?, isGerente = ? WHERE ID = ?";
+        String sql = "UPDATE Usuarios SET nome = ?, login = ?, senha = ? WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, entity.getNome());
             ps.setString(2, entity.getLogin());
             ps.setString(3, entity.getSenha());
-            ps.setBoolean(4, entity.isGerente());
-            ps.setLong(5, entity.getId());
+            ps.setLong(4, entity.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -83,7 +85,7 @@ public class UsuarioDAO {
     public boolean Delete(Usuario entity) {
         String sql = "DELETE FROM Usuarios WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, entity.getId());
@@ -94,9 +96,9 @@ public class UsuarioDAO {
     }
 
     public Usuario ReadGerente() {
-        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios WHERE ID = ?";
+        String sql = "SELECT ID, nome, login, senha FROM Usuarios WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, Usuario.ID_GERENTE);
@@ -113,9 +115,9 @@ public class UsuarioDAO {
     }
 
     public Usuario ReadPorId(Long id) {
-        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios WHERE ID = ?";
+        String sql = "SELECT ID, nome, login, senha FROM Usuarios WHERE ID = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, id);
@@ -132,16 +134,17 @@ public class UsuarioDAO {
     }
 
     public List<Usuario> ReadFuncionarios(String param) {
-        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios " +
-                "WHERE isGerente = false AND (nome LIKE ? OR login LIKE ?)";
+        String sql = "SELECT ID, nome, login, senha FROM Usuarios " +
+                "WHERE ID != ? AND (nome LIKE ? OR login LIKE ?)";
         List<Usuario> lista = new ArrayList<>();
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
+            ps.setLong(1, Usuario.ID_GERENTE); // Passa o ID 1L para ignorar o gerente
             String like = "%" + param + "%";
-            ps.setString(1, like);
             ps.setString(2, like);
+            ps.setString(3, like);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -155,9 +158,9 @@ public class UsuarioDAO {
     }
 
     public Usuario ReadPorLogin(String login) {
-        String sql = "SELECT ID, nome, login, senha, isGerente FROM Usuarios WHERE login = ?";
+        String sql = "SELECT ID, nome, login, senha FROM Usuarios WHERE login = ?";
 
-        try (Connection con = ConnectionFactory.getConnection();
+        try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, login);
@@ -180,7 +183,6 @@ public class UsuarioDAO {
             usuario.setNome(rs.getString("nome"));
             usuario.setLogin(rs.getString("login"));
             usuario.setSenha(rs.getString("senha"));
-            usuario.setGerente(rs.getBoolean("isGerente"));
             return usuario;
         } catch (SemNomeException | UsuarioException e) {
             throw new RuntimeException("Erro ao mapear usuário do banco: " + e.getMessage(), e);

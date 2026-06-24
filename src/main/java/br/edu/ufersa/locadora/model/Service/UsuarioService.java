@@ -1,5 +1,6 @@
 package br.edu.ufersa.locadora.model.Service;
 
+import br.edu.ufersa.locadora.model.DAO.ConnectionFactory;
 import br.edu.ufersa.locadora.model.DAO.UsuarioDAO;
 import br.edu.ufersa.locadora.model.entities.Usuario;
 import br.edu.ufersa.locadora.exceptions.UsuarioException;
@@ -7,7 +8,11 @@ import java.util.List;
 
 public class UsuarioService {
 
-    private final UsuarioDAO dao = new UsuarioDAO();
+    private final UsuarioDAO dao;
+
+    public UsuarioService(ConnectionFactory connectionFactory) {
+        this.dao = new UsuarioDAO(connectionFactory);
+    }
 
     public Usuario salvar(Usuario usu) throws UsuarioException {
         if (usu == null) {
@@ -27,6 +32,10 @@ public class UsuarioService {
         if (usu == null || usu.getId() == null) {
             throw new UsuarioException("Usuário inválido para deleção!");
         }
+        if (usu.isGerente()) {
+            throw new UsuarioException("Erro de Segurança: O gerente do sistema (ID 1) não pode ser excluído!");
+        }
+
         return dao.Delete(usu);
     }
 
