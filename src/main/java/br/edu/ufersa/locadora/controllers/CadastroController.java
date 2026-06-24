@@ -156,8 +156,7 @@ public class CadastroController implements Initializable {
         }
     }
 
-    // ── Construção visual das linhas ──────────────────────────
-
+    //Construção visual das linhas
     private HBox criarLinhaCliente(Cliente c) {
         return criarLinha(
                 c.getNome(),
@@ -207,7 +206,7 @@ public class CadastroController implements Initializable {
         lblCol3.setStyle("-fx-font-size:13px; -fx-text-fill:#555555;");
         lblCol3.setPrefWidth(160);
 
-        // Botões ação empilhados verticalmente
+        // Botões empilhados verticalmente
         Button btnEdit = new Button("✏");
         btnEdit.setStyle(
                 "-fx-background-color:transparent; -fx-text-fill:#888888;" +
@@ -246,8 +245,7 @@ public class CadastroController implements Initializable {
         return h;
     }
 
-    // ── Adição rápida ─────────────────────────────────────────
-
+    // Adição rápida
     @FXML
     public void abrirFormNovo(ActionEvent e) {
         String nome   = tfNome.getText().trim();
@@ -261,12 +259,10 @@ public class CadastroController implements Initializable {
         lblMsg.setText("");
         try {
             if (exibindoClientes) {
-                // campo2 = endereço, campo3 = cpf
                 SessaoUsuario.getInstance().getClienteService()
                         .cadastrar(new Cliente(campo3, nome, campo2));
                 carregarClientes();
             } else {
-                // campo2 = login, campo3 = senha
                 SessaoUsuario.getInstance().getUsuarioService()
                         .salvar(new Usuario(nome, campo2, campo3));
                 carregarFuncionarios();
@@ -279,8 +275,7 @@ public class CadastroController implements Initializable {
         }
     }
 
-    // ── Editar / Excluir clientes ─────────────────────────────
-
+    // Editar / Excluir clientes
     private void editarCliente(Cliente c) {
         TextInputDialog dlg = new TextInputDialog(c.getNome());
         dlg.setTitle("Editar Cliente"); dlg.setHeaderText("Novo nome:");
@@ -309,8 +304,7 @@ public class CadastroController implements Initializable {
         });
     }
 
-    // ── Editar / Excluir funcionários ─────────────────────────
-
+    // Editar / Excluir funcionários
     private void editarFuncionario(Usuario f) {
         TextInputDialog dlg = new TextInputDialog(f.getNome());
         dlg.setTitle("Editar Funcionário"); dlg.setHeaderText("Novo nome:");
@@ -339,8 +333,7 @@ public class CadastroController implements Initializable {
         });
     }
 
-    // ── Navegação ─────────────────────────────────────────────
-
+    // Navegação
     @FXML public void navegarAcervo(ActionEvent e)    { irPara("acervo.fxml",    e); }
     @FXML public void navegarRelatorio(ActionEvent e) { irPara("relatorio.fxml", e); }
     @FXML public void navegarCadastros(ActionEvent e) { /* já estamos aqui */ }

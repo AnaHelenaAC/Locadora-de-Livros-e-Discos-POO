@@ -28,15 +28,14 @@ public class CadastroLoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Enter em qualquer campo aciona o cadastro
+        // Aciona o cadastro ao pressionar Enter nos campos
         tfNome  .setOnAction(e -> handleCadastrar(null));
         tfEmail .setOnAction(e -> handleCadastrar(null));
         tfCpf   .setOnAction(e -> handleCadastrar(null));
         pfSenha .setOnAction(e -> handleCadastrar(null));
     }
 
-    // ── Cadastrar ──────────────────────────────────────────────
-
+    // Realiza o processo de cadastro do usuário
     @FXML
     public void handleCadastrar(ActionEvent event) {
         lblMsg.getStyleClass().setAll("msg-erro");
@@ -47,7 +46,7 @@ public class CadastroLoginController implements Initializable {
         String cpf   = tfCpf  .getText().trim();
         String senha = pfSenha .getText();
 
-        // ── Validações locais ──────────────────────────────────
+        // Validação dos dados informados
         if (nome.isEmpty()) {
             lblMsg.setText("Preencha o nome completo.");
             tfNome.requestFocus();
@@ -69,18 +68,17 @@ public class CadastroLoginController implements Initializable {
             return;
         }
 
-        // ── Persistência ───────────────────────────────────────
+        // Persistência do novo usuário
         try {
             Usuario novo = new Usuario(nome, email, senha);
             SessaoUsuario.getInstance()
                     .getUsuarioService()
                     .salvar(novo);
 
-            // Sucesso
             lblMsg.getStyleClass().setAll("msg-sucesso");
             lblMsg.setText("Cadastro realizado! Redirecionando para o login...");
 
-            // Aguarda um momento e navega para o login
+            // Aguarda e redireciona para a tela de login
             javafx.animation.PauseTransition pausa =
                     new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1.5));
             pausa.setOnFinished(e -> irParaLogin());
@@ -93,15 +91,13 @@ public class CadastroLoginController implements Initializable {
         }
     }
 
-    // ── Link "Faça Login" ──────────────────────────────────────
-
+    // Ação acionada pelo link para ir ao login
     @FXML
     public void handleIrParaLogin(MouseEvent event) {
         irParaLogin();
     }
 
-    // ── Helper de navegação ───────────────────────────────────
-
+    // Carrega a tela de login
     private void irParaLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(

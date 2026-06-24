@@ -12,14 +12,15 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+// Controlador responsável pela tabela de exibição de discos
 public class TabelaDiscoController implements Initializable {
 
     @FXML private ScrollPane scrollTabela;
     @FXML private VBox       listaDiscos;
 
+    // Configura o scroll da tabela e inicializa o carregamento dos dados
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Ativa scroll e remove as 3 linhas de preview do Scene Builder
         scrollTabela.setVisible(true);
         scrollTabela.setManaged(true);
         scrollTabela.setPrefHeight(400);
@@ -27,20 +28,16 @@ public class TabelaDiscoController implements Initializable {
         carregarDiscos();
     }
 
-    // ── Preview cleanup ───────────────────────────────────────
-
+    // Limpa as linhas estáticas de preview geradas pelo Scene Builder
     private void removerLinhasPreview() {
         try {
-            // O VBox raiz é o pai direto do scrollTabela
             VBox pai = (VBox) scrollTabela.getParent();
             int idxScroll = pai.getChildren().indexOf(scrollTabela);
-            // índice 0 = cabeçalho; 1..idxScroll-1 = linhas de preview
             if (idxScroll > 1) pai.getChildren().remove(1, idxScroll);
         } catch (Exception ignored) {}
     }
 
-    // ── Carregamento ──────────────────────────────────────────
-
+    // Busca os discos no serviço e atualiza a lista na interface
     public void carregarDiscos() {
         listaDiscos.getChildren().clear();
         try {
@@ -57,12 +54,13 @@ public class TabelaDiscoController implements Initializable {
         }
     }
 
+    // Recarrega a lista de discos atualizada
     public void recarregar() { carregarDiscos(); }
 
-
+    // Cria os componentes visuais e monta a linha correspondente a um disco
     private HBox criarLinha(Disco disco) {
 
-        // ── Placeholder de imagem (quadrado cinza 60×60) ──────
+        // Espaço reservado para o ícone ou imagem do disco
         Label icone = new Label("🖼");
         icone.setStyle("-fx-font-size:20px; -fx-text-fill:#888888;");
         StackPane imgBox = new StackPane(icone);
@@ -73,7 +71,7 @@ public class TabelaDiscoController implements Initializable {
                         "-fx-pref-width:60px; -fx-pref-height:60px;"
         );
 
-        // ── Colunas de texto ──────────────────────────────────
+        // Rótulos informativos com os dados do disco
         Label lTitulo = new Label(disco.getTitulo());
         lTitulo.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
         HBox.setHgrow(lTitulo, Priority.ALWAYS);
@@ -90,7 +88,7 @@ public class TabelaDiscoController implements Initializable {
         HBox.setHgrow(lBanda, Priority.ALWAYS);
         lBanda.setMaxWidth(Double.MAX_VALUE);
 
-        // ── Botões de ação ────────────────────────────────────
+        // Botões de ação liberados exclusivamente para administradores/gerentes
         VBox acoes = new VBox(4);
         acoes.setAlignment(Pos.CENTER);
         acoes.setPrefWidth(56);
@@ -113,7 +111,7 @@ public class TabelaDiscoController implements Initializable {
             acoes.getChildren().addAll(btnEdit, btnDel);
         }
 
-        // ── Linha final ───────────────────────────────────────
+        // Construção e estilização da linha final
         HBox linha = new HBox(14, imgBox, lTitulo, lData, lBanda, acoes);
         linha.setAlignment(Pos.CENTER_LEFT);
         linha.setStyle(
@@ -126,7 +124,8 @@ public class TabelaDiscoController implements Initializable {
         return linha;
     }
 
-    private HBox linhaVazia(String msg) {
+    // Retorna uma linha de aviso estilizada quando não há dados
+    private HBox Rogério_linhaVazia(String msg) {
         Label l = new Label(msg);
         l.setStyle("-fx-text-fill:#9A8A7A; -fx-font-style:italic; -fx-font-size:13px;");
         HBox h = new HBox(l);
@@ -135,7 +134,7 @@ public class TabelaDiscoController implements Initializable {
         return h;
     }
 
-
+    // Exibe caixa de diálogo para alteração do título do disco
     private void onEditar(Disco disco) {
         TextInputDialog dlg = new TextInputDialog(disco.getTitulo());
         dlg.setTitle("Editar Disco");
@@ -153,6 +152,7 @@ public class TabelaDiscoController implements Initializable {
         });
     }
 
+    // Solicita confirmação do usuário e remove o registro do disco do sistema
     private void onExcluir(Disco disco) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "Excluir \"" + disco.getTitulo() + "\"?",

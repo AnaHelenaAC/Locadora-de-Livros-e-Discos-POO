@@ -143,7 +143,6 @@ public class ArquivoLivroController implements Initializable {
         return h;
     }
 
-    // Changed to baseline Event class to accept both ActionEvent (Enter key) and MouseEvent (Icon click)
     @FXML
     public void pesquisar(Event e) {
         String termo = tfPesquisa.getText().trim();
@@ -179,8 +178,6 @@ public class ArquivoLivroController implements Initializable {
         tfGenero .setText(l.getGenero());
         tfData   .setText(l.getDataDeLancamento());
         tfQtd    .setText(String.valueOf(l.getQtdItens()));
-
-        // SAFE CONVERSION: Extracts numeric value to bypass potential locale string parsing errors
         tfValor  .setText(String.valueOf(l.getValor()));
 
         tfPaginas.setText(String.valueOf(l.getQtdPaginas()));
@@ -287,7 +284,6 @@ public class ArquivoLivroController implements Initializable {
         new Alert(Alert.AlertType.ERROR, mensagem).showAndWait();
     }
 
-    //faixa
     @FXML
     private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
     @FXML

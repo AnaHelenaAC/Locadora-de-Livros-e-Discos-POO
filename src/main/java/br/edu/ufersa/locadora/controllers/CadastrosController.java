@@ -8,12 +8,14 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
+// Controlador responsável pela navegação na seção de Cadastros
 public class CadastrosController {
     @FXML private ToggleGroup ItemCadastros;
     @FXML private ToggleButton ClientesToggle;
     @FXML private ToggleButton FuncionariosToggle;
     @FXML private StackPane CadastrosContent;
 
+    // Configura o listener para alternar as views com base no botão selecionado
     @FXML public void initialize() {
         ItemCadastros.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
             if (newVal != null) {
@@ -23,16 +25,17 @@ public class CadastrosController {
 
                 switch(id) {
                     case "ClientesToggle":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/ClientesCadastros.fxml"); //Navega entre telas (vai para ClientesCadastros.fxml)
+                        switchView("../../resources/br/edu/ufersa/locadora/view/ClientesCadastros.fxml");
                         break;
                     case "FuncionariosToggle":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/FuncionariosCadastros.fxml"); //Navega entre telas (vai para FuncionariosCadastros.fxml)
+                        switchView("../../resources/br/edu/ufersa/locadora/view/FuncionariosCadastros.fxml");
                         break;
                 }
             }
         });
     }
 
+    // Carrega a view correspondente e atualiza o conteúdo da tela
     private void switchView(String fxmlFile) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlFile));

@@ -1,9 +1,9 @@
-/* ── Root: fundo com imagem de pedras coloridas ──────────────── */
+
 .root-cadastro {
     -fx-font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* ── Barra superior roxa ─────────────────────────────────────── */
+
 .topbar {
     -fx-background-color: #2E1A47;
     -fx-min-height: 68px;
@@ -18,12 +18,11 @@
     -fx-graphic-text-gap: 10px;
 }
 
-/* ── Overlay escuro sobre o fundo ────────────────────────────── */
+
 .overlay {
     -fx-background-color: rgba(60, 20, 80, 0.35);
 }
 
-/* ── Card branco/creme central ───────────────────────────────── */
 .card-cadastro {
     -fx-background-color: #F5EDD8;
     -fx-background-radius: 20;
@@ -49,7 +48,6 @@
     -fx-padding: 10 0 16 0;
 }
 
-/* ── Campos de texto ─────────────────────────────────────────── */
 .field-cadastro {
     -fx-background-color: #D4CCCC;
     -fx-background-radius: 8;
@@ -75,7 +73,6 @@
     -fx-max-width: 280px;
 }
 
-/* ── Botão principal Cadastrar ───────────────────────────────── */
 .btn-cadastrar {
     -fx-background-color: #5A1A2E;
     -fx-text-fill: white;
@@ -88,11 +85,9 @@
 }
 .btn-cadastrar:hover { -fx-background-color: #7A2040; }
 
-/* ── Mensagem de erro/sucesso ────────────────────────────────── */
 .msg-erro    { -fx-text-fill: #C0392B; -fx-font-size: 12px; -fx-wrap-text: true; }
 .msg-sucesso { -fx-text-fill: #1A7A45; -fx-font-size: 12px; }
 
-/* ── Rodapé: "Já tem uma conta? Faça Login" ─────────────────── */
 .footer-area {
     -fx-padding: 14 0 0 0;
 }

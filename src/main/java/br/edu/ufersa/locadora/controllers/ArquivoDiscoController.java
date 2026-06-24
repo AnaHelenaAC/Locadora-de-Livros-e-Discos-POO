@@ -21,17 +21,17 @@ import java.util.ResourceBundle;
 
 public class ArquivoDiscoController implements Initializable {
 
-    // ── Navbar ────────────────────────────────────────────────
+    // Navbar
     @FXML private ToggleButton navAcervo;
     @FXML private ToggleButton navAlugueis;
     @FXML private ToggleButton navCadastros;
 
-    // ── Tabela ────────────────────────────────────────────────
+    // Tabela
     @FXML private ScrollPane scrollTabela;
     @FXML private VBox       listaDiscos;
     @FXML private Button     btnAdicionar;
 
-    // ── Formulário ────────────────────────────────────────────
+    // Formulário
     @FXML private VBox      painelForm;
     @FXML private Label     lblFormTitulo;
     @FXML private TextField tfTitulo;
@@ -43,14 +43,11 @@ public class ArquivoDiscoController implements Initializable {
     @FXML private TextField tfDuracao;
     @FXML private Label     lblFormMsg;
 
-    // ── Pesquisa ──────────────────────────────────────────────
+    // Pesquisa
     @FXML private TextField tfPesquisa;
-
-    // ── Estado interno ────────────────────────────────────────
     private boolean modoEdicao = false;
     private Disco   discoEmEdicao;
 
-    // ─────────────────────────────────────────────────────────
     //faixa
     @FXML private Button relatorioButton;
     @FXML private Button alugueisButton;
@@ -59,13 +56,11 @@ public class ArquivoDiscoController implements Initializable {
     @FXML private Button sairButton;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Ativa scroll dinâmico e remove linhas de preview
         scrollTabela.setVisible(true);
         scrollTabela.setManaged(true);
         scrollTabela.setPrefHeight(400);
         removerLinhasPreview();
 
-        // Gerente pode adicionar; funcionário só consulta
         boolean gerente = SessaoUsuario.getInstance().usuarioEhGerente();
         btnAdicionar.setVisible(gerente);
         btnAdicionar.setManaged(gerente);
@@ -73,19 +68,16 @@ public class ArquivoDiscoController implements Initializable {
         carregarDiscos();
     }
 
-    // ── Remoção das linhas de preview (Scene Builder) ─────────
 
     private void removerLinhasPreview() {
         try {
             VBox pai = (VBox) scrollTabela.getParent();
             int idxScroll = pai.getChildren().indexOf(scrollTabela);
-            // índice 0 = cabeçalho amarelo; 1..idxScroll-1 = linhas de preview
             if (idxScroll > 1) pai.getChildren().remove(1, idxScroll);
         } catch (Exception ignored) {}
     }
 
-    // ── Carregamento de dados ─────────────────────────────────
-
+    // Carregamento de Dados
     private void carregarDiscos() {
         listaDiscos.getChildren().clear();
         try {
@@ -98,11 +90,9 @@ public class ArquivoDiscoController implements Initializable {
         }
     }
 
-    // ── Construção das linhas ─────────────────────────────────
-
+    // Construção das linhas
     private HBox criarLinha(Disco disco) {
 
-        // Placeholder de imagem (quadrado cinza com ícone)
         Label icone = new Label("🖼");
         icone.setStyle("-fx-font-size:20px; -fx-text-fill:#888888;");
         StackPane imgBox = new StackPane(icone);
@@ -110,7 +100,6 @@ public class ArquivoDiscoController implements Initializable {
                 "-fx-min-width:60px; -fx-min-height:60px;" +
                 "-fx-pref-width:60px; -fx-pref-height:60px;");
 
-        // Colunas de texto
         Label lTitulo = new Label(disco.getTitulo());
         lTitulo.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
         HBox.setHgrow(lTitulo, Priority.ALWAYS);
@@ -126,7 +115,7 @@ public class ArquivoDiscoController implements Initializable {
         HBox.setHgrow(lBanda, Priority.ALWAYS);
         lBanda.setMaxWidth(Double.MAX_VALUE);
 
-        // Botões de ação (só para gerente)
+        // Botões de ação (Gerente)
         VBox acoes = new VBox(4);
         acoes.setAlignment(Pos.CENTER);
         acoes.setPrefWidth(56);
@@ -144,7 +133,6 @@ public class ArquivoDiscoController implements Initializable {
             acoes.getChildren().addAll(btnEdit, btnDel);
         }
 
-        // Linha completa
         HBox linha = new HBox(14, imgBox, lTitulo, lData, lBanda, acoes);
         linha.setAlignment(Pos.CENTER_LEFT);
         linha.setStyle("-fx-background-color:#F8EED1; -fx-padding:8 16 8 16;" +
@@ -163,8 +151,7 @@ public class ArquivoDiscoController implements Initializable {
         return h;
     }
 
-    // ── Pesquisa ──────────────────────────────────────────────
-
+    // Pesquisa
     @FXML
     public void pesquisar(ActionEvent e) {
         String termo = tfPesquisa.getText().trim();
@@ -178,8 +165,6 @@ public class ArquivoDiscoController implements Initializable {
 
         if (termo.isEmpty()) carregarDiscos();
     }
-
-    // ── Formulário: abrir ─────────────────────────────────────
 
     @FXML
     public void abrirFormNovo(ActionEvent e) {
@@ -222,7 +207,6 @@ public class ArquivoDiscoController implements Initializable {
         });
     }
 
-    // ── Formulário: salvar / fechar ───────────────────────────
 
     @FXML
     public void salvarDisco(ActionEvent e) {
@@ -267,14 +251,11 @@ public class ArquivoDiscoController implements Initializable {
 
     @FXML public void fecharForm(ActionEvent e) { mostrarForm(false); }
 
-    // ── Navegação — Navbar ────────────────────────────────────
-
     @FXML public void handleNavAcervo(ActionEvent e)    { /* já estamos aqui */ }
     @FXML public void handleNavRelatorio(ActionEvent e) { irPara("financas.fxml", e); }
     @FXML public void handleNavCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
 
-    // ── Navegação — Abas ──────────────────────────────────────
-
+    // Abas de navegação
     @FXML public void navegarLivros(javafx.scene.input.MouseEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -295,8 +276,7 @@ public class ArquivoDiscoController implements Initializable {
         irPara("login.fxml", e);
     }
 
-    // ── Helpers ───────────────────────────────────────────────
-
+    // Helpes
     private void mostrarForm(boolean v) {
         painelForm.setVisible(v);
         painelForm.setManaged(v);
@@ -320,7 +300,6 @@ public class ArquivoDiscoController implements Initializable {
         }
     }
 
-    //faixa
     @FXML
     private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
     @FXML

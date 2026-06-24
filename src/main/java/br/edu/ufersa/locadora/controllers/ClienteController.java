@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+// Controlador responsável pela gestão de clientes
 public class ClienteController implements Initializable {
 
     @FXML private TextField  tfNome;
@@ -34,6 +35,7 @@ public class ClienteController implements Initializable {
     @FXML private Button cadastrosButton;
     @FXML private Button sairButton;
 
+    // Configura a tela inicial e carrega a lista de clientes
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         scrollLista.setVisible(true);
@@ -43,6 +45,7 @@ public class ClienteController implements Initializable {
         carregarClientes();
     }
 
+    // Remove as linhas estáticas de preview geradas pelo Scene Builder
     private void removerLinhasPreview() {
         try {
             VBox pai = (VBox) scrollLista.getParent();
@@ -51,6 +54,7 @@ public class ClienteController implements Initializable {
         } catch (Exception ignored) {}
     }
 
+    // Busca os clientes no banco e atualiza a interface
     private void carregarClientes() {
         listaClientes.getChildren().clear();
         lblMsg.setText("");
@@ -68,6 +72,7 @@ public class ClienteController implements Initializable {
         }
     }
 
+    // Cria os componentes visuais para exibir os dados de um cliente na lista
     private HBox criarLinha(Cliente c) {
         Label avatar = new Label("👤");
         avatar.setStyle("-fx-background-color:#C0B8C8; -fx-background-radius:50;" +
@@ -107,6 +112,7 @@ public class ClienteController implements Initializable {
         return linha;
     }
 
+    // Retorna uma mensagem formatada quando a lista está vazia
     private HBox linhaVazia(String msg) {
         Label l = new Label(msg);
         l.setStyle("-fx-text-fill:#9A8A7A; -fx-font-style:italic; -fx-font-size:13px;");
@@ -116,6 +122,7 @@ public class ClienteController implements Initializable {
         return h;
     }
 
+    // Valida os campos e cadastra um novo cliente
     @FXML
     public void adicionarCliente(ActionEvent e) {
         String nome     = tfNome.getText().trim();
@@ -136,6 +143,7 @@ public class ClienteController implements Initializable {
         }
     }
 
+    // Abre um diálogo para editar as informações do cliente
     private void editarCliente(Cliente c) {
         TextInputDialog dlg = new TextInputDialog(c.getNome());
         dlg.setTitle("Editar Cliente"); dlg.setHeaderText("Novo nome:");
@@ -150,6 +158,7 @@ public class ClienteController implements Initializable {
         });
     }
 
+    // Exibe um alerta de confirmação antes de excluir o cliente
     private void excluirCliente(Cliente c) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION,
                 "Excluir \"" + c.getNome() + "\"?", ButtonType.YES, ButtonType.NO);
@@ -164,16 +173,19 @@ public class ClienteController implements Initializable {
         });
     }
 
+    // Métodos de navegação primária
     @FXML public void navegarAcervo(ActionEvent e)    { irPara("acervo.fxml",      e); }
     @FXML public void navegarRelatorio(ActionEvent e) { irPara("financas.fxml",    e); }
     @FXML public void navegarCadastros(ActionEvent e) { irPara("funcionario.fxml", e); }
 
+    // Encerra a sessão atual e retorna à tela de login
     @FXML
     public void handleLogout(ActionEvent e) {
         SessaoUsuario.getInstance().limparSessao();
         irPara("login.fxml", e);
     }
 
+    // Método utilitário para carregamento de novas telas
     private void irPara(String fxml, ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -185,15 +197,19 @@ public class ClienteController implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage()).showAndWait();
         }
     }
-    //faixa
+
+    // Navegação do menu lateral/faixa
     @FXML
     private void aoRelatorio() { NavigationHelper.goTo(relatorioButton, "Financas.fxml"); }
+
     @FXML
     private void aoAlugeuis() {
         NavigationHelper.goTo(alugueisButton, "aluguel.fxml");
     }
+
     @FXML
     private void aoAcervo() {NavigationHelper.goTo(acervoButton, "ArquivoLivro.fxml"); }
+
     @FXML
     private void aoCadastros() {
         Usuario usuario = SessaoUsuario.getInstance().getUsuarioLogado();
@@ -207,6 +223,7 @@ public class ClienteController implements Initializable {
             NavigationHelper.goTo(cadastrosButton, "Cliente.fxml");
         }
     }
+
     @FXML
     private void aoSair() { NavigationHelper.goTo(acervoButton, "Login.fxml");
     }

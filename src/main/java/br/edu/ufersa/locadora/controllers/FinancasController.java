@@ -23,6 +23,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+// Controlador responsável pela tela de finanças e calendário
 public class FinancasController implements Initializable {
 
     @FXML private Label      lblAno;
@@ -41,7 +42,7 @@ public class FinancasController implements Initializable {
     @FXML private Button sairButton;
     @FXML private Button clienteButton;
 
-    // Dias da semana abreviados conforme o design
+    // Dias da semana abreviados
     private static final String[] DIAS = {"DO", "SE", "TE", "QA", "QI", "SE", "SA"};
 
     @Override
@@ -51,13 +52,11 @@ public class FinancasController implements Initializable {
         renderizarAno();
     }
 
-    // ── Navegação de ano ──────────────────────────────────────
-
+    // Navegação de ano
     @FXML public void anoAnterior(ActionEvent e)  { anoAtual--; renderizarAno(); }
     @FXML public void proximoAno(ActionEvent e)   { anoAtual++; renderizarAno(); }
 
-    // ── Renderização do calendário ────────────────────────────
-
+    // Renderização do calendário
     private void renderizarAno() {
         gridCalendario.getChildren().clear();
         lblAno.setText(String.valueOf(anoAtual));
@@ -82,36 +81,31 @@ public class FinancasController implements Initializable {
         lblLucroAnual.setText(String.format("lucro anual: R$%.2f", lucroAnual));
     }
 
-    /**
-     * Cria o painel visual de um mês:
-     *   NOME DO MÊS
-     *   DO  SE  TE  QA  QI  SE  SA
-     *   [dias numerados com domingos em vermelho]
-     *   lucro mensal: R$xx,xx
-     */
+    // Cria o painel visual de um mês com seus dias e o lucro correspondente
     private VBox criarPainelMes(int mes, int ano, double lucroMes) {
         YearMonth ym   = YearMonth.of(ano, mes);
         int totalDias  = ym.lengthOfMonth();
-        // dia da semana do primeiro dia (1=DOM, 2=SEG, ..., 7=SAB em Java)
-        int primeiroDS = ym.atDay(1).getDayOfWeek().getValue() % 7; // 0=DOM
+
+        // Dia da semana do primeiro dia do mês
+        int primeiroDS = ym.atDay(1).getDayOfWeek().getValue() % 7;
 
         VBox painel = new VBox(4);
         painel.setStyle("-fx-padding:0; -fx-pref-width:210px;");
 
-        // Nome do mês (ex: JAN)
+        // Nome do mês
         String nomeMes = ym.getMonth().getDisplayName(TextStyle.SHORT,
-            new Locale.Builder().setLanguage("pt").setRegion("BR").build())
+                        new Locale.Builder().setLanguage("pt").setRegion("BR").build())
                 .toUpperCase().replace(".", "");
         Label lblMes = new Label(nomeMes);
         lblMes.setStyle("-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#2E1A47;" +
                 "-fx-padding:0 0 2 0;");
         painel.getChildren().add(lblMes);
 
-        // Grade 7 colunas
+        // Configuração da grade de dias
         GridPane grade = new GridPane();
         grade.setHgap(4); grade.setVgap(2);
 
-        // Cabeçalho: DO SE TE QA QI SE SA
+        // Cabeçalho dos dias da semana
         for (int i = 0; i < 7; i++) {
             Label h = new Label(DIAS[i]);
             h.setStyle("-fx-font-size:9px; -fx-font-weight:bold;" +
@@ -122,7 +116,7 @@ public class FinancasController implements Initializable {
             grade.add(h, i, 0);
         }
 
-        // Dias numerados
+        // Preenchimento dos dias numerados
         int colAtual = primeiroDS;
         int linhaAtual = 1;
         for (int dia = 1; dia <= totalDias; dia++) {
@@ -140,7 +134,7 @@ public class FinancasController implements Initializable {
 
         painel.getChildren().add(grade);
 
-        // Lucro mensal
+        // Exibição do lucro mensal
         Label lblLucro = new Label(String.format("lucro mensal: R$%.2f", lucroMes));
         lblLucro.setStyle("-fx-font-size:10px; -fx-text-fill:#555555; -fx-padding:4 0 0 0;");
         painel.getChildren().add(lblLucro);
@@ -148,9 +142,7 @@ public class FinancasController implements Initializable {
         return painel;
     }
 
-    // ── Navegação ─────────────────────────────────────────────
-
-    //faixa
+    // Navegação entre telas
     @FXML
     private void mostrarCliente() { NavigationHelper.goTo(clienteButton, "ClienteGerente.fxml"); }
     @FXML
@@ -184,6 +176,7 @@ public class FinancasController implements Initializable {
         irPara("login.fxml", e);
     }
 
+    // Utilitário para troca de telas
     private void irPara(String fxml, ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(

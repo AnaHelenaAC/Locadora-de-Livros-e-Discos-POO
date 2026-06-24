@@ -8,12 +8,14 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
+// Controlador responsável pela navegação na seção de Aluguéis
 public class AlugueisController {
     @FXML private ToggleGroup ItemAlugueis;
     @FXML private ToggleButton AlugueisAtivosToggle;
     @FXML private ToggleButton FinancasToggle;
     @FXML private StackPane AlugueisContent;
 
+    // Configura o listener para alternar entre as abas de aluguéis ativos e finanças
     @FXML public void initialize() {
         ItemAlugueis.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
             if (newVal != null) {
@@ -23,16 +25,17 @@ public class AlugueisController {
 
                 switch(id) {
                     case "AlugueisAtivosToggle":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/AlugueisAtivosAlugueis.fxml"); //Navega entre telas (vai para AlugueisAtivosAlugueis.fxml)
+                        switchView("../../resources/br/edu/ufersa/locadora/view/AlugueisAtivosAlugueis.fxml");
                         break;
                     case "FinancasToggle":
-                        switchView("../../resources/br/edu/ufersa/locadora/view/FinancasAlugueis.fxml"); //Navega entre telas (vai para LivrosAcervo.fxml)
+                        switchView("../../resources/br/edu/ufersa/locadora/view/FinancasAlugueis.fxml");
                         break;
                 }
             }
         });
     }
 
+    // Carrega a view correspondente e atualiza o conteúdo da tela
     private void switchView(String fxmlFile) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlFile));

@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.Parent;
 
+// Controlador responsável pela navegação das abas na tela de Acervo
 public class AcervoController {
     @FXML private ToggleGroup ItemAcervo;
     @FXML private ToggleButton discosToggle;
@@ -14,6 +15,7 @@ public class AcervoController {
 
     private final String VIEW_PATH = "/br/edu/ufersa/locadora/view/";
 
+    // Configura o listener para alternar as views com base no botão selecionado
     @FXML
     public void initialize() {
         ItemAcervo.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
@@ -33,6 +35,7 @@ public class AcervoController {
         });
     }
 
+    // Carrega o arquivo FXML solicitado e o exibe no container principal
     private void switchView(String absoluteFxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(absoluteFxmlPath));
