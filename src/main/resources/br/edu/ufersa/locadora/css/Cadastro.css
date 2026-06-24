@@ -1,0 +1,105 @@
+
+.root-cadastro {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+
+.topbar {
+    -fx-background-color: #2E1A47;
+    -fx-min-height: 68px;
+    -fx-pref-height: 68px;
+    -fx-padding: 0 0 0 20px;
+}
+.topbar-brand {
+    -fx-text-fill: #F2D888;
+    -fx-font-family: "Bodoni Bk BT Book", Georgia, serif;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-graphic-text-gap: 10px;
+}
+
+
+.overlay {
+    -fx-background-color: rgba(60, 20, 80, 0.35);
+}
+
+.card-cadastro {
+    -fx-background-color: #F5EDD8;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 28, 0, 0, 6);
+    -fx-pref-width: 340px;
+    -fx-max-width: 340px;
+}
+
+/* Faixa roxa escura no topo do card */
+.card-header {
+    -fx-background-color: #5A1A2E;
+    -fx-background-radius: 18 18 0 0;
+    -fx-min-height: 44px;
+    -fx-pref-height: 44px;
+}
+
+/* Título "Cadastre-se" */
+.card-title {
+    -fx-text-fill: #2E1A47;
+    -fx-font-family: "Bodoni Bk BT Book", Georgia, serif;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 16 0;
+}
+
+.field-cadastro {
+    -fx-background-color: #D4CCCC;
+    -fx-background-radius: 8;
+    -fx-border-color: transparent;
+    -fx-padding: 13 14 13 14;
+    -fx-font-size: 14px;
+    -fx-text-fill: #444444;
+    -fx-prompt-text-fill: #777777;
+    -fx-pref-width: 280px;
+    -fx-pref-height: 46px;
+}
+.field-cadastro:focused {
+    -fx-background-color: #BFBABA;
+    -fx-effect: dropshadow(gaussian, rgba(90,26,46,0.25), 6, 0, 0, 1);
+}
+
+/* Linha separadora entre os campos */
+.field-separator {
+    -fx-background-color: #B0A8A8;
+    -fx-pref-height: 1px;
+    -fx-min-height: 1px;
+    -fx-pref-width: 280px;
+    -fx-max-width: 280px;
+}
+
+.btn-cadastrar {
+    -fx-background-color: #5A1A2E;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 12 0 12 0;
+    -fx-pref-width: 280px;
+    -fx-cursor: hand;
+}
+.btn-cadastrar:hover { -fx-background-color: #7A2040; }
+
+.msg-erro    { -fx-text-fill: #C0392B; -fx-font-size: 12px; -fx-wrap-text: true; }
+.msg-sucesso { -fx-text-fill: #1A7A45; -fx-font-size: 12px; }
+
+.footer-area {
+    -fx-padding: 14 0 0 0;
+}
+.footer-texto {
+    -fx-text-fill: #F5EDD8;
+    -fx-font-size: 14px;
+}
+.link-login {
+    -fx-text-fill: #E03030;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-underline: false;
+}
+.link-login:hover { -fx-underline: true; }

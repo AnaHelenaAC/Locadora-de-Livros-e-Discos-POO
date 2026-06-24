@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<!--
+    Tela de Finanças — Cultura Viva
+    Salvar em: src/main/resources/br/edu/ufersa/locadora/view/financas.fxml
+-->
+<?import javafx.scene.text.Font?>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.edu.ufersa.locadora.controllers.FinancasController"
+            prefWidth="748" prefHeight="560"
+            style="-fx-background-color:#F8EED1;"
+            stylesheets="@../css/aluguel.css">
+
+    <!-- ══ BARRA SUPERIOR ══════════════════════════════════════════════ -->
+    <top>
+        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="72.0" prefWidth="310.0">
+                    <children>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="62.0" text=" ♫" textAlignment="RIGHT" textFill="#ffed78">
+                            <font>
+                                <Font name="Bookman Old Style Bold" size="48.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="72.0" prefWidth="151.0" text="Cultura Viva" textFill="#ffed78">
+                            <font>
+                                <Font name="Baskerville Old Face" size="30.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="cadastroButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoCadastros" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="acervoButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAcervo" styleClass="button-dot" text="Acervo" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAlugueis" styleClass="button-dt" text="Alúgueis" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="relatorioButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoRelatorio" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox layoutX="677.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="sairButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoSair" styleClass="button-dot" text="Sair" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+            </children></HBox>
+    </top>
+
+    <!-- ══ CONTEÚDO CENTRAL ══════════════════════════════════════════ -->
+    <center>
+        <VBox style="-fx-background-color:#F8EED1; -fx-padding:16 18 0 18;" spacing="0">
+
+            <!-- Cabeçalho: campo de busca (esquerda) + título Finanças (direita) -->
+            <HBox alignment="CENTER_LEFT" spacing="0" style="-fx-padding:0 0 12 0;">
+                <TextField fx:id="tfBusca" promptText="Pesquisar..."
+                           style="-fx-background-color:#EDE4CC; -fx-background-radius:20;
+                                  -fx-border-color:transparent; -fx-padding:9 16 9 16;
+                                  -fx-font-size:13px; -fx-pref-width:220px; -fx-pref-height:38px;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Finanças"
+                       style="-fx-background-color:#2E1A47; -fx-text-fill:#F8EED1;
+                              -fx-font-family:Georgia; -fx-font-size:20px; -fx-font-weight:bold;
+                              -fx-background-radius:10 10 0 0; -fx-padding:10 36 10 36;"/>
+            </HBox>
+
+            <!-- Ano e lucro anual -->
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:0 0 10 0;">
+                <Label fx:id="lblAno" text="2026"
+                       style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#2E1A47;"/>
+                <Label fx:id="lblLucroAnual" text="lucro anual: R$00,00"
+                       style="-fx-font-size:12px; -fx-text-fill:#888888;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="◀" onAction="#anoAnterior"
+                        style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                               -fx-font-size:16px; -fx-cursor:hand; -fx-padding:4 8 4 8;"/>
+                <Button text="▶" onAction="#proximoAno"
+                        style="-fx-background-color:transparent; -fx-text-fill:#2E1A47;
+                               -fx-font-size:16px; -fx-cursor:hand; -fx-padding:4 8 4 8;"/>
+            </HBox>
+
+            <!-- Grade de calendários — 3 colunas × N linhas -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        VBox.vgrow="ALWAYS"
+                        style="-fx-background:transparent; -fx-background-color:transparent;
+                               -fx-border-color:transparent;">
+                <GridPane fx:id="gridCalendario" hgap="24" vgap="20"
+                          style="-fx-padding:0 0 16 0; -fx-background-color:transparent;">
+                    <!-- Os meses são gerados dinamicamente pelo FinancasController -->
+                </GridPane>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+    <!-- ══ BARRA INFERIOR ══════════════════════════════════════════════ -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="10"
+              style="-fx-background-color:#2E1A47;
+                     -fx-padding:10 16 10 16; -fx-min-height:50px;">
+
+            <Label text="🔍" style="-fx-text-fill:#F8EED1; -fx-font-size:13px;"/>
+            <TextField fx:id="tfPesquisaBottom" promptText="Pesquisar finanças"
+                       style="-fx-background-color:#F8EED1; -fx-background-radius:20;
+                              -fx-border-color:transparent; -fx-padding:7 14 7 14;
+                              -fx-font-size:13px; -fx-pref-width:200px;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="Logout ➜" onAction="#handleLogout"
+                    style="-fx-background-color:#D1203A; -fx-text-fill:white;
+                           -fx-font-size:13px; -fx-font-weight:bold;
+                           -fx-background-radius:20; -fx-padding:8 20 8 20; -fx-cursor:hand;"/>
+
+            <Label text="📅" style="-fx-text-fill:#C8B8E8; -fx-font-size:14px;"/>
+            <Label fx:id="lblDataHoje" text="24/03/2026"
+                   style="-fx-text-fill:#F8EED1; -fx-font-size:13px;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

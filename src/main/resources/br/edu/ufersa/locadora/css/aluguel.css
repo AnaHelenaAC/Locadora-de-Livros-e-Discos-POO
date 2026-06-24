@@ -1,0 +1,143 @@
+
+.root-pane {
+    -fx-background-color: #F8EED1;
+}
+
+.top-bar {
+    -fx-background-color: #2E1A47;
+    -fx-min-height: 72px;
+    -fx-pref-height: 72px;
+}
+
+.bottom-bar {
+    -fx-background-color: #2E1A47;
+    -fx-min-height: 18px;
+    -fx-pref-height: 18px;
+}
+
+.center-pane {
+    -fx-background-color: #F8EED1;
+    -fx-pref-height: 430px;
+}
+
+
+.table-view {
+    -fx-background-color: #FFF9DB;
+    -fx-border-color: transparent;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+/* CABEÇALHO */
+.table-view .column-header-background {
+    -fx-background-color: #F2D888;
+    -fx-padding: 5px 0px;
+}
+
+/* Estilo das células do cabeçalho */
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-size: 20px;
+}
+
+/* Texto do cabeçalho */
+.table-view .column-header .label {
+    -fx-text-fill: #5A2A44;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+/* LINHAS E CÉLULAS */
+/* Estilo das linhas da tabela */
+.table-view .table-row-cell {
+    -fx-background-color: #FFF9DB;
+    -fx-border-color: transparent transparent #D9D2B6 transparent;
+    -fx-border-width: 1px;
+    -fx-cell-size: 20px;
+}
+
+/* Efeito ao passar o mouse por cima da linha */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #F9F2CE;
+}
+
+/* Cor da linha quando selecionada */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #E2DAC2;
+}
+
+/* Texto de dentro das células */
+.table-view .table-cell {
+    -fx-text-fill: #3A1A2C;
+    -fx-font-size: 8px;
+    -fx-alignment: CENTER;
+    -fx-padding: 0px 15px;
+}
+
+/* ACABAMENTOS */
+/* Remove a caixinha vazia que sobra no canto direito do cabeçalho */
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+/* Remove as linhas de grade verticais vazias no fundo da tabela */
+.table-view .placeholder .label {
+    -fx-text-fill: #5A2A44;
+}
+
+/* BARRA DE ROLAGEM */
+.table-view .scroll-bar:vertical {
+    -fx-background-color: #E2DAC2;
+}
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #5A2A44;
+    -fx-background-radius: 5px;
+}
+
+.button {
+    -fx-background-color: #D1203A;
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 12px;
+    -fx-background-radius: 30px;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #B81830;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+.button:pressed {
+    -fx-background-color: #9A1226;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+
+}
+
+.button-dot {
+    -fx-background-color: #2E1A47;
+    -fx-text-fill: #acacac;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 20px;
+    -fx-background-radius: 0px;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+}
+.button-dot:hover {
+    -fx-background-color: #F2D888;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button-dt {
+    -fx-background-color: #3c275c;
+    -fx-text-fill: #F2D888;
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 20px;
+    -fx-background-radius: 0px;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+}
+

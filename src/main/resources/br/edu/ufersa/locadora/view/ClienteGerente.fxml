@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="540" prefWidth="748" style="-fx-background-color: #F8EED1;" stylesheets="@../css/aluguel.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.FuncionarioController">
+    <top>
+        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="72.0" prefWidth="310.0">
+                    <children>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="62.0" text=" ♫" textAlignment="RIGHT" textFill="#ffed78">
+                            <font>
+                                <Font name="Bookman Old Style Bold" size="48.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="72.0" prefWidth="151.0" text="Cultura Viva" textFill="#ffed78">
+                            <font>
+                                <Font name="Baskerville Old Face" size="30.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="cadastroButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoCadastros" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="acervoButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAcervo" styleClass="button-dot" text="Acervo" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAlugueis" styleClass="button-dt" text="Alúgueis" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="relatorioButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoRelatorio" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox layoutX="677.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="sairButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoSair" styleClass="button-dot" text="Sair" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+            </children></HBox>
+    </top>
+    <!-- ══ CONTEÚDO CENTRAL ══════════════════════════════════════════ -->
+    <center>
+        <VBox spacing="12" style="-fx-background-color:#F8EED1; -fx-padding:22 18 0 18;">
+
+            <!-- Título + abas Funcionário (ativa) / Cliente -->
+            <HBox alignment="CENTER_LEFT" spacing="0">
+                <Label style="-fx-text-fill:#2E1A47; -fx-font-family:Georgia;                               -fx-font-size:20px; -fx-font-weight:bold;" text="Cadastro de Novo Funcionário" />
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- Aba Funcionário — ATIVA (roxa escura) -->
+                <Button fx:id="funcionarioButton" onAction="#mostrarFuncionarios" style="-fx-background-color: #F8EED1; -fx-text-fill: #2E1A47; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 20 0 0 20; -fx-border-color: #2E1A47; -fx-border-width: 1.5; -fx-border-radius: 20 0 0 20; -fx-padding: 8 20 8 22; -fx-cursor: hand;" text="Funcionário" />
+
+                <!-- Aba Cliente — inativa (creme com borda) -->
+                <Button fx:id="ClienteButton" onAction="#mostrarClientes" style="-fx-background-color: #2E1A47; -fx-text-fill: #F8EED1; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 0 20 20 0; -fx-border-color: #2E1A47; -fx-border-width: 1.5; -fx-border-radius: 0 20 20 0; -fx-padding: 8 22 8 20; -fx-cursor: hand;" text="Cliente" />
+            </HBox>
+
+            <!-- Tabela -->
+            <VBox spacing="0" style="-fx-background-color:#FFFFFF; -fx-background-radius:14;                          -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.12),10,0,1,3);">
+
+                <!-- Cabeçalho roxo -->
+                <HBox alignment="CENTER_LEFT" spacing="0" style="-fx-background-color:#2E1A47; -fx-background-radius:12 12 0 0;                              -fx-padding:12 16 12 60;">
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="Nome" HBox.hgrow="ALWAYS" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="Email" HBox.hgrow="ALWAYS" />
+                    <Label prefWidth="150" style="-fx-text-fill:#F8EED1; -fx-font-weight:bold; -fx-font-size:13px;" text="CPF" />
+                    <Label prefWidth="40" text="" />
+                </HBox>
+
+                <!-- Linha de adição rápida -->
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:10 16 10 10; -fx-background-color:#FAFAF8;                              -fx-border-color:transparent transparent #DDD5C5 transparent;                              -fx-border-width:0 0 1.5 0;">
+                    <Button onAction="#adicionarFuncionario" style="-fx-background-color:#2E1A47; -fx-text-fill:white;                                    -fx-font-size:18px; -fx-font-weight:bold;                                    -fx-background-radius:50; -fx-min-width:38px;                                    -fx-min-height:38px; -fx-pref-width:38px;                                    -fx-pref-height:38px; -fx-padding:0; -fx-cursor:hand;" text="＋" />
+                    <TextField fx:id="tfNome" promptText="Nome" style="-fx-background-color:#E8E0D8; -fx-background-radius:20;                                       -fx-border-color:transparent; -fx-padding:8 14 8 14;                                       -fx-font-size:13px; -fx-pref-height:38px;" HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="tfEmail" promptText="Email" style="-fx-background-color:#E8E0D8; -fx-background-radius:20;                                       -fx-border-color:transparent; -fx-padding:8 14 8 14;                                       -fx-font-size:13px; -fx-pref-height:38px;" HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="tfCpf" prefWidth="150" promptText="CPF" style="-fx-background-color:#E8E0D8; -fx-background-radius:20;                                       -fx-border-color:transparent; -fx-padding:8 14 8 14;                                       -fx-font-size:13px; -fx-pref-height:38px;" />
+                    <Label prefWidth="40" text="" />
+                </HBox>
+
+                <!-- Linhas de preview (Scene Builder) -->
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:10 16 10 10; -fx-background-color:#FFFFFF;                              -fx-border-color:transparent transparent #EAE0D0 transparent;                              -fx-border-width:0 0 1 0;">
+                    <Label style="-fx-background-color:#C0B8C8; -fx-background-radius:50;                            -fx-min-width:36px; -fx-min-height:36px; -fx-pref-width:36px;                            -fx-pref-height:36px; -fx-font-size:18px; -fx-alignment:center; -fx-text-fill:white;" text="👤" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-font-size:13px; -fx-text-fill:#2E1A47;" text="Fernando Almeida de Castro" HBox.hgrow="ALWAYS" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-font-size:13px; -fx-text-fill:#555555;" text="fernando.castro@culturaviva.com" HBox.hgrow="ALWAYS" />
+                    <Label prefWidth="150" style="-fx-font-size:13px; -fx-text-fill:#555555;" text="858.448.940-14" />
+                    <VBox alignment="CENTER" prefWidth="40" spacing="2">
+                        <Label style="-fx-text-fill:#888888; -fx-font-size:13px; -fx-cursor:hand;" text="✏" />
+                        <Label style="-fx-text-fill:#AAAAAA; -fx-font-size:13px; -fx-cursor:hand;" text="🗑" />
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:10 16 10 10; -fx-background-color:#FFFFFF;                              -fx-border-color:transparent transparent #EAE0D0 transparent;                              -fx-border-width:0 0 1 0;">
+                    <Label style="-fx-background-color:#C0B8C8; -fx-background-radius:50;                            -fx-min-width:36px; -fx-min-height:36px; -fx-pref-width:36px;                            -fx-pref-height:36px; -fx-font-size:18px; -fx-alignment:center; -fx-text-fill:white;" text="👤" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-font-size:13px; -fx-text-fill:#2E1A47;" text="Samira Barros Fernanda" HBox.hgrow="ALWAYS" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-font-size:13px; -fx-text-fill:#555555;" text="samira.fernanda@culturaviva.com" HBox.hgrow="ALWAYS" />
+                    <Label prefWidth="150" style="-fx-font-size:13px; -fx-text-fill:#555555;" text="005.296.900-20" />
+                    <VBox alignment="CENTER" prefWidth="40" spacing="2">
+                        <Label style="-fx-text-fill:#888888; -fx-font-size:13px; -fx-cursor:hand;" text="✏" />
+                        <Label style="-fx-text-fill:#AAAAAA; -fx-font-size:13px; -fx-cursor:hand;" text="🗑" />
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding:10 16 10 10; -fx-background-color:#FFFFFF;                              -fx-border-color:transparent transparent #EAE0D0 transparent;                              -fx-border-width:0 0 1 0;">
+                    <Label style="-fx-background-color:#C0B8C8; -fx-background-radius:50;                            -fx-min-width:36px; -fx-min-height:36px; -fx-pref-width:36px;                            -fx-pref-height:36px; -fx-font-size:18px; -fx-alignment:center; -fx-text-fill:white;" text="👤" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-font-size:13px; -fx-text-fill:#2E1A47;" text="Raul Matheus Seixas" HBox.hgrow="ALWAYS" />
+                    <Label maxWidth="1.7976931348623157E308" style="-fx-font-size:13px; -fx-text-fill:#555555;" text="raul.seixas@culturaviva.com" HBox.hgrow="ALWAYS" />
+                    <Label prefWidth="150" style="-fx-font-size:13px; -fx-text-fill:#555555;" text="777.793.730-88" />
+                    <VBox alignment="CENTER" prefWidth="40" spacing="2">
+                        <Label style="-fx-text-fill:#888888; -fx-font-size:13px; -fx-cursor:hand;" text="✏" />
+                        <Label style="-fx-text-fill:#AAAAAA; -fx-font-size:13px; -fx-cursor:hand;" text="🗑" />
+                    </VBox>
+                </HBox>
+
+                <!-- ScrollPane dinâmico (runtime) -->
+                <ScrollPane fx:id="scrollLista" fitToWidth="true" hbarPolicy="NEVER" managed="false" minHeight="0" prefHeight="0" style="-fx-background:transparent; -fx-background-color:transparent;                                    -fx-border-color:transparent;" vbarPolicy="AS_NEEDED" visible="false">
+                    <VBox fx:id="listaRegistros" spacing="0" style="-fx-background-color:transparent;" />
+                </ScrollPane>
+
+                <Pane style="-fx-background-color:#FFFFFF; -fx-background-radius:0 0 14 14; -fx-pref-height:8px;" />
+            </VBox>
+
+            <Label fx:id="lblMsg" style="-fx-font-size:12px; -fx-text-fill:#C0392B;" text="" wrapText="true" />
+        </VBox>
+    </center>
+
+    <!-- ══ BARRA INFERIOR ROXA ══════════════════════════════════════ -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color:#2E1A47; -fx-padding:12 20 12 20; -fx-min-height:52px;">
+            <Button onAction="#handleLogout" style="-fx-background-color:#D1203A; -fx-text-fill:white;                            -fx-font-size:13px; -fx-font-weight:bold;                            -fx-background-radius:20; -fx-padding:8 22 8 22; -fx-cursor:hand;" text="Logout ➜" />
+        </HBox>
+    </bottom>
+
+</BorderPane>

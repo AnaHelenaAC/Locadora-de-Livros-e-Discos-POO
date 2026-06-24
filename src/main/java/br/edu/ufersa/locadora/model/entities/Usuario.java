@@ -1,95 +1,85 @@
 package br.edu.ufersa.locadora.model.entities;
 
-// Classe "Mãe" Usuario
+import br.edu.ufersa.locadora.exceptions.SemNomeException;
+import br.edu.ufersa.locadora.exceptions.UsuarioException;
+
 public class Usuario {
+
+    public static final Long ID_GERENTE = 1L;
+
+    private Long id;
     private String nome;
     private String login;
     private String senha;
-    private boolean isGerente;
 
-    // Construtor Usuário
-    public Usuario(String nome, String login, String senha) {
+    public Usuario() {
+    }
+
+    public Usuario(String nome, String login, String senha) throws SemNomeException, UsuarioException {
         setNome(nome);
         setLogin(login);
         setSenha(senha);
-        setGerente();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) throws UsuarioException {
+        if (this.id == null) {
+            this.id = id;
+        } else {
+            throw new UsuarioException(
+                    "Aviso de Segurança: O ID deste usuário já foi definido e não pode ser alterado!");
+        }
     }
 
     public String getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
-
-        // Avisa na tela se o nome for inválido
+    public void setNome(String nome) throws SemNomeException {
         if (nome == null || nome.trim().isEmpty()) {
-            System.out.println("O nome não pode ser vazio.");
-        } else {
-            // Se estiver tudo certo, salva o nome
-            this.nome = nome;
+            throw new SemNomeException("Não existe Usuário sem nome!");
         }
+        this.nome = nome;
     }
 
     public String getLogin() {
         return login;
     }
 
-    public void setLogin(String login) {
-
-        // Verifica se o local do login está vazio
+    public void setLogin(String login) throws UsuarioException {
         if (login == null || login.trim().isEmpty()) {
-            System.out.println("O login não pode ser vazio.");
-
-        // Verifica se existem espaços no login
+            throw new UsuarioException("O login não pode ser vazio.");
         } else if (login.contains(" ")) {
-            System.out.println("O login não pode conter espaços.");
-        } else {
-            this.login = login;
+            throw new UsuarioException("O login não pode conter espaços.");
         }
+        this.login = login;
     }
 
     public String getSenha() {
         return senha;
     }
 
-    public void setSenha(String senha) {
-
-        // Verifica se a senha digitada apresenta 6-100 caracteres
-        if (senha.length() >= 6 && senha.length() <= 100) {
-            this.senha = senha;
-        } else {
-            System.out.println("A senha deve ter pelo menos 6 caracteres e, no máximo, 100 caracteres.");
+    public void setSenha(String senha) throws UsuarioException {
+        if (senha == null) {
+            throw new UsuarioException("A senha não pode ser nula.");
         }
+        this.senha = senha;
     }
 
-    private final setIsGerente() {
-        //IMPLEMENTAR LÓGICA COM DB
-    }
-    // Método responsável por fazer o login (retorna verdadeiro ou falso)
-    public boolean fazerLogin(String loginRecebido, String senhaRecebida){
-        boolean loginCorreto;
-        boolean senhaCorreta;
-
-        // Verificando a igualdade das informações recebidas (login e senha)
-        loginCorreto = this.getLogin().equals(loginRecebido);
-        senhaCorreta = this.getSenha().equals(senhaRecebida);
-
-        // Testando se o login digitado está incoerente
-        if (loginCorreto == false){
-            System.out.println("Acesso Negado. Login incorreto!");
-            return false;
-        }
-        // Testando se a senha está incoerente
-        else if (senhaCorreta == false){
-            System.out.println("Acesso Negado. Senha incorreta!");
-            return false;
-        }
-        // Caso a senha e o login estejam corretos
-        else {
-            System.out.println("Acesso liberado.");
-            return true;
-        }
-
+    public boolean isGerente() {
+        return id != null && ID_GERENTE.equals(id);
     }
 
+    public boolean fazerLogin(String loginRecebido, String senhaRecebida) throws UsuarioException {
+        if (this.login == null || !this.login.equals(loginRecebido)) {
+            throw new UsuarioException("Acesso Negado. Login incorreto!");
+        }
+        if (this.senha == null || !this.senha.equals(senhaRecebida)) {
+            throw new UsuarioException("Acesso Negado. Senha incorreta!");
+        }
+        return true;
+    }
 }

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="620.0" prefWidth="848.0" styleClass="root-disco" stylesheets="@../css/ArquivoDisco.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.ArquivoDiscoController">
+
+
+    <top>
+        <HBox prefHeight="100.0" prefWidth="200.0" styleClass="top-bar" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="72.0" prefWidth="310.0">
+                    <children>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="62.0" text=" ♫" textAlignment="RIGHT" textFill="#ffed78">
+                            <font>
+                                <Font name="Bookman Old Style Bold" size="48.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="72.0" prefWidth="151.0" text="Cultura Viva" textFill="#ffed78">
+                            <font>
+                                <Font name="Baskerville Old Face" size="30.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="cadastroButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoCadastros" styleClass="button-dot" text="Cadastros" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="acervoButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAcervo" styleClass="button-dot" text="Acervo" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="aluguelButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoAlugueis" styleClass="button-dt" text="Alúgueis" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="relatorioButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoRelatorio" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="relatorioButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoRelatorio" styleClass="button-dot" text="Relatório" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <HBox layoutX="677.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="sairButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#aoSair" styleClass="button-dot" text="Sair" HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+            </children></HBox>
+    </top>
+    <center>
+        <HBox alignment="TOP_LEFT" spacing="0.0" styleClass="content-area">
+            <children>
+                <VBox spacing="0.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="BOTTOM_LEFT" spacing="0.0">
+                            <children>
+                                <VBox alignment="CENTER" minWidth="180.0" onMouseClicked="#navegarLivros" spacing="6.0" styleClass="tab-inactive">
+                                    <children>
+                                        <HBox alignment="CENTER" spacing="10.0">
+                                            <children>
+                                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image><Image url="@../images/book.png" /></image>
+                                                </ImageView>
+                                                <Label styleClass="tab-inactive-label" text="Livros" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox alignment="CENTER" minWidth="200.0" onMouseClicked="#navegarDiscos" spacing="6.0" styleClass="tab-active">
+                                    <children>
+                                        <HBox alignment="CENTER" spacing="10.0">
+                                            <children>
+                                                <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image><Image url="@../images/disc.png" /></image>
+                                                </ImageView>
+                                                <Label styleClass="tab-active-label" text="Discos" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                                <Region style="-fx-background-color: #F0E4C0; -fx-background-radius: 0 12 0 0;" HBox.hgrow="ALWAYS" />
+                            </children>
+                        </HBox>
+
+                        <VBox spacing="0.0" styleClass="tabela-container" VBox.vgrow="ALWAYS">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="0.0" styleClass="tabela-header">
+                                    <children>
+                                        <Label minWidth="90.0" prefWidth="90.0" styleClass="tabela-header-label" text="Imagem" />
+                                        <Label maxWidth="2000.0" styleClass="tabela-header-label" text="Título" HBox.hgrow="ALWAYS" />
+                                        <Label minWidth="100.0" prefWidth="120.0" styleClass="tabela-header-label" text="Data" />
+                                        <Label maxWidth="2000.0" styleClass="tabela-header-label" text="Artista/Banda" HBox.hgrow="ALWAYS" />
+                                        <Region prefWidth="56.0" />
+                                    </children>
+                                </HBox>
+
+                                <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="linha-disco">
+                                    <children>
+                                        <StackPane styleClass="img-placeholder">
+                                            <children>
+                                                <Label styleClass="img-icon" text="📻" />
+                                            </children>
+                                        </StackPane>
+                                        <Label maxWidth="2000.0" styleClass="cell-text" text="The Dark Side of the Moon" HBox.hgrow="ALWAYS" />
+                                        <Label prefWidth="120.0" styleClass="cell-text" text="01/03/173" />
+                                        <Label maxWidth="2000.0" styleClass="cell-text" text="Pink Floyd" HBox.hgrow="ALWAYS" />
+                                        <VBox alignment="CENTER" prefWidth="56.0" spacing="4.0">
+                                            <children>
+                                                <Button styleClass="btn-editar" text="✏" />
+                                                <Button styleClass="btn-excluir" text="🗑" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <ScrollPane fx:id="scrollTabela" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                                    <content>
+                                        <VBox fx:id="listaDiscos" spacing="0.0" style="-fx-background-color: transparent;" />
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <VBox fx:id="painelForm" spacing="8.0" styleClass="form-panel">
+                    <children>
+                        <Label fx:id="lblFormTitulo" styleClass="form-title" text="Novo Disco" />
+
+                        <Label styleClass="form-label" text="Título:" />
+                        <TextField fx:id="tfTitulo" promptText="Ex: Abbey Road" styleClass="form-field" />
+
+                        <Label styleClass="form-label" text="Banda/Artista:" />
+                        <TextField fx:id="tfArtista" promptText="Ex: The Beatles" styleClass="form-field" />
+
+                        <Label styleClass="form-label" text="Gênero:" />
+                        <TextField fx:id="tfGenero" promptText="Ex: Rock" styleClass="form-field" />
+
+                        <Label styleClass="form-label" text="Data de lançamento (dd/MM/yyyy):" />
+                        <TextField fx:id="tfData" promptText="26/09/1969" styleClass="form-field" />
+
+                        <Label styleClass="form-label" text="Qtd. exemplares:" />
+                        <TextField fx:id="tfQtd" promptText="0" styleClass="form-field" />
+
+                        <Label styleClass="form-label" text="Valor diária (R$):" />
+                        <TextField fx:id="tfValor" promptText="0.00" styleClass="form-field" />
+
+                        <Label styleClass="form-label" text="Gravadora:" />
+                        <TextField fx:id="tfGravadora" promptText="Ex: Apple Records" styleClass="form-field" />
+
+                        <Label fx:id="lblFormMsg" styleClass="form-msg" wrapText="true" />
+
+                        <HBox spacing="8.0" style="-fx-padding: 6 0 0 0;">
+                            <children>
+                                <Button onAction="#salvarDisco" styleClass="btn-salvar" text="Salvar" />
+                                <Button onAction="#fecharForm" styleClass="btn-cancelar" text="Cancelar" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="bottombar">
+            <children>
+                <Label style="-fx-text-fill: #F8EED1; -fx-font-size: 13.0;" text="▼" />
+                <TextField fx:id="tfPesquisa" onAction="#pesquisar" promptText="Pesquisar" styleClass="search-field" />
+                <Label onMouseClicked="#pesquisar" style="-fx-text-fill: #7A6A5A; -fx-font-size: 13.0; -fx-translate-x: -32.0; -fx-cursor: hand;" text="🔍" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button onAction="#handleLogout" styleClass="btn-logout-bottom" text="Logout ➜" />
+                <Button fx:id="btnAdicionar" onAction="#abrirFormNovo" styleClass="btn-adicionar" text="Adicionar novo disco ＋" />
+            </children>
+        </HBox>
+    </bottom>
+
+</BorderPane>

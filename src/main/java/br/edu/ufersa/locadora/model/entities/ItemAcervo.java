@@ -1,12 +1,9 @@
 package br.edu.ufersa.locadora.model.entities;
 
 import java.util.UUID;
-import java.util.Optional;
 import java.util.Objects;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.IllegalFormatConversionException;
 
 abstract public class ItemAcervo {
   //Atributos:
@@ -73,7 +70,6 @@ public void setValor(double valor) {
       this.dataDeLancamento = Objects.requireNonNull(dataDeLancamento, "Valor não pode ser null.");
     }
     catch(IllegalArgumentException e) { //Se a data de entrada estiver no formato errado, uma mensagem de descrevendo o problema é exibida no terminal
-      System.out.println("Data inválida. É possível que ela tenha sido escrita no formato errado. O formato correto é dd/MM/yyyy.");
       throw e;
     }
   }
@@ -87,7 +83,6 @@ public void setValor(double valor) {
       if (isDisco == false || isDisco == true) isDisco = !isDisco; //Checa se "isDisco" não é nulo. Se não for, inverte o valor de "isDisco", transformando um disco em livro ou um livro em disco. "false" = livro; "true" = disco.  
     }
     catch (NullPointerException e) {
-      System.out.println("Valor de isDisco = null");
       throw e;
     }
   }
@@ -111,7 +106,6 @@ this.valor = valor;
       this.dataDeLancamento = Objects.requireNonNull(dataDeLancamento, "Valor não pode ser null.");
     }
     catch(IllegalArgumentException e) { //Se a data de entrada estiver no formato errado, uma mensagem de descrevendo o problema é exibida no terminal
-      System.out.println("Data inválida. É possível que ela tenha sido escrita no formato errado. O formato correto é dd/MM/yyyy.");
       throw e;
     }
     this.qtdItens = qtdItens;
@@ -119,7 +113,6 @@ this.valor = valor;
       if (isDisco == false || isDisco == true) this.isDisco = isDisco; //Checa se "isDisco" não é nulo. Se não for, atribui um valor a "isDisco". "false" = livro; "true" = disco.  
     }
     catch (NullPointerException e) {
-      System.out.println("Valor de isDisco = null");
       throw e;
     }
   }

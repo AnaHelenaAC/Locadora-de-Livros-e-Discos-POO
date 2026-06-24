@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane prefHeight="520" prefWidth="820" styleClass="root-pane" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ufersa.locadora.controllers.LoginController">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="top-bar">
+            <padding><Insets bottom="10" left="20" right="20" top="10" /></padding>
+
+            <!-- Gramophone SVG icon -->
+            <SVGPath content="M10,2 C10,2 4,4 4,10 C4,13 6,15 8,16 L8,18 L6,18 L6,20 L14,20 L14,18 L12,18 L12,16 C14,15 16,13 16,10 C16,7 14,5 12,4 Z M10,6 C12,6 14,8 14,10 C14,12 12,14 10,14 C8,14 6,12 6,10 C6,8 8,6 10,6 Z M10,8 C9,8 8,9 8,10 C8,11 9,12 10,12 C11,12 12,11 12,10 C12,9 11,8 10,8 Z M2,8 C1,9 0,12 2,14 L4,12 C3,11 3,9 4,8 Z M20,4 L18,6 C20,8 20,12 18,14 L20,16 C23,13 23,7 20,4 Z" styleClass="gramophone-icon" />
+
+            <Label styleClass="brand-title" text="Cultura Viva" />
+        </HBox>
+    </top>
+
+    <!-- BOTTOM BAR -->
+    <bottom>
+        <HBox minHeight="18" styleClass="bottom-bar" />
+    </bottom>
+
+    <!-- CENTER: Left panel + Right panel -->
+    <center>
+        <HBox alignment="CENTER" maxHeight="429.6" maxWidth="820.0" styleClass="center-pane">
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- LEFT PANEL  (~65%)                      -->
+            <!-- ═══════════════════════════════════════ -->
+            <VBox alignment="CENTER" spacing="0" styleClass="left-panel" HBox.hgrow="ALWAYS">
+                <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+
+                <!-- Big Card -->
+                <StackPane prefHeight="340" prefWidth="460" styleClass="media-card">
+
+                    <!-- Card background (CSS sets the abstract gradient) -->
+                    <AnchorPane prefHeight="340" prefWidth="460" styleClass="card-bg">
+
+                        <!-- LEFT CONTENT inside card -->
+                        <VBox prefWidth="190" spacing="12" AnchorPane.leftAnchor="16" AnchorPane.topAnchor="16">
+
+                            <Label prefWidth="180" styleClass="card-tagline" text="LEIA SEU PRÓXIMO CAPÍTULO AO SOM DE SUA FAIXA PREDILETA!" wrapText="true" />
+
+                            <!-- 2x2 Album grid -->
+                            <GridPane hgap="6" vgap="6">
+                                <ImageView fitHeight="78" fitWidth="78" preserveRatio="false" styleClass="album-cover" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                    <image><Image url="https://via.placeholder.com/80x80/8B2FC9/FFFFFF?text=1" /></image>
+                                </ImageView>
+                                <ImageView fitHeight="78" fitWidth="78" preserveRatio="false" styleClass="album-cover" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <image><Image url="https://via.placeholder.com/80x80/3A7BD5/FFFFFF?text=2" /></image>
+                                </ImageView>
+                                <ImageView fitHeight="78" fitWidth="78" preserveRatio="false" styleClass="album-cover" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                    <image><Image url="https://via.placeholder.com/80x80/D14B2A/FFFFFF?text=3" /></image>
+                                </ImageView>
+                                <ImageView fitHeight="78" fitWidth="78" preserveRatio="false" styleClass="album-cover" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <image><Image url="https://via.placeholder.com/80x80/27A96C/FFFFFF?text=4" /></image>
+                                </ImageView>
+                        <columnConstraints>
+                           <ColumnConstraints />
+                           <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                           <RowConstraints />
+                        </rowConstraints>
+                            </GridPane>
+                        </VBox>
+
+                        <!-- RIGHT CONTENT: Vinyl disc (shapes) -->
+                        <StackPane AnchorPane.rightAnchor="20" AnchorPane.topAnchor="40">
+                            <!-- Outer vinyl -->
+                            <Circle radius="90" styleClass="vinyl-outer" />
+                            <!-- Grooves ring -->
+                            <Circle radius="68" styleClass="vinyl-groove" />
+                            <!-- Label ring -->
+                            <Circle radius="46" styleClass="vinyl-label" />
+                            <!-- Center orange dot -->
+                            <Circle radius="12" styleClass="vinyl-center" />
+                            <!-- Spindle hole -->
+                            <Circle radius="4" styleClass="vinyl-hole" />
+                        </StackPane>
+
+                        <!-- Bottom-right floating badge -->
+                        <HBox alignment="CENTER" spacing="4" styleClass="badge-container" AnchorPane.bottomAnchor="12" AnchorPane.rightAnchor="12">
+                            <Circle radius="10" styleClass="badge-blue" />
+                            <Circle radius="10" styleClass="badge-purple" />
+                        </HBox>
+
+                    </AnchorPane>
+                </StackPane>
+            </VBox>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- RIGHT PANEL  (~35%)                     -->
+            <!-- ═══════════════════════════════════════ -->
+            <VBox alignment="CENTER" prefWidth="280" spacing="18" styleClass="right-panel">
+                <padding><Insets bottom="30" left="36" right="36" top="30" /></padding>
+
+                <!-- Title -->
+                <Label styleClass="login-title" text="Fazer login:" />
+
+                <!-- Grouped fields: Nome+Senha -->
+                <VBox spacing="0" styleClass="input-group">
+                    <TextField fx:id="nameField" promptText="NOME / CPF / EMAIL" styleClass="grouped-field grouped-field-top" />
+                    <Separator styleClass="field-divider" />
+                    <PasswordField fx:id="passwordField" promptText="SENHA" styleClass="grouped-field grouped-field-bottom" />
+                </VBox>
+
+                <!-- Login button -->
+                <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" styleClass="login-btn" text="ENTRAR" />
+
+                <!-- Signup footer -->
+                <HBox alignment="CENTER" spacing="6">
+                    <Label styleClass="signup-label" text="É novo por aqui?" />
+                    <Label fx:id="cadastroLink" onMouseClicked="#handleCadastro" styleClass="signup-link" text="Cadastre-se" />
+                </HBox>
+
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

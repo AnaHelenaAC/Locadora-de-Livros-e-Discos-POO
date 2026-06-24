@@ -1,56 +1,68 @@
 package br.edu.ufersa.locadora.model.entities;
 
+import br.edu.ufersa.locadora.exceptions.RegistroException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Registro {
 
-    // ------------------ Atributos da classe Registro ------------------
-    private static List<UsuarioFuncionario> listaFuncionarios = new ArrayList<>();
-    private UsuarioGerente gerenteLogado;
+    private List<Usuario> listaFuncionarios = new ArrayList<>();
+
+    private Long idRegistro;
+    private Usuario gerenteLogado;
     private double faturamentoTotal;
     private List<Aluguel> listaAlugueis;
 
-    // ------------------ Construtor Registro ------------------
     public Registro() {
         this.faturamentoTotal = 0.0;
         this.listaAlugueis = new ArrayList<>();
+        this.listaFuncionarios = new ArrayList<>();
         this.gerenteLogado = null;
     }
 
-    // ------------------ Métodos da classe Registro ------------------
-    public static List<UsuarioFuncionario> getListaFuncionarios() {
+    public Long getIdRegistro() {
+        return idRegistro;
+    }
+
+    public void setIdRegistro(Long idRegistro) {
+        if (this.idRegistro == null) {
+            this.idRegistro = idRegistro;
+        }
+    }
+
+    public List<Usuario> getListaFuncionarios() {
         return new ArrayList<>(listaFuncionarios);
     }
 
-    public static void setListaFuncionarios(List<UsuarioFuncionario> listaFuncionarios) {
-        // Verificando se a lista está vazia
+    public void setListaFuncionarios(List<Usuario> listaFuncionarios) {
         if (listaFuncionarios != null) {
-            Registro.listaFuncionarios = new ArrayList<>(listaFuncionarios);
+            this.listaFuncionarios = new ArrayList<>(listaFuncionarios);
         }
     }
 
-    public UsuarioGerente getGerenteLogado() {
+    public Usuario getGerenteLogado() {
         return gerenteLogado;
     }
 
-    public void setGerenteLogado(UsuarioGerente gerenteLogado) {
-        // Verificando se existe um gerente válido sendo passado antes de logar
-        if (gerenteLogado != null) {
-            this.gerenteLogado = gerenteLogado;
+    public void setGerenteLogado(Usuario gerenteLogado) throws RegistroException {
+        if (gerenteLogado == null) {
+            throw new RegistroException("O gerente logado não pode ser nulo.");
         }
+        if (!gerenteLogado.isGerente()) {
+            throw new RegistroException("O usuário informado não é o gerente do sistema.");
+        }
+        this.gerenteLogado = gerenteLogado;
     }
 
     public double getFaturamentoTotal() {
         return faturamentoTotal;
     }
 
-    public void setFaturamentoTotal(double faturamentoTotal) {
-        // Verificando se o número do faturamento é positivo
+    public void setFaturamentoTotal(double faturamentoTotal) throws RegistroException {
         if (faturamentoTotal >= 0) {
             this.faturamentoTotal = faturamentoTotal;
         } else {
-            System.out.println("Negado! Insira um valor positivo.");
+            throw new RegistroException("Negado! Insira um valor positivo de faturamento.");
         }
     }
 
@@ -64,48 +76,41 @@ public class Registro {
         }
     }
 
-    // Adiciona um novo funcionário
-    public static void salvarFuncionarioNoSistema(UsuarioFuncionario f) {
-        // V
-        if (f != null) {
-            listaFuncionarios.add(f);
-            System.out.println(">>> [BANCO] Funcionário " + f.getNome() + " salvo com segurança.");
+    public void salvarFuncionarioNoSistema(Usuario fun) throws RegistroException {
+        if (fun == null) {
+            throw new RegistroException("Não é possível salvar um funcionário nulo no sistema.");
+        }
+        if (fun.isGerente()) {
+            throw new RegistroException("O gerente não pode ser adicionado como funcionário.");
+        }
+        listaFuncionarios.add(fun);
+    }
+
+    public void registrarAluguel(Aluguel aluguel) throws RegistroException {
+        if (aluguel == null) {
+            throw new RegistroException("Negado! Aluguel inválido.");
+        }
+        listaAlugueis.add(aluguel);
+        faturamentoTotal += aluguel.getValorBase();
+    }
+
+    public void registrarDevolucaoItem(double valorMultaDoItem) throws RegistroException {
+        if (valorMultaDoItem < 0) {
+            throw new RegistroException("Valor de multa inválido.");
+        }
+        faturamentoTotal += valorMultaDoItem;
+    }
+
+    public void gerarRelatorioAlugados(String categoria) throws RegistroException {
+        if (categoria == null || categoria.trim().isEmpty()) {
+            throw new RegistroException("A categoria do relatório não pode ser vazia.");
         }
     }
 
-    // Realiza um aluguem para um cliente de um item do acervo
-    public void registrarAluguel(Cliente c, ItemAcervo i) {
-
-        // Verifica se o cliente e o item existem nos dados
-        if (c != null && i != null) {
-            System.out.println("Iniciando aluguel do item para o cliente " + c.getNome() + "...");
-
-            String valorEmTexto = i.getValor().replace(",", ".");
-            double valorConvertido = Double.parseDouble(valorEmTexto);
-
-            this.faturamentoTotal += valorConvertido;
-            System.out.println("Aluguel registrado. Faturamento atualizado!");
-
-        } else {
-            System.out.println("Negado! Cliente ou Item inválidos para aluguel.");
+    public double calcularFaturamentoMensal(int mes) throws RegistroException {
+        if (mes < 1 || mes > 12) {
+            throw new RegistroException("Mês inválido informado para o cálculo.");
         }
-    }
-
-    // Registra a volta de um item que havia sido alugado
-    public void registrarDevolucao(ItemAcervo i) {
-        if (i != null) {
-            System.out.println("Registrando devolução do item...");
-        }
-    }
-
-    // Gera e exibe um relatório com os itens alugados filtrados por categoria
-    public void gerarRelatorioAlugados(String categoria) {
-        System.out.println("SISTEMA: Gerando relatório da categoria -> " + categoria);
-    }
-
-    // Calcula a soma financeira de todos os aluguéis feitos em um mês específico
-    public double calcularFaturamentoMensal(int mes) {
-        System.out.println("SISTEMA: Calculando faturamento do mês " + mes);
         return 0.0;
     }
 }
