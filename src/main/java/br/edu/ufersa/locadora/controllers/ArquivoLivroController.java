@@ -1,8 +1,10 @@
 package br.edu.ufersa.locadora.controllers;
+
 import br.edu.ufersa.locadora.model.SessaoUsuario;
 import br.edu.ufersa.locadora.model.entities.Livro;
 import br.edu.ufersa.locadora.exceptions.LivroException;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +18,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-
 
 public class ArquivoLivroController implements Initializable {
 
@@ -49,16 +50,13 @@ public class ArquivoLivroController implements Initializable {
     private boolean modoEdicao   = false;
     private Livro   livroEmEdicao;
 
-    // ─────────────────────────────────────────────────────────
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Ativa scroll dinâmico e remove preview do Scene Builder
         scrollTabela.setVisible(true);
         scrollTabela.setManaged(true);
         scrollTabela.setPrefHeight(400);
         removerLinhasPreview();
 
-        // Botão Adicionar só para gerente
         boolean gerente = SessaoUsuario.getInstance().usuarioEhGerente();
         btnAdicionar.setVisible(gerente);
         btnAdicionar.setManaged(gerente);
@@ -66,82 +64,58 @@ public class ArquivoLivroController implements Initializable {
         carregarLivros();
     }
 
-    // ── Preview cleanup ───────────────────────────────────────
-
     private void removerLinhasPreview() {
         try {
             VBox pai = (VBox) scrollTabela.getParent();
             int idxScroll = pai.getChildren().indexOf(scrollTabela);
-            // índice 0 = cabeçalho; 1..idxScroll-1 = previews
             if (idxScroll > 1) pai.getChildren().remove(1, idxScroll);
         } catch (Exception ignored) {}
     }
 
-    // ── Carregamento ──────────────────────────────────────────
-
     private void carregarLivros() {
         listaLivros.getChildren().clear();
         try {
-            List<Livro> livros = SessaoUsuario.getInstance()
-                    .getLivroService().lerLivro();
-            for (Livro l : livros)
+            List<Livro> livros = SessaoUsuario.getInstance().getLivroService().lerLivro();
+            for (Livro l : livros) {
                 listaLivros.getChildren().add(criarLinha(l));
+            }
         } catch (LivroException e) {
             listaLivros.getChildren().add(linhaVazia("Nenhum livro cadastrado."));
         }
     }
 
-    // ── Construção das linhas ─────────────────────────────────
-
-
     private HBox criarLinha(Livro livro) {
-
-        // Placeholder de imagem
         Label icone = new Label("🖼");
         icone.setStyle("-fx-font-size:20px; -fx-text-fill:#888888;");
         StackPane imgBox = new StackPane(icone);
-        imgBox.setStyle(
-                "-fx-background-color:#C0B8B0; -fx-background-radius:4;" +
-                        "-fx-min-width:60px; -fx-min-height:60px;" +
-                        "-fx-pref-width:60px; -fx-pref-height:60px;"
-        );
+        imgBox.setStyle("-fx-background-color:#C0B8B0; -fx-background-radius:4;-fx-min-width:60px; -fx-min-height:60px;");
 
-        // Título
         Label lTitulo = new Label(livro.getTitulo());
         lTitulo.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
         HBox.setHgrow(lTitulo, Priority.ALWAYS);
         lTitulo.setMaxWidth(Double.MAX_VALUE);
 
-        // Data
-        String dataStr = livro.getDataDeLancamento().isEmpty()
-                ? "—" : livro.getDataDeLancamento();
+        String dataStr = livro.getDataDeLancamento().isEmpty() ? "—" : livro.getDataDeLancamento();
         Label lData = new Label(dataStr);
         lData.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
         lData.setPrefWidth(120);
 
-        // Autor(a) — campo criadoPor
         Label lAutor = new Label(livro.getCriadoPor());
         lAutor.setStyle("-fx-font-size:14px; -fx-text-fill:#2E1A47;");
         HBox.setHgrow(lAutor, Priority.ALWAYS);
         lAutor.setMaxWidth(Double.MAX_VALUE);
 
-        // Botões de ação (só gerente)
         VBox acoes = new VBox(4);
         acoes.setAlignment(Pos.CENTER);
         acoes.setPrefWidth(56);
+
         if (SessaoUsuario.getInstance().usuarioEhGerente()) {
             Button btnEdit = new Button("✏");
-            btnEdit.setStyle(
-                    "-fx-background-color:transparent; -fx-text-fill:#2E1A47;" +
-                            "-fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"
-            );
+            btnEdit.setStyle("-fx-background-color:transparent; -fx-text-fill:#2E1A47; -fx-font-size:15px; -fx-cursor:hand;");
             btnEdit.setOnAction(e -> editarLivro(livro));
 
             Button btnDel = new Button("🗑");
-            btnDel.setStyle(
-                    "-fx-background-color:transparent; -fx-text-fill:#2E1A47;" +
-                            "-fx-font-size:15px; -fx-cursor:hand; -fx-padding:2 6 2 6;"
-            );
+            btnDel.setStyle("-fx-background-color:transparent; -fx-text-fill:#2E1A47; -fx-font-size:15px; -fx-cursor:hand;");
             btnDel.setOnAction(e -> excluirLivro(livro));
 
             acoes.getChildren().addAll(btnEdit, btnDel);
@@ -149,13 +123,7 @@ public class ArquivoLivroController implements Initializable {
 
         HBox linha = new HBox(14, imgBox, lTitulo, lData, lAutor, acoes);
         linha.setAlignment(Pos.CENTER_LEFT);
-        linha.setStyle(
-                "-fx-background-color:#F8EED1;" +
-                        "-fx-padding:8 16 8 16;" +
-                        "-fx-min-height:80px; -fx-pref-height:80px;" +
-                        "-fx-border-color:transparent transparent #D8C89A transparent;" +
-                        "-fx-border-width:0 0 1 0;"
-        );
+        linha.setStyle("-fx-background-color:#F8EED1; -fx-padding:8 16 8 16; -fx-min-height:80px; -fx-border-color:transparent transparent #D8C89A transparent; -fx-border-width:0 0 1 0;");
         return linha;
     }
 
@@ -168,15 +136,13 @@ public class ArquivoLivroController implements Initializable {
         return h;
     }
 
-    // ── Pesquisa ──────────────────────────────────────────────
-
+    // Changed to baseline Event class to accept both ActionEvent (Enter key) and MouseEvent (Icon click)
     @FXML
-    public void pesquisar(ActionEvent e) {
+    public void pesquisar(Event e) {
         String termo = tfPesquisa.getText().trim();
         listaLivros.getChildren().clear();
         try {
-            List<Livro> resultado = SessaoUsuario.getInstance()
-                    .getLivroService().buscarPor("titulo", termo);
+            List<Livro> resultado = SessaoUsuario.getInstance().getLivroService().buscarPor("titulo", termo);
             if (resultado.isEmpty()) {
                 listaLivros.getChildren().add(linhaVazia("Nenhum resultado para: " + termo));
             } else {
@@ -187,8 +153,6 @@ public class ArquivoLivroController implements Initializable {
             mostrarErro("Erro na pesquisa: " + ex.getMessage());
         }
     }
-
-    // ── Formulário: abrir ─────────────────────────────────────
 
     @FXML
     public void abrirFormNovo(ActionEvent e) {
@@ -208,15 +172,17 @@ public class ArquivoLivroController implements Initializable {
         tfGenero .setText(l.getGenero());
         tfData   .setText(l.getDataDeLancamento());
         tfQtd    .setText(String.valueOf(l.getQtdItens()));
-        tfValor  .setText(l.getValorFormatado());
+
+        // SAFE CONVERSION: Extracts numeric value to bypass potential locale string parsing errors
+        tfValor  .setText(String.valueOf(l.getValor()));
+
         tfPaginas.setText(String.valueOf(l.getQtdPaginas()));
         lblFormMsg.setText("");
         mostrarForm(true);
     }
 
     private void excluirLivro(Livro l) {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
-                "Excluir \"" + l.getTitulo() + "\"?", ButtonType.YES, ButtonType.NO);
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Excluir \"" + l.getTitulo() + "\"?", ButtonType.YES, ButtonType.NO);
         a.setHeaderText(null);
         a.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
@@ -229,8 +195,6 @@ public class ArquivoLivroController implements Initializable {
             }
         });
     }
-
-    // ── Formulário: salvar / fechar ───────────────────────────
 
     @FXML
     public void salvarLivro(ActionEvent e) {
@@ -272,21 +236,15 @@ public class ArquivoLivroController implements Initializable {
 
     @FXML public void fecharForm(ActionEvent e) { mostrarForm(false); }
 
-    // ── Navegação — Navbar ────────────────────────────────────
-
-    @FXML public void handleNavAcervo(ActionEvent e)    { /* já estamos aqui */ }
+    @FXML public void handleNavAcervo(ActionEvent e)    { /* No-op */ }
     @FXML public void handleNavRelatorio(ActionEvent e) { irPara("financas.fxml",  e); }
     @FXML public void handleNavCadastros(ActionEvent e) { irPara("cadastros.fxml", e); }
-
-    // ── Navegação — Abas ──────────────────────────────────────
-
-    @FXML public void navegarLivros(javafx.scene.input.MouseEvent e) { /* já estamos aqui */ }
+    @FXML public void navegarLivros(javafx.scene.input.MouseEvent e) { /* No-op */ }
 
     @FXML
     public void navegarDiscos(javafx.scene.input.MouseEvent e) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/locadora/view/ArquivoDisco.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/edu/ufersa/locadora/view/ArquivoDisco.fxml"));
             Stage stage = (Stage) scrollTabela.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.show();
@@ -301,8 +259,6 @@ public class ArquivoLivroController implements Initializable {
         irPara("login.fxml", e);
     }
 
-    // ── Helpers ───────────────────────────────────────────────
-
     private void mostrarForm(boolean v) {
         painelForm.setVisible(v);
         painelForm.setManaged(v);
@@ -316,8 +272,7 @@ public class ArquivoLivroController implements Initializable {
 
     private void irPara(String fxml, ActionEvent e) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/locadora/view/" + fxml));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/br/edu/ufersa/locadora/view/" + fxml));
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.show();
