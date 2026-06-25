@@ -9,7 +9,7 @@ public interface ILocadoraService<T, ID> {
     T atualizar(T entidade);
 
     boolean excluir(ID id);
-+
+
     T buscarPorId(ID id);
 
     List<T> listarTodos();
