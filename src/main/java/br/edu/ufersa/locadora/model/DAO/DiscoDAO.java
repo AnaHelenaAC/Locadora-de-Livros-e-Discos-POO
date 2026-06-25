@@ -41,14 +41,14 @@ public class DiscoDAO {
         try (Connection con = connectionFactory.createConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, disco.getID());
-            ps.setString(1, disco.getTitulo());
-            ps.setString(2, disco.getCriadoPor());
-            ps.setString(3, disco.getGenero());
-            ps.setDouble(4, disco.getValor());
-            ps.setDate(5, Date.valueOf(LocalDate.parse(disco.getDataDeLancamento(), FORMATADOR)));
-            ps.setInt(6, disco.getQtdItens());
-            ps.setBoolean(7, disco.getIsDisco());
-            ps.setInt(8, disco.getDuracao());
+            ps.setString(2, disco.getTitulo());
+            ps.setString(3, disco.getCriadoPor());
+            ps.setString(4, disco.getGenero());
+            ps.setDouble(5, disco.getValor());
+            ps.setDate(6, Date.valueOf(LocalDate.parse(disco.getDataDeLancamento(), FORMATADOR)));
+            ps.setInt(7, disco.getQtdItens());
+            ps.setBoolean(8, disco.getIsDisco());
+            ps.setInt(9, disco.getDuracao());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir disco no banco: " + e.getMessage(), e);
