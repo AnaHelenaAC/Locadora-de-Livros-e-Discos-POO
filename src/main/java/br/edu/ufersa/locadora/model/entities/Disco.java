@@ -40,10 +40,6 @@ public class Disco extends ItemAcervo {
     if (duracaoSegundos < 0) throw new IllegalArgumentException("A duração não pode ser negativa.");
     this.duracao = duracaoSegundos;
   }
-
-  //Método de exclusão de objeto:
-  public void excluir() {
-  }
   
   //construtor:
   public Disco(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco, int horas, int minutos, int segundos) {

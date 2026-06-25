@@ -14,10 +14,6 @@ public class Livro extends ItemAcervo {
     if (qtdPaginas < 0) throw new IllegalArgumentException("A quantidade de páginas não pode ser negativa.");
     this.qtdPaginas = qtdPaginas;
   }
-
-  //Método de exclusão de objeto:
-  public void excluir() {
-  }
   
   //construtor:
   public Livro(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco, int qtdPaginas) {

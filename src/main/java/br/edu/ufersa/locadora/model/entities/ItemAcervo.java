@@ -87,9 +87,6 @@ public void setValor(double valor) {
     }
   }
   
-  //Método de exclusão de objeto:
-  abstract public void excluir();
-  
   //construtor:
   public ItemAcervo(String titulo, String criadoPor, String genero, double valor, String dataDeLancamentoFormatada, int qtdItens, boolean isDisco) {
     this.ID = UUID.randomUUID().toString(); //Gera uma identificação única convertida em String para o objeto. 
